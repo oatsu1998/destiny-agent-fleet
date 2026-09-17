@@ -6835,9 +6835,48 @@
                 return net;
             };
 
-            const pnl38 = calcPnL(38); // 34.5-40.5 zone
-            const pnl45 = calcPnL(45); // 40.5-48.5 zone
-            const pnl52 = calcPnL(52); // Over 48.5 zone
+            // Dynamically calculate baseline total line from active wagers
+            let baseLine = 44.5;
+            const validLines = totalsWagers.map(w => {
+                const targetStr = String(w.target || w.selection || w.description || '').toUpperCase();
+                const match = targetStr.match(/(\d+\.?\d*)/);
+                return match ? parseFloat(match[1]) : (w.line ? parseFloat(w.line) : null);
+            }).filter(n => n !== null && !isNaN(n) && n > 0);
+
+            if (validLines.length > 0) {
+                baseLine = validLines.reduce((a, b) => a + b, 0) / validLines.length;
+            }
+
+            let lowText = '', midText = '', highText = '';
+            let pnlLow = 0, pnlMid = 0, pnlHigh = 0;
+
+            if (baseLine <= 20) {
+                // Low-scoring sport totals (e.g. MLB Baseball 7.5 - 10.5, NHL Hockey)
+                const l1 = Math.max(0.5, Math.floor(baseLine - 2.5) + 0.5);
+                const l2 = Math.floor(baseLine - 0.5) + 0.5;
+                const l3 = Math.floor(baseLine + 1.5) + 0.5;
+
+                lowText = `${l1} – ${l2} LINE INTERVAL`;
+                midText = `${l2} – ${l3} LINE INTERVAL`;
+                highText = `OVER ${l3} LINE INTERVAL`;
+
+                pnlLow = calcPnL((l1 + l2) / 2);
+                pnlMid = calcPnL((l2 + l3) / 2);
+                pnlHigh = calcPnL(l3 + 2);
+            } else {
+                // High-scoring sport totals (e.g. NFL Football, NBA Basketball)
+                const l1 = Math.floor(baseLine - 6) + 0.5;
+                const l2 = Math.floor(baseLine) + 0.5;
+                const l3 = Math.floor(baseLine + 8) + 0.5;
+
+                lowText = `${l1} – ${l2} LINE INTERVAL`;
+                midText = `${l2} – ${l3} LINE INTERVAL`;
+                highText = `OVER ${l3} LINE INTERVAL`;
+
+                pnlLow = calcPnL((l1 + l2) / 2);
+                pnlMid = calcPnL((l2 + l3) / 2);
+                pnlHigh = calcPnL(l3 + 4);
+            }
 
             const formatPnl = (val) => {
                 const sign = val >= 0 ? '+' : '';
@@ -6854,27 +6893,27 @@
 
                 <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin:8px 0; text-align:center;">
                     <div style="background:rgba(16, 185, 129, 0.12); border:1px solid rgba(16, 185, 129, 0.3); padding:8px 6px; border-radius:6px;">
-                        <div style="font-size:9px; color:var(--muted); font-weight:700;">34.5 - 40.5 LINE INTERVAL</div>
-                        <div style="font-size:12px; margin-top:2px;">${formatPnl(pnl38)}</div>
-                        <div style="font-size:8px; color:#10b981; margin-top:2px;">All Bets Win</div>
+                        <div style="font-size:9px; color:var(--muted); font-weight:700;">${lowText}</div>
+                        <div style="font-size:12px; margin-top:2px;">${formatPnl(pnlLow)}</div>
+                        <div style="font-size:8px; color:#10b981; margin-top:2px;">Low Pace Zone</div>
                     </div>
 
                     <div style="background:rgba(245, 158, 11, 0.12); border:1px solid rgba(245, 158, 11, 0.3); padding:8px 6px; border-radius:6px;">
-                        <div style="font-size:9px; color:var(--muted); font-weight:700;">40.5 - 48.5 LINE INTERVAL</div>
-                        <div style="font-size:12px; margin-top:2px;">${formatPnl(pnl45)}</div>
-                        <div style="font-size:8px; color:#f59e0b; margin-top:2px;">Covered / Break-Even</div>
+                        <div style="font-size:9px; color:var(--muted); font-weight:700;">${midText}</div>
+                        <div style="font-size:12px; margin-top:2px;">${formatPnl(pnlMid)}</div>
+                        <div style="font-size:8px; color:#f59e0b; margin-top:2px;">Covered / Mid Zone</div>
                     </div>
 
                     <div style="background:rgba(239, 68, 68, 0.12); border:1px solid rgba(239, 68, 68, 0.3); padding:8px 6px; border-radius:6px;">
-                        <div style="font-size:9px; color:var(--muted); font-weight:700;">OVER 48.5 LINE INTERVAL</div>
-                        <div style="font-size:12px; margin-top:2px;">${formatPnl(pnl52)}</div>
-                        <div style="font-size:8px; color:#ef4444; margin-top:2px;">High Pace Loss</div>
+                        <div style="font-size:9px; color:var(--muted); font-weight:700;">${highText}</div>
+                        <div style="font-size:12px; margin-top:2px;">${formatPnl(pnlHigh)}</div>
+                        <div style="font-size:8px; color:#ef4444; margin-top:2px;">High Pace Zone</div>
                     </div>
                 </div>
 
                 <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06); padding:6px 10px; border-radius:4px; font-size:9px; color:var(--muted); display:flex; justify-content:space-between; align-items:center;">
-                    <span>PnL Curve (.5 Hooks):</span>
-                    <span>34.5-40.5 (${formatPnl(pnl38)}) ➔ 40.5-48.5 (${formatPnl(pnl45)}) ➔ OVER 48.5 (${formatPnl(pnl52)})</span>
+                    <span>PnL Trajectory (.5 Hooks):</span>
+                    <span>${lowText} (${formatPnl(pnlLow)}) ➔ ${midText} (${formatPnl(pnlMid)}) ➔ ${highText} (${formatPnl(pnlHigh)})</span>
                 </div>
             </div>
             `;
