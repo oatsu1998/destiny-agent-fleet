@@ -98,6 +98,22 @@ const DEFAULT_AGENTS = [
     mcp_endpoint: "mcp://agents.destiny.net/v1/ai-hedge-advisor",
     mcp_type: "REST API",
     description: "Analyzes game situation pace risk and automatically recommends optimal cashout thresholds or counter-hedge bets."
+  },
+  {
+    id: "zero_risk_bot",
+    name: "Zero-Risk Hedge & Arbitrage Bot",
+    avatar: "🤖",
+    status: "Live",
+    role: "Automated Risk Elimination Engine",
+    specialty: "Zero-Risk Arbitrage & Sizing",
+    markets_tracked: ["Zero-Risk Hedging", "Guaranteed Profit Locking", "Live Line Sizing"],
+    last_run: new Date().toISOString(),
+    records_processed: 512,
+    latency_ms: 85,
+    uptime_pct: 100.0,
+    mcp_endpoint: "mcp://agents.destiny.net/v1/zero-risk-bot",
+    mcp_type: "SSE / Automated Execution",
+    description: "Calculates exact counter-hedge sizing on live lines in real-time to bring total portfolio downside risk down to EXACTLY $0.00."
   }
 ];
 
