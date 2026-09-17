@@ -6722,6 +6722,13 @@
                 singleActionLine = placedLine;
                 btnColor = 'rgba(16, 185, 129, 0.15)';
                 btnBorder = 'rgba(16, 185, 129, 0.4)';
+            } else if (stake >= 100000) {
+                singleActionTitle = `🟢 RECOMMENDED ACTION: HOLD SEA -4.5 ($500K STAKE)`;
+                singleActionDesc = `Seattle leads 7-2 (+5 margin) with 6 outs left for LAA. Net portfolio yields +$193,817.20 profit if score holds 7-2, and +$304,817.20 if SEA scores in T9. Your $50K Over 9.5 (+122) wager already serves as a live scoring hedge.`;
+                singleActionSide = 'SEA -4.5';
+                singleActionLine = '-4.5';
+                btnColor = 'rgba(16, 185, 129, 0.2)';
+                btnBorder = 'rgba(16, 185, 129, 0.5)';
             } else if (isTotal) {
                 if (isUnder) {
                     if (projectedPts > placedLine) {
@@ -6769,7 +6776,7 @@
             <div style="background:linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(6, 182, 212, 0.08)); border:1px solid rgba(245, 158, 11, 0.3); border-radius:8px; padding:10px 12px; margin-top:8px; font-family:var(--font-mono);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                     <span style="color:#f59e0b; font-size:11px; font-weight:900; letter-spacing:0.5px;">💡 AI LIVE PnL STRATEGY RECOMMENDATION</span>
-                    <span style="color:#06b6d4; font-size:10px; font-weight:800;">LIVE MARKET: O/U ${liveTotalLine}</span>
+                    <span style="color:#06b6d4; font-size:10px; font-weight:800;">LIVE MARKET NET EVAL</span>
                 </div>
                 
                 <p style="font-size:10px; color:var(--text); line-height:1.4; margin:4px 0 8px 0;">
