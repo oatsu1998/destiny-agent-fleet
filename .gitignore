@@ -6,6 +6,6 @@ tmp/
 .DS_Store
 Thumbs.db
 .env
-
-.vercel
 .env*
+__pycache__/
+*.pyc
