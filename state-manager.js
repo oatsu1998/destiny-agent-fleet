@@ -70,12 +70,14 @@
 
         isLegacyWager: function(w) {
             if (!w) return false;
-            if (w.userCreated || w.isUserBet || (w.stake && w.stake >= 500) || (w.wager && w.wager >= 500)) return false;
             const id = String(w.id || '');
             const ticket = String(w.ticketNumber || '');
             const date = String(w.acceptedDate || '');
             const ts = String(w.timestamp || '');
             const text = (String(w.event || '') + ' ' + String(w.target || '') + ' ' + String(w.matchup || '') + ' ' + String(w.selection || '') + ' ' + String(w.description || '') + ' ' + String(w.side || '')).toUpperCase();
+
+            if (id.includes('props-fleet') || ticket.includes('998825') || text.includes('PROP LINE OVER')) return true;
+            if (w.userCreated || w.isUserBet || (w.stake && w.stake >= 500) || (w.wager && w.wager >= 500)) return false;
 
             if (id.includes('9913') || id.includes('9912') || ticket.includes('9913') || ticket.includes('9912') || id.includes('wager-seed') || id.includes('mock-okc')) return true;
             if (date.includes('8/28') || date.includes('8/29') || ts.includes('2026-08-28') || ts.includes('2026-08-29')) return true;
@@ -162,31 +164,6 @@
                         timestamp: '2026-09-16T23:28:00.000Z',
                         description: 'SEA @ LAA - LA Angels +4.5 (+194)',
                         legs: [{ matchup: 'SEA @ LAA', selection: 'LAA Angels +4.5', odds: '+194', status: 'OPEN' }]
-                    },
-                    {
-                        id: 'user-wager-props-fleet',
-                        ticketNumber: 'TKT-998825-PROP',
-                        event: 'MLB/NFL Player Props Fleet',
-                        matchup: 'PLAYER PROPS',
-                        target: 'Player Props Consensus Line',
-                        selection: 'Over Player Props Combo',
-                        type: 'Player Prop',
-                        side: 'Prop Line',
-                        sportsbook: 'Destiny Fleet Normalizer',
-                        bookmaker: 'Destiny Network',
-                        stake: 10000.00,
-                        wager: 10000.00,
-                        toWin: 18500.00,
-                        placedOdds: '+185',
-                        odds: '+185',
-                        currentOdds: '+185',
-                        status: 'OPEN',
-                        userCreated: true,
-                        isUserBet: true,
-                        acceptedDate: '09/16/26 11:15 PM GMT-5',
-                        timestamp: '2026-09-16T23:15:00.000Z',
-                        description: 'Player Props Fleet Ingestion Ticket',
-                        legs: [{ matchup: 'PLAYER PROPS', selection: 'Prop Line Over', odds: '+185', status: 'OPEN' }]
                     },
                     {
                         id: 'ticket-993182991-1',
