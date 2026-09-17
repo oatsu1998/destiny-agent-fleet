@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title">Agent Fleet Command Center | Destiny Network</title>
+    <title>Agent Fleet Command Center & Portfolio Visualizer | Destiny Network</title>
     <link rel="stylesheet" href="theme.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -102,6 +104,110 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-top: 2px;
+        }
+
+        /* Visual PnL & Risk Chart Card (100% Full Width) */
+        .pnl-chart-card {
+            background: #0d1117;
+            border: 1px solid rgba(6, 182, 212, 0.35);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+        }
+        .pnl-chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .pnl-chart-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: #06b6d4;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Toggle Pill Switch */
+        .toggle-switch-wrap {
+            display: flex;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 6px;
+            padding: 3px;
+        }
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .toggle-btn.active.unhedged {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+        }
+        .toggle-btn.active.hedged {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+            color: #6ee7b7;
+        }
+
+        /* Chart KPI Summary Bar */
+        .chart-kpi-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .chart-kpi-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            flex: 1;
+            min-width: 180px;
+        }
+        .chart-kpi-item .lbl {
+            font-size: 9px;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .chart-kpi-item .val {
+            font-size: 16px;
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        /* Profile Wager Summary Pills */
+        .wager-pills-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .wager-pill-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
         }
 
         /* Filter Controls Bar */
@@ -501,16 +607,79 @@
             </div>
             <div class="fleet-kpi-row">
                 <div class="fleet-kpi-card">
-                    <div id="kpi-total-agents" class="fleet-kpi-val">6</div>
+                    <div id="kpi-total-agents" class="fleet-kpi-val">7</div>
                     <div class="fleet-kpi-lbl">Total Fleet</div>
                 </div>
                 <div class="fleet-kpi-card">
-                    <div id="kpi-live-workers" class="fleet-kpi-val" style="color: #10b981;">3</div>
+                    <div id="kpi-live-workers" class="fleet-kpi-val" style="color: #10b981;">4</div>
                     <div class="fleet-kpi-lbl">Live Workers</div>
                 </div>
                 <div class="fleet-kpi-card">
-                    <div id="kpi-records-ingested" class="fleet-kpi-val" style="color: #f59e0b;">1,657</div>
+                    <div id="kpi-records-ingested" class="fleet-kpi-val" style="color: #f59e0b;">2,169</div>
                     <div class="fleet-kpi-lbl">Records/Loop</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multi-Wager Risk & PnL Visualizer (100% Full Width Card) -->
+        <div class="pnl-chart-card">
+            <div class="pnl-chart-header">
+                <div class="pnl-chart-title">
+                    <span>📈</span> MULTI-WAGER RISK & PnL VISUALIZER
+                </div>
+                <!-- Pill Toggle Switch -->
+                <div class="toggle-switch-wrap">
+                    <button id="toggle-unhedged" class="toggle-btn active unhedged" onclick="setChartToggle('unhedged')">
+                        [Unhedged Exposure (Before)]
+                    </button>
+                    <button id="toggle-hedged" class="toggle-btn hedged" onclick="setChartToggle('hedged')">
+                        [Zero-Risk Protected (After)]
+                    </button>
+                </div>
+            </div>
+
+            <!-- KPI Summary Badges -->
+            <div class="chart-kpi-bar">
+                <div class="chart-kpi-item">
+                    <div class="lbl">Max Upside</div>
+                    <div class="val" style="color: #10b981;">+$304,817.20</div>
+                </div>
+                <div class="chart-kpi-item">
+                    <div class="lbl">Unhedged Downside</div>
+                    <div class="val" id="kpi-downside" style="color: #ef4444;">-$390,500.00</div>
+                </div>
+                <div class="chart-kpi-item">
+                    <div class="lbl">Hedged Downside Floor</div>
+                    <div class="val" id="kpi-hedged-floor" style="color: #f59e0b;">$0.00 (Zero Risk Floor 🛡️)</div>
+                </div>
+            </div>
+
+            <!-- Chart Canvas -->
+            <div style="position: relative; width: 100%; height: 340px;">
+                <canvas id="pnlCurveChart"></canvas>
+            </div>
+
+            <!-- Wager Profile Pills Row -->
+            <div class="wager-pills-row">
+                <div class="wager-pill-card" style="border-left: 3px solid #06b6d4;">
+                    <div style="color: #06b6d4; font-weight: 800; font-size: 10px;">LEG 1: MARINERS -4.5</div>
+                    <div style="color: #fff; font-weight: 700; margin-top: 2px;">$500,000 Stake @ -186</div>
+                    <div style="color: #10b981; font-size: 10px; margin-top: 2px;">To Win: +$268,817.20</div>
+                </div>
+                <div class="wager-pill-card" style="border-left: 3px solid #f59e0b;">
+                    <div style="color: #f59e0b; font-weight: 800; font-size: 10px;">LEG 2: GAME TOTAL OVER 9.5</div>
+                    <div style="color: #fff; font-weight: 700; margin-top: 2px;">$50,000 Stake @ +105</div>
+                    <div style="color: #10b981; font-size: 10px; margin-top: 2px;">To Win: +$52,500.00</div>
+                </div>
+                <div class="wager-pill-card" style="border-left: 3px solid #a855f7;">
+                    <div style="color: #a855f7; font-weight: 800; font-size: 10px;">LEG 3: ANGELS +4.5 (INITIAL)</div>
+                    <div style="color: #fff; font-weight: 700; margin-top: 2px;">$25,000 Stake @ +180</div>
+                    <div style="color: #10b981; font-size: 10px; margin-top: 2px;">To Win: +$45,000.00</div>
+                </div>
+                <div class="wager-pill-card" style="border-left: 3px solid #10b981; background: rgba(16, 185, 129, 0.08);">
+                    <div style="color: #10b981; font-weight: 800; font-size: 10px;">COUNTER HEDGING: ANGELS +4.5</div>
+                    <div style="color: #fff; font-weight: 700; margin-top: 2px;">$257,732 Live Stake @ +194</div>
+                    <div style="color: #10b981; font-size: 10px; margin-top: 2px;">To Win: +$500,000.00</div>
                 </div>
             </div>
         </div>
@@ -588,6 +757,183 @@
     <script>
         let agentFleetData = [];
         let currentStatusFilter = 'ALL';
+
+        // Chart.js Instance & Data
+        let pnlChart = null;
+        let chartToggleMode = 'unhedged';
+
+        const marginsX = ['-3', '-2', '-1', '0', '+1', '+2', '+3', '+4', '+5', '+6', '+7', '+8'];
+
+        // Dataset Values
+        const datasetLeg1 = [-500000, -500000, -500000, -500000, -500000, -500000, -500000, -500000, 268817.2, 268817.2, 268817.2, 268817.2];
+        const datasetLeg2 = [52500, 52500, 52500, 52500, 52500, 52500, 52500, 52500, -50000, 52500, 52500, 52500];
+        
+        const datasetLeg3Unhedged = [45000, 45000, 45000, 45000, 45000, 45000, 45000, 45000, -25000, -25000, -25000, -25000];
+        const datasetLeg3Hedged   = [287268, 287268, 287268, 287268, 287268, 287268, 287268, 287268, -282732, -282732, -282732, -282732];
+
+        const datasetNetUnhedged = [-390500, -390500, -390500, -390500, -390500, -390500, -390500, -390500, 193817.2, 304817.2, 304817.2, 304817.2];
+        const datasetNetHedged   = [0, 0, 0, 0, 0, 0, 0, 0, 11085.2, 304817.2, 304817.2, 304817.2];
+
+        function initPnlChart() {
+            const ctx = document.getElementById('pnlCurveChart').getContext('2d');
+            
+            pnlChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: marginsX,
+                    datasets: [
+                        {
+                            label: 'Mariners -4.5 ($500K)',
+                            data: datasetLeg1,
+                            borderColor: '#06b6d4',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 3,
+                            pointBackgroundColor: '#06b6d4',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Over 9.5 ($50K)',
+                            data: datasetLeg2,
+                            borderColor: '#f59e0b',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 3,
+                            pointBackgroundColor: '#f59e0b',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Angels +4.5 (Initial + Hedge)',
+                            data: datasetLeg3Unhedged,
+                            borderColor: '#a855f7',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 3,
+                            pointBackgroundColor: '#a855f7',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Net Portfolio PnL',
+                            data: datasetNetUnhedged,
+                            borderColor: function(context) {
+                                const index = context.dataIndex;
+                                const value = context.dataset.data[index];
+                                return value >= 0 ? '#10b981' : '#ef4444';
+                            },
+                            borderWidth: 3.5,
+                            fill: true,
+                            backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                            pointRadius: 5,
+                            pointBackgroundColor: function(context) {
+                                const index = context.dataIndex;
+                                const value = context.dataset.data[index];
+                                return value >= 0 ? '#10b981' : '#ef4444';
+                            },
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                font: { family: 'JetBrains Mono', size: 11 }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#0f141c',
+                            borderColor: 'rgba(6, 182, 212, 0.5)',
+                            borderWidth: 1,
+                            titleFont: { family: 'Barlow Condensed', size: 14 },
+                            bodyFont: { family: 'JetBrains Mono', size: 11 },
+                            callbacks: {
+                                title: function(items) {
+                                    const m = items[0].label;
+                                    return `Seattle Victory Margin: ${m} Runs`;
+                                },
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    const val = context.parsed.y;
+                                    const sign = val >= 0 ? '+' : '';
+                                    label += sign + '$' + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 11 } },
+                            title: { display: true, text: 'Seattle Margin of Victory (Runs)', color: '#64748b', font: { family: 'JetBrains Mono', size: 10 } }
+                        },
+                        y: {
+                            grid: {
+                                color: function(context) {
+                                    if (context.tick.value === 0) return 'rgba(255, 255, 255, 0.8)'; // Highlighted $0.00 baseline
+                                    return 'rgba(255, 255, 255, 0.05)';
+                                },
+                                lineWidth: function(context) {
+                                    if (context.tick.value === 0) return 2;
+                                    return 1;
+                                }
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: { family: 'JetBrains Mono', size: 11 },
+                                callback: function(value) {
+                                    const sign = value >= 0 ? '+' : '';
+                                    return sign + '$' + (value / 1000).toFixed(0) + 'K';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function setChartToggle(mode) {
+            chartToggleMode = mode;
+            const btnUnhedged = document.getElementById('toggle-unhedged');
+            const btnHedged = document.getElementById('toggle-hedged');
+            const downsideEl = document.getElementById('kpi-downside');
+
+            if (mode === 'unhedged') {
+                btnUnhedged.className = 'toggle-btn active unhedged';
+                btnHedged.className = 'toggle-btn hedged';
+                downsideEl.innerText = '-$390,500.00';
+                downsideEl.style.color = '#ef4444';
+
+                if (pnlChart) {
+                    pnlChart.data.datasets[2].data = datasetLeg3Unhedged;
+                    pnlChart.data.datasets[3].data = datasetNetUnhedged;
+                    pnlChart.data.datasets[3].backgroundColor = 'rgba(239, 68, 68, 0.15)';
+                    pnlChart.update();
+                }
+            } else {
+                btnHedged.className = 'toggle-btn active hedged';
+                btnUnhedged.className = 'toggle-btn unhedged';
+                downsideEl.innerText = '$0.00 (Zero Risk 🛡️)';
+                downsideEl.style.color = '#10b981';
+
+                if (pnlChart) {
+                    pnlChart.data.datasets[2].data = datasetLeg3Hedged;
+                    pnlChart.data.datasets[3].data = datasetNetHedged;
+                    pnlChart.data.datasets[3].backgroundColor = 'rgba(16, 185, 129, 0.15)';
+                    pnlChart.update();
+                }
+            }
+        }
 
         async function fetchFleetTelemetry() {
             try {
@@ -791,6 +1137,7 @@
 
         // Initialize on DOM Ready
         document.addEventListener('DOMContentLoaded', () => {
+            initPnlChart();
             fetchFleetTelemetry();
             setInterval(fetchFleetTelemetry, 10000);
         });
