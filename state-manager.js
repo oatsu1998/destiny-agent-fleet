@@ -107,13 +107,13 @@
                         placedOdds: '-186',
                         odds: '-186',
                         currentOdds: '-186',
-                        status: 'OPEN',
+                        status: 'WON',
                         userCreated: true,
                         isUserBet: true,
                         acceptedDate: '09/16/26 11:30 PM GMT-5',
                         timestamp: '2026-09-16T23:30:00.000Z',
-                        description: 'SEA @ LAA - Seattle Mariners -4.5 Live Spread ($500,000.00)',
-                        legs: [{ matchup: 'SEA @ LAA', selection: 'SEA Mariners -4.5', odds: '-186', status: 'OPEN' }]
+                        description: 'SEA @ LAA - Seattle Mariners -4.5 Live Spread ($500,000.00) — FINAL: SEA 7 - LAA 2',
+                        legs: [{ matchup: 'SEA @ LAA', selection: 'SEA Mariners -4.5', odds: '-186', status: 'WON' }]
                     },
                     {
                         id: 'user-wager-over-95',
@@ -132,13 +132,13 @@
                         placedOdds: '+122',
                         odds: '+122',
                         currentOdds: '+122',
-                        status: 'OPEN',
+                        status: 'LOST',
                         userCreated: true,
                         isUserBet: true,
                         acceptedDate: '09/16/26 11:33 PM GMT-5',
                         timestamp: '2026-09-16T23:33:00.000Z',
-                        description: 'SEA @ LAA - Total Points OVER 9.5 (+122)',
-                        legs: [{ matchup: 'SEA @ LAA', selection: 'OVER 9.5', odds: '+122', status: 'OPEN' }]
+                        description: 'SEA @ LAA - Total Points OVER 9.5 (+122) — FINAL: 9 Total Runs (SEA 7 - LAA 2)',
+                        legs: [{ matchup: 'SEA @ LAA', selection: 'OVER 9.5', odds: '+122', status: 'LOST' }]
                     },
                     {
                         id: 'user-wager-laa-spread',
@@ -157,13 +157,13 @@
                         placedOdds: '+194',
                         odds: '+194',
                         currentOdds: '+194',
-                        status: 'OPEN',
+                        status: 'LOST',
                         userCreated: true,
                         isUserBet: true,
                         acceptedDate: '09/16/26 11:28 PM GMT-5',
                         timestamp: '2026-09-16T23:28:00.000Z',
-                        description: 'SEA @ LAA - LA Angels +4.5 (+194)',
-                        legs: [{ matchup: 'SEA @ LAA', selection: 'LAA Angels +4.5', odds: '+194', status: 'OPEN' }]
+                        description: 'SEA @ LAA - LA Angels +4.5 (+194) — FINAL: LAA Lost by 5 Runs',
+                        legs: [{ matchup: 'SEA @ LAA', selection: 'LAA Angels +4.5', odds: '+194', status: 'LOST' }]
                     },
                     {
                         id: 'ticket-993182991-1',
