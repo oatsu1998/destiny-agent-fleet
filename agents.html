@@ -210,6 +210,85 @@
             font-size: 11px;
         }
 
+        /* Summary PnL Table */
+        .summary-pnl-table-wrap {
+            margin-top: 24px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 8px;
+            padding: 16px 20px;
+            overflow-x: auto;
+        }
+        .summary-pnl-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: #06b6d4;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .summary-pnl-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            text-align: left;
+        }
+        .summary-pnl-table th {
+            background: rgba(255, 255, 255, 0.03);
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .summary-pnl-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: #cbd5e1;
+        }
+        .summary-pnl-table tr:last-child td {
+            border-bottom: none;
+        }
+        .summary-pnl-table tr.highlight-row {
+            background: rgba(16, 185, 129, 0.04);
+        }
+        .score-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 800;
+            font-size: 10px;
+        }
+        .score-badge.under {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #f59e0b;
+        }
+        .score-badge.over {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #10b981;
+        }
+        .leg-status {
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .leg-status.win { color: #10b981; }
+        .leg-status.loss { color: #ef4444; }
+        .pnl-val {
+            font-weight: 700;
+        }
+        .pnl-val.win { color: #10b981; }
+        .pnl-val.loss { color: #ef4444; }
+        .pnl-val.zero-risk { color: #f59e0b; font-weight: 800; }
+        .pnl-val.max-win { color: #06b6d4; font-weight: 800; }
+
         /* Filter Controls Bar */
         .fleet-controls {
             display: flex;
@@ -625,7 +704,7 @@
         <div class="pnl-chart-card">
             <div class="pnl-chart-header">
                 <div class="pnl-chart-title">
-                    <span>📈</span> MULTI-WAGER RISK & PnL VISUALIZER
+                    <span>📈</span> TOTAL GAME SCORE PnL & ZERO-RISK SUMMARY MATRIX
                 </div>
                 <!-- Pill Toggle Switch -->
                 <div class="toggle-switch-wrap">
@@ -655,7 +734,7 @@
             </div>
 
             <!-- Chart Canvas -->
-            <div style="position: relative; width: 100%; height: 340px;">
+            <div style="position: relative; width: 100%; height: 320px;">
                 <canvas id="pnlCurveChart"></canvas>
             </div>
 
@@ -681,6 +760,54 @@
                     <div style="color: #fff; font-weight: 700; margin-top: 2px;">$257,732 Live Stake @ +194</div>
                     <div style="color: #10b981; font-size: 10px; margin-top: 2px;">To Win: +$500,000.00</div>
                 </div>
+            </div>
+
+            <!-- Summary PnL Matrix Table -->
+            <div class="summary-pnl-table-wrap">
+                <div class="summary-pnl-title">
+                    <span>📊</span> SUMMARY PnL MATRIX BY TOTAL GAME SCORE
+                </div>
+                <table class="summary-pnl-table">
+                    <thead>
+                        <tr>
+                            <th>Total Game Score</th>
+                            <th>Leg 2 (Over 9.5) Status</th>
+                            <th>Run Spread Outcome</th>
+                            <th>Unhedged Net PnL</th>
+                            <th>Hedged Net PnL (Zero Risk Floor 🛡️)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="score-badge under">0 – 9 RUNS</span></td>
+                            <td><span class="leg-status loss">❌ Loss (-$50,000.00)</span></td>
+                            <td>Angels +4.5 Covers</td>
+                            <td class="pnl-val loss">-$505,000.00</td>
+                            <td class="pnl-val zero-risk">-$5,000.00 (Risk Floor)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="score-badge under">0 – 9 RUNS</span></td>
+                            <td><span class="leg-status loss">❌ Loss (-$50,000.00)</span></td>
+                            <td>Mariners -4.5 Covers</td>
+                            <td class="pnl-val win">+$193,817.20</td>
+                            <td class="pnl-val loss">-$63,914.80</td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td><span class="score-badge over">10+ RUNS</span></td>
+                            <td><span class="leg-status win">✅ WIN (+$52,500.00)</span></td>
+                            <td>Angels +4.5 Covers</td>
+                            <td class="pnl-val loss">-$402,500.00</td>
+                            <td class="pnl-val max-win">+$97,500.00 🚀</td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td><span class="score-badge over">10+ RUNS</span></td>
+                            <td><span class="leg-status win">✅ WIN (+$52,500.00)</span></td>
+                            <td>Mariners -4.5 Covers</td>
+                            <td class="pnl-val max-win">+$296,317.20 🚀</td>
+                            <td class="pnl-val win">+$38,585.20</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -758,21 +885,23 @@
         let agentFleetData = [];
         let currentStatusFilter = 'ALL';
 
-        // Chart.js Instance & Data
+        // Chart.js Instance & Data (Total Game Score Axis)
         let pnlChart = null;
         let chartToggleMode = 'unhedged';
 
-        const marginsX = ['-3', '-2', '-1', '0', '+1', '+2', '+3', '+4', '+5', '+6', '+7', '+8'];
+        const totalScoresX = ['4 Runs', '5 Runs', '6 Runs', '7 Runs', '8 Runs', '9 Runs (UNDER)', '10 Runs (OVER)', '11 Runs', '12 Runs', '13 Runs', '14 Runs', '15+ Runs'];
 
-        // Dataset Values
-        const datasetLeg1 = [-500000, -500000, -500000, -500000, -500000, -500000, -500000, -500000, 268817.2, 268817.2, 268817.2, 268817.2];
-        const datasetLeg2 = [52500, 52500, 52500, 52500, 52500, 52500, 52500, 52500, -50000, 52500, 52500, 52500];
+        // Dataset Values by Total Game Score
+        // Leg 2: Over 9.5 ($50K) -> -$50,000 when Total <= 9, +$52,500 when Total >= 10
+        const datasetLeg2 = [-50000, -50000, -50000, -50000, -50000, -50000, 52500, 52500, 52500, 52500, 52500, 52500];
         
-        const datasetLeg3Unhedged = [45000, 45000, 45000, 45000, 45000, 45000, 45000, 45000, -25000, -25000, -25000, -25000];
-        const datasetLeg3Hedged   = [287268, 287268, 287268, 287268, 287268, 287268, 287268, 287268, -282732, -282732, -282732, -282732];
+        // Spread Net PnL (Angels +4.5 cover default scenario)
+        const datasetSpreadUnhedged = [-455000, -455000, -455000, -455000, -455000, -455000, -455000, -455000, -455000, 243817.2, 243817.2, 243817.2];
+        const datasetSpreadHedged   = [45000, 45000, 45000, 45000, 45000, 45000, 45000, 45000, 45000, 252317.2, 252317.2, 252317.2];
 
-        const datasetNetUnhedged = [-390500, -390500, -390500, -390500, -390500, -390500, -390500, -390500, 193817.2, 304817.2, 304817.2, 304817.2];
-        const datasetNetHedged   = [0, 0, 0, 0, 0, 0, 0, 0, 11085.2, 304817.2, 304817.2, 304817.2];
+        // Total Portfolio Net PnL Curve
+        const datasetNetUnhedged = [-505000, -505000, -505000, -505000, -505000, -505000, -402500, -402500, -402500, 296317.2, 296317.2, 296317.2];
+        const datasetNetHedged   = [-5000, -5000, -5000, -5000, -5000, -5000, 97500, 97500, 97500, 304817.2, 304817.2, 304817.2];
 
         function initPnlChart() {
             const ctx = document.getElementById('pnlCurveChart').getContext('2d');
@@ -780,31 +909,21 @@
             pnlChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: marginsX,
+                    labels: totalScoresX,
                     datasets: [
                         {
-                            label: 'Mariners -4.5 ($500K)',
-                            data: datasetLeg1,
-                            borderColor: '#06b6d4',
-                            borderWidth: 2,
-                            borderDash: [5, 5],
-                            pointRadius: 3,
-                            pointBackgroundColor: '#06b6d4',
-                            tension: 0.1
-                        },
-                        {
-                            label: 'Over 9.5 ($50K)',
+                            label: 'Over 9.5 Leg PnL ($50K)',
                             data: datasetLeg2,
                             borderColor: '#f59e0b',
                             borderWidth: 2,
                             borderDash: [5, 5],
-                            pointRadius: 3,
+                            pointRadius: 4,
                             pointBackgroundColor: '#f59e0b',
-                            tension: 0.1
+                            stepped: true
                         },
                         {
-                            label: 'Angels +4.5 (Initial + Hedge)',
-                            data: datasetLeg3Unhedged,
+                            label: 'Run Spread Net PnL',
+                            data: datasetSpreadUnhedged,
                             borderColor: '#a855f7',
                             borderWidth: 2,
                             borderDash: [5, 5],
@@ -813,7 +932,7 @@
                             tension: 0.1
                         },
                         {
-                            label: 'Net Portfolio PnL',
+                            label: 'Net Portfolio PnL Summary',
                             data: datasetNetUnhedged,
                             borderColor: function(context) {
                                 const index = context.dataIndex;
@@ -857,8 +976,8 @@
                             bodyFont: { family: 'JetBrains Mono', size: 11 },
                             callbacks: {
                                 title: function(items) {
-                                    const m = items[0].label;
-                                    return `Seattle Victory Margin: ${m} Runs`;
+                                    const score = items[0].label;
+                                    return `Total Combined Game Score: ${score}`;
                                 },
                                 label: function(context) {
                                     let label = context.dataset.label || '';
@@ -875,12 +994,12 @@
                         x: {
                             grid: { color: 'rgba(255, 255, 255, 0.05)' },
                             ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 11 } },
-                            title: { display: true, text: 'Seattle Margin of Victory (Runs)', color: '#64748b', font: { family: 'JetBrains Mono', size: 10 } }
+                            title: { display: true, text: 'Total Combined Game Score (Runs)', color: '#64748b', font: { family: 'JetBrains Mono', size: 10 } }
                         },
                         y: {
                             grid: {
                                 color: function(context) {
-                                    if (context.tick.value === 0) return 'rgba(255, 255, 255, 0.8)'; // Highlighted $0.00 baseline
+                                    if (context.tick.value === 0) return 'rgba(255, 255, 255, 0.8)';
                                     return 'rgba(255, 255, 255, 0.05)';
                                 },
                                 lineWidth: function(context) {
@@ -915,9 +1034,9 @@
                 downsideEl.style.color = '#ef4444';
 
                 if (pnlChart) {
-                    pnlChart.data.datasets[2].data = datasetLeg3Unhedged;
-                    pnlChart.data.datasets[3].data = datasetNetUnhedged;
-                    pnlChart.data.datasets[3].backgroundColor = 'rgba(239, 68, 68, 0.15)';
+                    pnlChart.data.datasets[1].data = datasetSpreadUnhedged;
+                    pnlChart.data.datasets[2].data = datasetNetUnhedged;
+                    pnlChart.data.datasets[2].backgroundColor = 'rgba(239, 68, 68, 0.15)';
                     pnlChart.update();
                 }
             } else {
@@ -927,9 +1046,9 @@
                 downsideEl.style.color = '#10b981';
 
                 if (pnlChart) {
-                    pnlChart.data.datasets[2].data = datasetLeg3Hedged;
-                    pnlChart.data.datasets[3].data = datasetNetHedged;
-                    pnlChart.data.datasets[3].backgroundColor = 'rgba(16, 185, 129, 0.15)';
+                    pnlChart.data.datasets[1].data = datasetSpreadHedged;
+                    pnlChart.data.datasets[2].data = datasetNetHedged;
+                    pnlChart.data.datasets[2].backgroundColor = 'rgba(16, 185, 129, 0.15)';
                     pnlChart.update();
                 }
             }
