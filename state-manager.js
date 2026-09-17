@@ -23,6 +23,7 @@
                     return w;
                 }).filter(w => {
                     if (!w) return false;
+                    if (w.userCreated || w.isUserBet || (w.stake && w.stake >= 500) || (w.wager && w.wager >= 500)) return true;
                     const id = String(w.id || '');
                     const ticket = String(w.ticketNumber || '');
                     const date = String(w.acceptedDate || '');
@@ -31,7 +32,7 @@
 
                     if (id.includes('wager-seed') || id.includes('mock-okc') || id.includes('9913') || id.includes('9912')) return false;
                     if (date.includes('8/28') || date.includes('8/29') || ts.includes('2026-08-28') || ts.includes('2026-08-29')) return false;
-                    if (text.includes('VIKINGS') || text.includes('BRONCOS') || text.includes('SAN JOSE') || text.includes('SJSU') || text.includes('NC STATE') || text.includes('NCST') || text.includes('MEMPHIS') || text.includes('GB @ DEN') || text.includes('PACKERS') || text.includes('GREEN BAY') || text.includes('THUNDER') || text.includes('SPURS') || text.includes('OKLAHOMA') || text.includes('OKC @ SAS') || text.includes('DENVER') || text.includes('GB')) return false;
+                    if (text.includes('VIKINGS') || text.includes('BRONCOS') || text.includes('SAN JOSE') || text.includes('SJSU') || text.includes('NC STATE') || text.includes('NCST') || text.includes('MEMPHIS') || text.includes('GB @ DEN') || text.includes('PACKERS') || text.includes('GREEN BAY') || text.includes('THUNDER') || text.includes('SPURS') || text.includes('OKLAHOMA') || text.includes('OKC @ SAS') || text.includes('DENVER')) return false;
                     return true;
                 });
                 localStorage.setItem('destiny_game_wagers', JSON.stringify(cleaned));
@@ -56,12 +57,12 @@
         getBankroll: function() {
             const saved = localStorage.getItem(KEYS.BANKROLL);
             const val = parseFloat(saved);
-            return isNaN(val) ? 10000.00 : val;
+            return isNaN(val) ? 1000000.00 : val;
         },
 
         setBankroll: function(amount, notify = true) {
             const val = parseFloat(amount);
-            const sanitized = isNaN(val) ? 10000.00 : val;
+            const sanitized = isNaN(val) ? 1000000.00 : val;
             localStorage.setItem(KEYS.BANKROLL, sanitized.toFixed(2));
             if (notify) this._notify(KEYS.BANKROLL, sanitized);
             return sanitized;
@@ -69,6 +70,7 @@
 
         isLegacyWager: function(w) {
             if (!w) return false;
+            if (w.userCreated || w.isUserBet || (w.stake && w.stake >= 500) || (w.wager && w.wager >= 500)) return false;
             const id = String(w.id || '');
             const ticket = String(w.ticketNumber || '');
             const date = String(w.acceptedDate || '');
@@ -77,7 +79,7 @@
 
             if (id.includes('9913') || id.includes('9912') || ticket.includes('9913') || ticket.includes('9912') || id.includes('wager-seed') || id.includes('mock-okc')) return true;
             if (date.includes('8/28') || date.includes('8/29') || ts.includes('2026-08-28') || ts.includes('2026-08-29')) return true;
-            if (text.includes('VIKINGS') || text.includes('BRONCOS') || text.includes('SAN JOSE') || text.includes('SJSU') || text.includes('NC STATE') || text.includes('NCST') || text.includes('MEMPHIS') || text.includes('GB @ DEN') || text.includes('PACKERS') || text.includes('GREEN BAY') || text.includes('THUNDER') || text.includes('SPURS') || text.includes('OKLAHOMA') || text.includes('OKC @ SAS') || text.includes('DENVER') || text.includes('GB')) return true;
+            if (text.includes('VIKINGS') || text.includes('BRONCOS') || text.includes('SAN JOSE') || text.includes('SJSU') || text.includes('NC STATE') || text.includes('NCST') || text.includes('MEMPHIS') || text.includes('GB @ DEN') || text.includes('PACKERS') || text.includes('GREEN BAY') || text.includes('THUNDER') || text.includes('SPURS') || text.includes('OKLAHOMA') || text.includes('OKC @ SAS') || text.includes('DENVER')) return true;
 
             return false;
         },
