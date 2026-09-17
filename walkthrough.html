@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny — Walkthrough & Feature Release Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        :root {
+            --bg: #0a0c0f;
+            --surface: #111418;
+            --surface2: #181c22;
+            --border: rgba(255, 255, 255, 0.07);
+            --border2: rgba(255, 255, 255, 0.13);
+            --text: #e8eaed;
+            --muted: #6b7280;
+            --accent: #f59e0b;
+            --accent2: #3b82f6;
+            --cyan: #06b6d4;
+            --win: #10b981;
+            --font-head: 'Barlow Condensed', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 32px 28px;
+        }
+
+        .page-title {
+            font-family: var(--font-head);
+            font-size: 36px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .page-sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 28px;
+            border-bottom: 1px solid var(--border2);
+            padding-bottom: 16px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card-title {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .feature-item {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            border-radius: 6px;
+            padding: 14px 18px;
+        }
+
+        .feature-item h3 {
+            font-size: 14px;
+            color: #fff;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .feature-item p {
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .badge-new {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--win);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .btn-launch {
+            display: inline-block;
+            background: var(--accent);
+            color: #000;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-launch:hover {
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Global Header injected by nav.js -->
+    <script src="nav.js?v=2"></script>
+
+    <div class="container">
+        <h1 class="page-title">📋 WALKTHROUGH</h1>
+        <p class="page-sub">Live documentation of recently implemented features, header additions, and application architecture.</p>
+
+        <!-- LATEST RELEASE: KALSHI FAST FEED -->
+        <div class="card" style="border-color: rgba(6, 182, 212, 0.4);">
+            <div class="card-title" style="color: #06b6d4;">⚡ LATEST RELEASE: KALSHI REAL-TIME FEED & DATA FIXES</div>
+            <ul class="feature-list">
+                <li class="feature-item" style="border-left-color: #06b6d4;">
+                    <h3>
+                        <span>⚡ Sub-Second Live Data Streaming (`live-feed.js`)</span>
+                        <span class="badge-new" style="background: rgba(6, 182, 212, 0.15); color: #06b6d4; border-color: rgba(6, 182, 212, 0.3);">1.5s FAST STREAM</span>
+                    </h3>
+                    <p>Accelerated polling frequency to 1.5 seconds and enabled concurrent streaming of game markets (/api/kalshi) and player props (/api/kalshi-props). Integrated live badges displaying <code>⚡ KALSHI REAL-TIME FEED ACTIVE</code>.</p>
+                </li>
+                <li class="feature-item" style="border-left-color: #06b6d4;">
+                    <h3>
+                        <span>🌐 Serverless Proxy Edge Cache Bypass (`/api/kalshi.js` & `/api/kalshi-props.js`)</span>
+                        <span class="badge-new" style="background: rgba(6, 182, 212, 0.15); color: #06b6d4; border-color: rgba(6, 182, 212, 0.3);">CACHE BYPASS</span>
+                    </h3>
+                    <p>Replaced Vercel edge caching with <code>Cache-Control: no-store, no-cache, must-revalidate</code> to deliver instant price updates directly from Kalshi on every tick.</p>
+                </li>
+                <li class="feature-item" style="border-left-color: #06b6d4;">
+                    <h3>
+                        <span>🎯 Advanced Team Matching & Price Extraction (`_findGameKey` & `teamMatches`)</span>
+                        <span class="badge-new" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.3);">100% MATCHING</span>
+                    </h3>
+                    <p>Extracted team codes directly from market tickers (-NYG, -LAR, -CWS, -NYY) and added normalization maps for truncated titles (e.g., "New York G", "Chicago WS"). Implemented fair mid-price algorithms eliminating fake 1-cent bid odds.</p>
+                    <a href="kalshi.html" class="btn-launch" style="background: #06b6d4; color: #000;">OPEN KALSHI TERMINAL →</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- RECENT RELEASES -->
+        <div class="card">
+            <div class="card-title">🚀 RECENT RELEASE: BET SLIP & BET HISTORY HEADERS</div>
+            <ul class="feature-list">
+                <li class="feature-item">
+                    <h3>
+                        <span>🎟️ Bet Slip & Parlay Builder (`bet-slip.html`)</span>
+                        <span class="badge-new">NEW PAGE</span>
+                    </h3>
+                    <p>Interactive wager construction interface supporting Straight, Parlay, and Teaser (+6) bets. Features real-time odds calculation (American & Decimal), EV estimations, quick preset pick loaders, and direct bankroll synchronization.</p>
+                    <a href="bet-slip.html" class="btn-launch">OPEN BET SLIP →</a>
+                </li>
+                <li class="feature-item">
+                    <h3>
+                        <span>📜 Settled Bet History Ledger (`bet-history.html`)</span>
+                        <span class="badge-new">NEW PAGE</span>
+                    </h3>
+                    <p>Settled wager audit log and performance analytics dashboard. Tracks Win Rate %, Net Profit ($), ROI %, Total Wager Volume, and CLV Beat Rate. Includes interactive Chart.js net profit curve, search/filter controls, and CSV export.</p>
+                    <a href="bet-history.html" class="btn-launch">OPEN BET HISTORY →</a>
+                </li>
+                <li class="feature-item">
+                    <h3>
+                        <span>🌐 Global Header Navigation Integration (`nav.js`)</span>
+                        <span class="badge-new">UPDATED</span>
+                    </h3>
+                    <p>Integrated links for both `Bet Slip` and `Bet History` directly into the horizontal navigation header bar and Universal Menu dropdown drawer across all application pages.</p>
+                </li>
+            </ul>
+        </div>
+
+        <!-- CORE ARCHITECTURE -->
+        <div class="card">
+            <div class="card-title">🛠️ CORE SYSTEM ARCHITECTURE</div>
+            <ul class="feature-list">
+                <li class="feature-item">
+                    <h3><span>⚡ Central State Synchronization (`state-manager.js`)</span></h3>
+                    <p>Manages multi-tab state syncing, bankroll calculations, wager storage, and toast notifications across all pages.</p>
+                </li>
+                <li class="feature-item">
+                    <h3><span>📈 Line Tracker & Player Props (`line-tracker.html` & `props.html`)</span></h3>
+                    <p>Monitors line movement history and live Kalshi player prop markets across major sportsbooks.</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script src="nav.js?v=2"></script>
+</body>
+
+</html>

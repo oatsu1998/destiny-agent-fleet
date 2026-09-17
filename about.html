@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny — About</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0c0f;
+            --surface: #111418;
+            --surface2: #181c22;
+            --border: rgba(255, 255, 255, 0.07);
+            --border2: rgba(255, 255, 255, 0.13);
+            --text: #e8eaed;
+            --muted: #6b7280;
+            --accent: #f59e0b;
+            --accent2: #3b82f6;
+            --cyan: #06B6D4;
+            --win: #10b981;
+            --font-head: 'Barlow Condensed', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            min-height: 100vh;
+        }
+
+        .nav-spacer {
+            height: 48px;
+        }
+
+        .main {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 32px 28px 80px;
+        }
+
+        .hero {
+            margin-bottom: 32px;
+        }
+
+        .hero-tag {
+            font-size: 11px;
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .hero-title {
+            font-family: var(--font-head);
+            font-size: 44px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text);
+            margin-top: 6px;
+        }
+
+        .hero-sub {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-top: 12px;
+            max-width: 560px;
+        }
+
+        .section {
+            margin-top: 36px;
+        }
+
+        .section-title {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border2);
+        }
+
+        .policy-box {
+            background: rgba(16, 185, 129, 0.06);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 8px;
+            padding: 16px 18px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        .policy-box b {
+            color: var(--win);
+        }
+
+        .page-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 10px;
+        }
+
+        .page-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 16px;
+            text-decoration: none;
+            display: block;
+            transition: border-color 0.2s;
+        }
+
+        .page-card:hover {
+            border-color: var(--border2);
+        }
+
+        .page-card-title {
+            font-family: var(--font-head);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 0.5px;
+        }
+
+        .page-card-desc {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .data-source-row {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .data-source-row:last-child {
+            border-bottom: none;
+        }
+
+        .data-source-name {
+            color: var(--cyan);
+            font-weight: 700;
+            min-width: 90px;
+        }
+
+        .data-source-desc {
+            color: var(--muted);
+            flex: 1;
+        }
+
+        .footer-note {
+            margin-top: 48px;
+            font-size: 11px;
+            color: var(--muted);
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav-spacer"></div>
+
+    <main class="main">
+        <div class="hero">
+            <div class="hero-tag">Destiny Network</div>
+            <div class="hero-title">About This Site</div>
+            <p class="hero-sub">
+                A live sports command center — real odds, real line movement, real player props, all in one place.
+                Built for tracking games and prices across every major league without switching between a dozen
+                different apps.
+            </p>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Our data policy</div>
+            <div class="policy-box">
+                Every number on this site is either pulled live from a real public data source, or calculated
+                directly from that real data. <b>Nothing here is simulated, estimated, or made up.</b> If a real
+                price or stat isn't available yet for something, the site says so plainly instead of guessing or
+                showing a placeholder.
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Where the data comes from</div>
+            <div class="data-source-row">
+                <span class="data-source-name">Kalshi</span>
+                <span class="data-source-desc">Real moneylines, spreads, totals, player props, and price history for MLB, NFL, NBA, NHL, NCAAF, and WNBA.</span>
+            </div>
+            <div class="data-source-row">
+                <span class="data-source-name">ESPN</span>
+                <span class="data-source-desc">Live scores, schedules, team records, and in-game stats.</span>
+            </div>
+            <div class="data-source-row">
+                <span class="data-source-name">Open-Meteo</span>
+                <span class="data-source-desc">Real current weather and wind conditions for outdoor games.</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Around the site</div>
+            <div class="page-grid">
+                <a href="index.html" class="page-card">
+                    <div class="page-card-title">Command Center</div>
+                    <div class="page-card-desc">Today's games across every league, live odds, and live in-game situation graphics.</div>
+                </a>
+                <a href="line-tracker.html" class="page-card">
+                    <div class="page-card-title">Line Tracker</div>
+                    <div class="page-card-desc">Real price history charts for any game or market.</div>
+                </a>
+                <a href="props.html" class="page-card">
+                    <div class="page-card-title">Player Props</div>
+                    <div class="page-card-desc">Real player prop pricing, browsable by league.</div>
+                </a>
+                <a href="my-bets.html" class="page-card">
+                    <div class="page-card-title">My Bets</div>
+                    <div class="page-card-desc">Track your own wagers with live closing-line value.</div>
+                </a>
+                <a href="kalshi.html" class="page-card">
+                    <div class="page-card-title">Kalshi Markets</div>
+                    <div class="page-card-desc">Browse live prediction markets directly.</div>
+                </a>
+                <a href="history.html" class="page-card">
+                    <div class="page-card-title">History</div>
+                    <div class="page-card-desc">Past line movement and results.</div>
+                </a>
+                <a href="portfolio.html" class="page-card">
+                    <div class="page-card-title">Portfolio</div>
+                    <div class="page-card-desc">Bankroll and position overview.</div>
+                </a>
+                <a href="layout.html" class="page-card">
+                    <div class="page-card-title">Layout</div>
+                    <div class="page-card-desc">Customize how the game card looks.</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer-note">Destiny Network — built for people who want the real numbers, fast.</div>
+    </main>
+
+    <script src="nav.js?v=2"></script>
+</body>
+
+</html>

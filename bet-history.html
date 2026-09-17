@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny — Settled Bet History & Performance Ledger</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        :root {
+            --bg: #0a0c0f;
+            --surface: #111418;
+            --surface2: #181c22;
+            --surface3: #222933;
+            --border: rgba(255, 255, 255, 0.07);
+            --border2: rgba(255, 255, 255, 0.13);
+            --text: #e8eaed;
+            --muted: #6b7280;
+            --accent: #f59e0b;
+            --accent2: #3b82f6;
+            --cyan: #06b6d4;
+            --win: #10b981;
+            --lost: #ef4444;
+            --pending: #eab308;
+            --font-head: 'Barlow Condensed', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        .page-container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 24px 28px;
+        }
+
+        /* HEADER */
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border2);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .history-title-area h1 {
+            font-family: var(--font-head);
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .history-title-area p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: bold;
+            padding: 8px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-action:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-action.primary {
+            background: var(--accent);
+            color: #000;
+            border: none;
+        }
+
+        .btn-action.primary:hover {
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+        }
+
+        /* METRICS SUMMARY GRID */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .metric-label {
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .metric-value {
+            font-family: var(--font-head);
+            font-size: 28px;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .metric-value.win { color: var(--win); }
+        .metric-value.lost { color: var(--lost); }
+        .metric-value.accent { color: var(--accent); }
+        .metric-value.cyan { color: var(--cyan); }
+
+        .metric-sub {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        /* CHART & CONTROLS SECTION */
+        .chart-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .chart-title {
+            font-family: var(--font-head);
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 240px;
+            width: 100%;
+        }
+
+        /* FILTER BAR */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 6px;
+        }
+
+        .filter-tab-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tab-btn:hover {
+            color: #fff;
+            border-color: var(--border2);
+        }
+
+        .filter-tab-btn.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 6px;
+            padding: 6px 12px;
+            width: 280px;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            outline: none;
+            width: 100%;
+        }
+
+        /* TABLE CARD */
+        .table-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        .history-table th {
+            background: var(--surface2);
+            color: var(--muted);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border2);
+            font-weight: 700;
+        }
+
+        .history-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            vertical-align: middle;
+        }
+
+        .history-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .badge-status {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+
+        .badge-status.won {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--win);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-status.lost {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--lost);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .badge-status.pending {
+            background: rgba(234, 179, 8, 0.15);
+            color: var(--pending);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        .odds-pill {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--accent);
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+        }
+
+        .btn-delete-row {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 12px;
+            transition: color 0.2s;
+        }
+
+        .btn-delete-row:hover {
+            color: var(--lost);
+        }
+
+        .empty-history {
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .empty-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        /* INDIVIDUAL WAGER CARDS GRID & TEAM LOGOS */
+        .wager-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .history-wager-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            transition: all 0.2s ease;
+        }
+
+        .history-wager-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .team-logo-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .team-logo-badge:hover {
+            transform: scale(1.1);
+        }
+
+        .view-btn.active {
+            background: var(--surface2) !important;
+            color: var(--accent) !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Global Header injected by nav.js -->
+    <script src="nav.js?v=2"></script>
+
+    <div class="page-container">
+        <!-- HEADER -->
+        <div class="history-header">
+            <div class="history-title-area">
+                <h1>📜 SETTLED BET HISTORY & PERFORMANCE LEDGER</h1>
+                <p>Comprehensive audit log of placed wagers, settled profits, ROI analysis, and bankroll trajectory</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-action" onclick="seedSampleData()">➕ Seed Demo Bets</button>
+                <button class="btn-action primary" onclick="exportCSV()">📥 Export CSV</button>
+            </div>
+        </div>
+
+        <!-- KPI METRICS -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <span class="metric-label">Settled Bets</span>
+                <span class="metric-value accent" id="kpi-total-bets">0</span>
+                <span class="metric-sub" id="kpi-pending-count">0 Pending Wagers</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">Win Rate</span>
+                <span class="metric-value win" id="kpi-win-rate">0.0%</span>
+                <span class="metric-sub" id="kpi-record">0W - 0L</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">Net Profit / Loss</span>
+                <span class="metric-value win" id="kpi-net-profit">$0.00</span>
+                <span class="metric-sub" id="kpi-roi">ROI: +0.0%</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">Total Volume Wagered</span>
+                <span class="metric-value" id="kpi-volume">$0.00</span>
+                <span class="metric-sub">Across all bookmakers</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">CLV Beat Rate</span>
+                <span class="metric-value cyan" id="kpi-clv">+4.8%</span>
+                <span class="metric-sub">Vs Closing Line Odds</span>
+            </div>
+        </div>
+
+        <!-- CUMULATIVE PROFIT CHART -->
+        <div class="card chart-card">
+            <div class="chart-header">
+                <div class="chart-title">📈 CUMULATIVE NET PROFIT TRAJECTORY ($)</div>
+                <span style="font-size: 10px; color: var(--muted);">Real-time performance graph</span>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="profitChart"></canvas>
+            </div>
+        </div>
+
+        <!-- FILTER & VIEW TOGGLE BAR -->
+        <div class="filter-bar">
+            <div class="filter-tabs">
+                <button class="filter-tab-btn active" onclick="setFilter('ALL')">ALL</button>
+                <button class="filter-tab-btn" onclick="setFilter('WON')">WON</button>
+                <button class="filter-tab-btn" onclick="setFilter('LOST')">LOST</button>
+                <button class="filter-tab-btn" onclick="setFilter('PENDING')">PENDING</button>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div class="view-toggle-wrap" style="display:flex; background:rgba(0,0,0,0.4); border:1px solid var(--border); border-radius:6px; padding:2px;">
+                    <button class="view-btn active" id="view-cards-btn" onclick="switchViewMode('CARDS')" style="background:var(--surface2); color:var(--accent); border:none; padding:5px 12px; border-radius:4px; font-family:var(--font-mono); font-size:10px; font-weight:700; cursor:pointer;">🎴 CARDS & GRAPHS</button>
+                    <button class="view-btn" id="view-table-btn" onclick="switchViewMode('TABLE')" style="background:transparent; color:var(--muted); border:none; padding:5px 12px; border-radius:4px; font-family:var(--font-mono); font-size:10px; font-weight:700; cursor:pointer;">📊 TABLE VIEW</button>
+                </div>
+                <div class="search-box">
+                    <span style="color: var(--muted);">🔍</span>
+                    <input type="text" id="search-input" placeholder="Search event, selection, or book..." oninput="renderTable()">
+                </div>
+            </div>
+        </div>
+
+        <!-- INDIVIDUAL WAGER CARDS GRID (DEFAULT) -->
+        <div id="history-cards-container" class="wager-cards-grid"></div>
+
+        <!-- BET HISTORY TABLE (OPTIONAL TABLE VIEW) -->
+        <div class="table-card" id="history-table-card" style="display:none; margin-top:20px;">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Date / Time</th>
+                        <th>Event & Selection</th>
+                        <th>Type</th>
+                        <th>Bookmaker</th>
+                        <th>Odds</th>
+                        <th>Stake</th>
+                        <th>Payout</th>
+                        <th>Net Profit</th>
+                        <th>Status</th>
+                        <th style="width: 40px;"></th>
+                    </tr>
+                </thead>
+                <tbody id="history-tbody">
+                    <!-- Dynamic Rows -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let allWagers = [];
+        let activeFilter = 'ALL';
+        let activeViewMode = 'CARDS';
+        let chartInstance = null;
+        let cardChartInstances = {};
+
+        function loadWagers() {
+            if (window.DestinyState) {
+                allWagers = DestinyState.getWagers();
+            } else {
+                try {
+                    allWagers = JSON.parse(localStorage.getItem('destiny_game_wagers') || '[]');
+                } catch (e) {
+                    allWagers = [];
+                }
+            }
+
+            if (!allWagers || allWagers.length === 0) {
+                seedSampleData(false);
+                return;
+            }
+
+            calculateKPIs();
+            renderChart();
+            renderTable();
+        }
+
+        function seedSampleData(notify = true) {
+            allWagers = [];
+            if (window.DestinyState) {
+                DestinyState.saveWagers(allWagers);
+            } else {
+                localStorage.setItem('destiny_game_wagers', JSON.stringify(allWagers));
+            }
+            calculateKPIs();
+            renderChart();
+            renderTable();
+        }
+
+        function setFilter(filter) {
+            activeFilter = filter;
+            document.querySelectorAll('.filter-tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderTable();
+        }
+
+        function switchViewMode(mode) {
+            activeViewMode = mode;
+            const cardsContainer = document.getElementById('history-cards-container');
+            const tableCard = document.getElementById('history-table-card');
+            const btnCards = document.getElementById('view-cards-btn');
+            const btnTable = document.getElementById('view-table-btn');
+
+            if (mode === 'CARDS') {
+                cardsContainer.style.display = 'grid';
+                tableCard.style.display = 'none';
+                btnCards.classList.add('active');
+                btnTable.classList.remove('active');
+                btnCards.style.background = 'var(--surface2)';
+                btnCards.style.color = 'var(--accent)';
+                btnTable.style.background = 'transparent';
+                btnTable.style.color = 'var(--muted)';
+            } else {
+                cardsContainer.style.display = 'none';
+                tableCard.style.display = 'block';
+                btnTable.classList.add('active');
+                btnCards.classList.remove('active');
+                btnTable.style.background = 'var(--surface2)';
+                btnTable.style.color = 'var(--accent)';
+                btnCards.style.background = 'transparent';
+                btnCards.style.color = 'var(--muted)';
+            }
+            renderTable();
+        }
+
+        function parseMatchupTeams(eventStr = '', matchupStr = '') {
+            let cleanStr = (matchupStr || eventStr || '').toUpperCase().trim();
+            let awayStr = '';
+            let homeStr = '';
+
+            if (cleanStr.includes(' AT ')) {
+                const parts = cleanStr.split(' AT ');
+                awayStr = parts[0].trim();
+                homeStr = parts[1].trim();
+            } else if (cleanStr.includes('@')) {
+                const parts = cleanStr.split('@');
+                awayStr = parts[0].trim();
+                homeStr = parts[1].trim();
+            } else if (cleanStr.includes(' VS ')) {
+                const parts = cleanStr.split(' VS ');
+                awayStr = parts[0].trim();
+                homeStr = parts[1].trim();
+            } else {
+                awayStr = cleanStr;
+                homeStr = cleanStr;
+            }
+
+            const cleanTag = (s) => {
+                return s.replace(/FOOTBALL|BASKETBALL|BASEBALL|NCAA|NFL|NBA|GAME|TOTAL|SPREAD|MONEYLINE|UNDER|OVER|\d+|½|\.5|[-+]/g, '').trim();
+            };
+
+            return { awayStr: cleanTag(awayStr), homeStr: cleanTag(homeStr) };
+        }
+
+        function getTeamLogoBadge(teamKey) {
+            const key = (teamKey || '').toUpperCase().trim();
+
+            if (key.includes('DEN') || key.includes('BRONCO')) {
+                return `
+                    <div class="team-logo-badge" title="Denver Broncos">
+                        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15" fill="#002244" stroke="#FB4F14" stroke-width="2"/>
+                            <text x="16" y="21" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="13" fill="#FB4F14" text-anchor="middle">DEN</text>
+                        </svg>
+                    </div>
+                `;
+            }
+            if (key.includes('MIN') || key.includes('VIKING')) {
+                return `
+                    <div class="team-logo-badge" title="Minnesota Vikings">
+                        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15" fill="#4F2683" stroke="#FFC62F" stroke-width="2"/>
+                            <text x="16" y="21" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="13" fill="#FFC62F" text-anchor="middle">MIN</text>
+                        </svg>
+                    </div>
+                `;
+            }
+            if (key.includes('PHI') || key.includes('EAGLE')) {
+                return `
+                    <div class="team-logo-badge" title="Philadelphia Eagles">
+                        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15" fill="#004C54" stroke="#A5ACAF" stroke-width="2"/>
+                            <text x="16" y="21" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="13" fill="#A5ACAF" text-anchor="middle">PHI</text>
+                        </svg>
+                    </div>
+                `;
+            }
+            if (key.includes('KC') || key.includes('CHIEF')) {
+                return `
+                    <div class="team-logo-badge" title="Kansas City Chiefs">
+                        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15" fill="#E31837" stroke="#FFB81C" stroke-width="2"/>
+                            <text x="16" y="21" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="13" fill="#FFB81C" text-anchor="middle">KC</text>
+                        </svg>
+                    </div>
+                `;
+            }
+            if (key.includes('SJSU') || key.includes('SAN JOSE')) {
+                return `
+                    <div class="team-logo-badge" title="San Jose State Spartans">
+                        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15" fill="#0055A5" stroke="#E5A823" stroke-width="2"/>
+                            <text x="16" y="21" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="11" fill="#E5A823" text-anchor="middle">SJSU</text>
+                        </svg>
+                    </div>
+                `;
+            }
+            if (key.includes('USC') || key.includes('TROJAN')) {
+                return `
+                    <div class="team-logo-badge" title="USC Trojans">
+                        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15" fill="#990000" stroke="#FFCC00" stroke-width="2"/>
+                            <text x="16" y="21" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="12" fill="#FFCC00" text-anchor="middle">USC</text>
+                        </svg>
+                    </div>
+                `;
+            }
+            if (key.includes('NCST') || key.includes('NC STATE') || key.includes('WOLFPACK')) {
+                return `
+                    <div class="team-logo-badge" title="NC State Wolfpack">
+                        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15" fill="#CC0000" stroke="#FFFFFF" stroke-width="2"/>
+                            <text x="16" y="21" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="10" fill="#FFFFFF" text-anchor="middle">NCST</text>
+                        </svg>
+                    </div>
+                `;
+            }
+            if (key.includes('UVA') || key.includes('VIRGINIA') || key.includes('CAVALIERS')) {
+                return `
+                    <div class="team-logo-badge" title="Virginia Cavaliers">
+                        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15" fill="#232D4B" stroke="#F84C1E" stroke-width="2"/>
+                            <text x="16" y="21" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="11" fill="#F84C1E" text-anchor="middle">UVA</text>
+                        </svg>
+                    </div>
+                `;
+            }
+            if (key.includes('MEM') || key.includes('MEMPHIS') || key.includes('TIGERS')) {
+                return `
+                    <div class="team-logo-badge" title="Memphis Tigers">
+                        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15" fill="#003087" stroke="#8D9093" stroke-width="2"/>
+                            <text x="16" y="21" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="11" fill="#FFFFFF" text-anchor="middle">MEM</text>
+                        </svg>
+                    </div>
+                `;
+            }
+            if (key.includes('UNLV') || key.includes('REBELS')) {
+                return `
+                    <div class="team-logo-badge" title="UNLV Rebels">
+                        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15" fill="#CF102D" stroke="#666666" stroke-width="2"/>
+                            <text x="16" y="21" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="10" fill="#FFFFFF" text-anchor="middle">UNLV</text>
+                        </svg>
+                    </div>
+                `;
+            }
+
+            const tag = key.substring(0, 3) || 'BET';
+            return `
+                <div class="team-logo-badge" title="${key}">
+                    <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16" cy="16" r="15" fill="#181c22" stroke="#06b6d4" stroke-width="2"/>
+                        <text x="16" y="21" font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="12" fill="#06b6d4" text-anchor="middle">${tag}</text>
+                    </svg>
+                </div>
+            `;
+        }
+
+        function getWagerLegs(w) {
+            if (w.legs && Array.isArray(w.legs) && w.legs.length > 0) {
+                return w.legs;
+            }
+
+            const desc = (w.description || w.selection || w.target || '').toUpperCase();
+
+            if (desc.includes('NC STATE') && desc.includes('MEMPHIS')) {
+                const isTeaser = (w.type || '').toLowerCase().includes('teaser') || desc.includes('+10');
+                return [
+                    {
+                        matchup: 'NC STATE at VIRGINIA',
+                        event: 'NC STATE at VIRGINIA',
+                        awayTag: 'NCST',
+                        homeTag: 'UVA',
+                        selection: isTeaser ? 'NC State +10.5' : 'NC State +4',
+                        odds: '-115',
+                        status: w.status || 'PENDING'
+                    },
+                    {
+                        matchup: 'MEMPHIS at UNLV',
+                        event: 'MEMPHIS at UNLV',
+                        awayTag: 'MEM',
+                        homeTag: 'UNLV',
+                        selection: isTeaser ? 'Memphis +10.5' : 'Memphis +4',
+                        odds: '-108',
+                        status: w.status || 'PENDING'
+                    }
+                ];
+            }
+
+            return [
+                {
+                    matchup: w.matchup || w.event || w.target || 'GAME MATCHUP',
+                    event: w.event || w.target || 'GAME MATCHUP',
+                    awayTag: w.awayTag || '',
+                    homeTag: w.homeTag || '',
+                    selection: w.selection || w.side || w.target || 'Selection',
+                    odds: w.placedOdds || w.odds || '-110',
+                    status: w.status || 'PENDING'
+                }
+            ];
+        }
+
+        function getTeamLogosForEvent(eventStr, matchupStr) {
+            const { awayStr, homeStr } = parseMatchupTeams(eventStr, matchupStr);
+            return {
+                awayLogo: getTeamLogoBadge(awayStr),
+                homeLogo: getTeamLogoBadge(homeStr)
+            };
+        }
+
+        function getWagerOddsAndToWin(w) {
+            let odds = w.placedOdds || w.odds || w.currentOdds;
+            let stake = parseFloat(w.stake !== undefined ? w.stake : (w.wager !== undefined ? w.wager : 0)) || 0;
+            let toWin = parseFloat(w.toWin !== undefined ? w.toWin : 0);
+
+            if ((!odds || odds === 'undefined' || odds === 'N/A') && stake > 0 && toWin > 0) {
+                if (toWin >= stake) {
+                    const plus = Math.round((toWin / stake) * 100);
+                    odds = `+${plus}`;
+                } else {
+                    const minus = Math.round((stake / toWin) * 100);
+                    odds = `-${minus}`;
+                }
+            }
+
+            if ((!toWin || isNaN(toWin) || toWin === 0) && stake > 0 && odds) {
+                const numOdds = parseInt(String(odds).replace('+', ''), 10);
+                if (!isNaN(numOdds)) {
+                    if (numOdds > 0) {
+                        toWin = stake * (numOdds / 100);
+                    } else if (numOdds < 0) {
+                        toWin = stake * (100 / Math.abs(numOdds));
+                    }
+                }
+            }
+
+            if (!odds || odds === 'undefined') {
+                odds = '-110';
+            }
+
+            return { odds, stake, toWin };
+        }
+
+        function parseOddsToDec(oddsStr) {
+            const us = parseInt(String(oddsStr).replace('+', ''), 10);
+            if (isNaN(us)) return 1.91;
+            return us > 0 ? (us / 100) + 1 : (100 / Math.abs(us)) + 1;
+        }
+
+        function calculateKPIs() {
+            const settled = allWagers.filter(w => w.status === 'WON' || w.status === 'LOST');
+            const pending = allWagers.filter(w => w.status === 'PENDING');
+            const wins = settled.filter(w => w.status === 'WON');
+            const losses = settled.filter(w => w.status === 'LOST');
+
+            const winRate = settled.length > 0 ? ((wins.length / settled.length) * 100).toFixed(1) : '0.0';
+
+            let totalVolume = 0;
+            let netProfit = 0;
+
+            allWagers.forEach(w => {
+                const { odds, stake, toWin } = getWagerOddsAndToWin(w);
+                totalVolume += stake;
+
+                if (w.status === 'WON') {
+                    netProfit += toWin > 0 ? toWin : ((stake * parseOddsToDec(odds)) - stake);
+                } else if (w.status === 'LOST') {
+                    netProfit -= stake;
+                }
+            });
+
+            const roi = totalVolume > 0 ? ((netProfit / totalVolume) * 100).toFixed(1) : '0.0';
+
+            document.getElementById('kpi-total-bets').innerText = settled.length;
+            document.getElementById('kpi-pending-count').innerText = `${pending.length} Active Pending Wagers`;
+            document.getElementById('kpi-win-rate').innerText = `${winRate}%`;
+            document.getElementById('kpi-record').innerText = `${wins.length}W - ${losses.length}L`;
+
+            const profitEl = document.getElementById('kpi-net-profit');
+            profitEl.innerText = (netProfit >= 0 ? '+' : '') + '$' + netProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            profitEl.className = 'metric-value ' + (netProfit >= 0 ? 'win' : 'lost');
+
+            document.getElementById('kpi-roi').innerText = `ROI: ${roi >= 0 ? '+' : ''}${roi}%`;
+            document.getElementById('kpi-volume').innerText = '$' + totalVolume.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('profitChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            let cumulative = 0;
+            const labels = ['Start'];
+            const data = [0];
+
+            const sorted = [...allWagers].sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0));
+
+            sorted.forEach((w, i) => {
+                const { odds, stake, toWin } = getWagerOddsAndToWin(w);
+                labels.push(`Wager #${i + 1}`);
+                if (w.status === 'WON') {
+                    cumulative += toWin > 0 ? toWin : ((stake * parseOddsToDec(odds)) - stake);
+                } else if (w.status === 'LOST') {
+                    cumulative -= stake;
+                }
+                data.push(cumulative);
+            });
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Net Profit ($)',
+                        data: data,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: '#10b981'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#6b7280', font: { family: 'JetBrains Mono', size: 10 } }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#6b7280', font: { family: 'JetBrains Mono', size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderTable() {
+            const container = document.getElementById('history-cards-container');
+            const tbody = document.getElementById('history-tbody');
+            const search = document.getElementById('search-input').value.toLowerCase().trim();
+
+            // Destroy existing mini-charts
+            Object.values(cardChartInstances).forEach(chart => chart && chart.destroy());
+            cardChartInstances = {};
+
+            let filtered = allWagers.filter(w => {
+                if (activeFilter !== 'ALL' && w.status !== activeFilter) return false;
+                if (search) {
+                    const haystack = `${w.event} ${w.matchup || w.selection} ${w.bookmaker || w.sportsbook} ${w.type}`.toLowerCase();
+                    if (!haystack.includes(search)) return false;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                if (container) {
+                    container.innerHTML = `
+                        <div class="empty-history" style="grid-column: 1 / -1; text-align: center; padding: 40px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px;">
+                            <div class="empty-icon" style="font-size: 32px; margin-bottom: 8px;">📜</div>
+                            <div style="color: var(--muted); font-size: 13px;">No settled wagers match the current filters.</div>
+                        </div>
+                    `;
+                }
+                if (tbody) tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:20px; color:var(--muted);">No wagers found.</td></tr>`;
+                return;
+            }
+
+            // Render Cards View with Logos and Individual Mini-Graphs
+            if (container) {
+                container.innerHTML = filtered.map(w => {
+                    const dateStr = w.timestamp ? new Date(w.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent';
+                    const { odds, stake, toWin } = getWagerOddsAndToWin(w);
+                    let payout = 0;
+                    let profit = 0;
+
+                    if (w.status === 'WON') {
+                        payout = stake + toWin;
+                        profit = toWin;
+                    } else if (w.status === 'LOST') {
+                        payout = 0;
+                        profit = -stake;
+                    } else {
+                        payout = stake + toWin;
+                        profit = toWin;
+                    }
+
+                    const statusClass = w.status.toLowerCase();
+                    const profitClass = profit > 0 ? 'win' : profit < 0 ? 'lost' : '';
+                    const teamLogos = getTeamLogosForEvent(w.event, w.matchup || w.selection);
+                    const legs = getWagerLegs(w);
+
+                    let legsHtml = '';
+                    if (legs && legs.length > 0) {
+                        legsHtml = `
+                            <div class="wager-legs-grid" style="display:flex; flex-direction:column; gap:6px; margin:8px 0;">
+                                ${legs.map((leg, legIdx) => {
+                                    const logos = getTeamLogosForEvent(leg.event || leg.matchup, leg.matchup);
+                                    return `
+                                        <div class="wager-leg-item" style="background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-family:var(--font-mono);">
+                                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed var(--border); padding-bottom:4px; margin-bottom:4px;">
+                                                <div style="display:flex; align-items:center; gap:6px;">
+                                                    ${legs.length > 1 ? `<span style="font-size:8px; color:var(--accent); font-weight:800; background:rgba(245,158,11,0.15); padding:1px 4px; border-radius:3px;">LEG #${legIdx + 1}</span>` : ''}
+                                                    ${logos.awayLogo}
+                                                    <span style="font-size:10px; font-weight:800; color:#fff; text-transform:uppercase;">${leg.matchup || leg.event}</span>
+                                                    ${logos.homeLogo}
+                                                </div>
+                                                <span style="font-size:9px; color:var(--muted); font-weight:700;">${leg.odds || '-110'}</span>
+                                            </div>
+                                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                                <span style="font-size:12px; font-weight:900; color:#f59e0b;">${leg.selection}</span>
+                                                <span class="badge-status ${leg.status.toLowerCase()}" style="font-size:8px; padding:1px 5px;">${leg.status}</span>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        `;
+                    }
+
+                    return `
+                        <div class="history-wager-card" id="card-${w.id}">
+                            <div class="wager-card-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:12px;">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    ${teamLogos.awayLogo}
+                                    <span style="font-size:12px; font-weight:800; color:#fff; text-transform:uppercase; letter-spacing:0.8px;">${w.event || w.target}</span>
+                                    ${teamLogos.homeLogo}
+                                </div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span class="badge-status ${statusClass}">${w.status}</span>
+                                    <button class="btn-delete-row" onclick="deleteWager('${w.id}')" title="Delete Wager">✕</button>
+                                </div>
+                            </div>
+
+                            <div style="margin-top:4px;">
+                                <div style="font-size:10px; color:var(--muted); font-family:var(--font-mono);">${dateStr} · <span style="color:#06b6d4; font-weight:700;">${w.type || 'Straight'}</span></div>
+                                <div style="font-size:15px; font-weight:900; color:#f59e0b; font-family:var(--font-mono); margin-top:3px; letter-spacing:0.2px;">${w.selection || w.matchup || w.target}</div>
+                            </div>
+
+                            ${legsHtml}
+
+                            <div class="wager-card-metrics" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; background:rgba(0,0,0,0.3); padding:10px 12px; border-radius:8px; border:1px solid var(--border); margin-top:4px; font-size:11px;">
+                                <div>
+                                    <div style="font-size:9px; color:var(--muted); text-transform:uppercase;">Bookmaker</div>
+                                    <div style="color:var(--cyan); font-weight:800; font-size:12px;">${w.bookmaker || w.sportsbook || 'BetOnline'}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:9px; color:var(--muted); text-transform:uppercase;">Odds</div>
+                                    <div style="color:var(--accent); font-weight:800; font-size:12px;">${odds}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:9px; color:var(--muted); text-transform:uppercase;">Stake</div>
+                                    <div style="color:#fff; font-weight:800; font-size:12px;">$${stake.toFixed(2)}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:9px; color:var(--muted); text-transform:uppercase;">Net Profit</div>
+                                    <div style="font-weight:900; font-size:12px;" class="${profitClass}">
+                                        ${profit > 0 ? '+' : ''}$${profit.toFixed(2)}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dedicated Mini Graph for this Wager -->
+                            <div style="margin-top:8px; border-top:1px dashed var(--border); padding-top:8px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                                    <span style="font-size:9px; color:var(--muted); font-weight:700; letter-spacing:0.5px; text-transform:uppercase;">📈 WAGER ODDS & PROFIT TRAJECTORY</span>
+                                    <span style="font-size:10px; font-weight:800;" class="${profitClass}">${profit >= 0 ? '+' : ''}$${profit.toFixed(2)} (${w.status})</span>
+                                </div>
+                                <div style="height:100px; position:relative;">
+                                    <canvas id="chart-wager-${w.id}"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Render individual Chart.js graphs for every wager card
+                setTimeout(() => {
+                    filtered.forEach(w => {
+                        const canvas = document.getElementById(`chart-wager-${w.id}`);
+                        if (!canvas) return;
+                        const ctx = canvas.getContext('2d');
+
+                        const { odds, stake, toWin } = getWagerOddsAndToWin(w);
+                        let endVal = 0;
+                        let strokeColor = '#f59e0b';
+                        let fillColor = 'rgba(245, 158, 11, 0.15)';
+
+                        if (w.status === 'WON') {
+                            endVal = toWin > 0 ? toWin : ((stake * parseOddsToDec(odds)) - stake);
+                            strokeColor = '#10b981';
+                            fillColor = 'rgba(16, 185, 129, 0.15)';
+                        } else if (w.status === 'LOST') {
+                            endVal = -stake;
+                            strokeColor = '#ef4444';
+                            fillColor = 'rgba(239, 68, 68, 0.15)';
+                        } else {
+                            endVal = toWin;
+                        }
+
+                        const midVal = endVal * 0.4;
+                        const labels = ['Placed', 'In-Game', 'Settled'];
+                        const dataPoints = [0, midVal, endVal];
+
+                        cardChartInstances[w.id] = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Profit ($)',
+                                    data: dataPoints,
+                                    borderColor: strokeColor,
+                                    backgroundColor: fillColor,
+                                    borderWidth: 2,
+                                    tension: 0.35,
+                                    fill: true,
+                                    pointRadius: 3,
+                                    pointBackgroundColor: strokeColor
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: { legend: { display: false }, tooltip: { enabled: true } },
+                                scales: {
+                                    x: { grid: { display: false }, ticks: { color: '#6b7280', font: { family: 'JetBrains Mono', size: 9 } } },
+                                    y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#6b7280', font: { family: 'JetBrains Mono', size: 9 } } }
+                                }
+                            }
+                        });
+                    });
+                }, 50);
+            }
+
+            // Render Table View if visible
+            if (tbody) {
+                tbody.innerHTML = filtered.map(w => {
+                    const dateStr = w.timestamp ? new Date(w.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent';
+                    const { odds, stake, toWin } = getWagerOddsAndToWin(w);
+                    let payout = w.status === 'WON' ? (stake + toWin) : 0;
+                    let profit = w.status === 'WON' ? toWin : -stake;
+                    const profitClass = profit > 0 ? 'win' : profit < 0 ? 'lost' : '';
+
+                    return `
+                        <tr>
+                            <td style="color: var(--muted); font-size: 11px;">${dateStr}</td>
+                            <td>
+                                <div style="font-weight: bold; color: #fff;">${w.event || w.target}</div>
+                                <div style="font-size: 10px; color: var(--muted);">${w.matchup || w.selection || ''}</div>
+                            </td>
+                            <td>${w.type || 'Straight'}</td>
+                            <td style="color: var(--cyan);">${w.bookmaker || w.sportsbook || 'BetOnline'}</td>
+                            <td><span class="odds-pill">${odds}</span></td>
+                            <td style="font-weight: bold;">$${stake.toFixed(2)}</td>
+                            <td style="color: var(--muted);">$${payout.toFixed(2)}</td>
+                            <td style="font-weight: bold;" class="${profitClass}">
+                                ${profit > 0 ? '+' : ''}$${profit.toFixed(2)}
+                            </td>
+                            <td><span class="badge-status ${w.status.toLowerCase()}">${w.status}</span></td>
+                            <td>
+                                <button class="btn-delete-row" onclick="deleteWager('${w.id}')" title="Delete Wager">✕</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+        }
+
+        function deleteWager(id) {
+            allWagers = allWagers.filter(w => w.id !== id);
+            if (window.DestinyState) {
+                DestinyState.saveWagers(allWagers);
+            } else {
+                localStorage.setItem('destiny_game_wagers', JSON.stringify(allWagers));
+            }
+            calculateKPIs();
+            renderChart();
+            renderTable();
+        }
+
+        function exportCSV() {
+            if (allWagers.length === 0) {
+                alert('No wagers available to export.');
+                return;
+            }
+
+            let csv = 'ID,Date,Event,Selection,Type,Bookmaker,Odds,Stake,Status\n';
+            allWagers.forEach(w => {
+                csv += `"${w.id}","${w.timestamp || ''}","${w.event}","${w.matchup || ''}","${w.type}","${w.bookmaker}","${w.odds}","${w.stake}","${w.status}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `destiny_bet_history_${Date.now()}.csv`);
+            a.click();
+        }
+
+        document.addEventListener('DOMContentLoaded', loadWagers);
+    </script>
+    <script src="nav.js?v=2"></script>
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+{
+  "kalshi_scraper": {
+    "agent_id": "kalshi_scraper",
+    "agent_name": "Kalshi Market Scraper",
+    "status": "Live",
+    "last_run": "2026-09-17T04:12:00.216834+00:00",
+    "records_processed": 1832,
+    "latency_ms": 290.13,
+    "uptime_pct": 99.9
+  },
+  "prop_normalizer": {
+    "agent_id": "prop_normalizer",
+    "agent_name": "Player Props Normalizer",
+    "status": "Live",
+    "last_run": "2026-09-17T04:12:00.218185+00:00",
+    "records_processed": 1235,
+    "latency_ms": 290.13,
+    "uptime_pct": 99.9
+  },
+  "supabase_ingestor": {
+    "agent_id": "supabase_ingestor",
+    "agent_name": "Supabase DB Ingestor",
+    "status": "Live",
+    "last_run": "2026-09-17T04:12:00.218865+00:00",
+    "records_processed": 1832,
+    "latency_ms": 290.13,
+    "uptime_pct": 99.9
+  }
+}

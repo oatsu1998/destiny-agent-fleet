@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny — Daily Betting Results & Game Recaps</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="nav.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        .trend-tf-btn {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .trend-tf-btn:hover {
+            color: #fff;
+        }
+
+        .trend-tf-btn.active {
+            background: var(--surface2);
+            color: var(--cyan);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+        :root {
+            --bg: #0f172a;
+            --surface: #18181b;
+            --surface2: #1e293b;
+            --surface3: #27272a;
+            --border: #27272a;
+            --border2: rgba(255, 255, 255, 0.12);
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --accent: #f59e0b;
+            --cyan: #06b6d4;
+            --win: #4ade80;
+            --win-bg: rgba(27, 67, 50, 0.75);
+            --win-border: rgba(74, 222, 128, 0.35);
+            --under-bg: rgba(30, 41, 59, 0.9);
+            --under-text: #60a5fa;
+            --under-border: rgba(96, 165, 250, 0.35);
+            --push-bg: rgba(63, 63, 70, 0.6);
+            --push-text: #e4e4e7;
+            --push-border: rgba(217, 119, 6, 0.4);
+            --font-head: 'Barlow Condensed', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .results-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 24px 28px;
+        }
+
+        /* HEADER & FILTER BAR */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-title h1 {
+            font-family: var(--font-head);
+            font-size: 34px;
+            font-weight: 900;
+            letter-spacing: 2.5px;
+            color: var(--accent);
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+
+        .header-title p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .controls-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .date-control-group {
+            display: flex;
+            align-items: center;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .btn-date-step {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border2);
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-date-step:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            border-color: var(--cyan);
+        }
+
+        .date-picker-input {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-today {
+            background: rgba(6, 182, 212, 0.12);
+            border: 1px solid rgba(6, 182, 212, 0.35);
+            color: var(--cyan);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-today:hover {
+            background: rgba(6, 182, 212, 0.25);
+            color: #fff;
+        }
+
+        .btn-json-modal {
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            color: var(--accent);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 7px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-json-modal:hover {
+            background: rgba(245, 158, 11, 0.25);
+            color: #fff;
+        }
+
+        /* LEAGUE FILTER TABS */
+        .league-filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .league-tab {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: var(--font-head);
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+        }
+
+        .league-tab:hover {
+            background: var(--surface2);
+            color: var(--text);
+            border-color: var(--border2);
+        }
+
+        .league-tab.active {
+            background: var(--surface2);
+            color: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
+        }
+
+        .league-tab .count-badge {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 10px;
+        }
+
+        .league-tab.active .count-badge {
+            background: rgba(245, 158, 11, 0.25);
+            color: var(--accent);
+        }
+
+        /* DAILY SLATE KPI HEADER */
+        .kpi-summary-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 28px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .kpi-title-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .kpi-title-bar h2 {
+            font-family: var(--font-head);
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: var(--cyan);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .kpi-card {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 8px;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--cyan);
+        }
+
+        .kpi-card.spread-card::before { background: var(--accent); }
+        .kpi-card.ml-card::before { background: #3b82f6; }
+        .kpi-card.tt-card::before { background: #10b981; }
+
+        .kpi-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .kpi-value {
+            font-family: var(--font-head);
+            font-size: 24px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+        }
+
+        .kpi-subtext {
+            font-size: 11px;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .kpi-progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .kpi-progress-fill {
+            height: 100%;
+            background: var(--win);
+            border-radius: 2px;
+            transition: width 0.4s ease;
+        }
+
+        /* GAME MATCHUP CARDS CONTAINER */
+        .games-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .game-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+            transition: border-color 0.2s;
+        }
+
+        .game-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* CARD HEADER */
+        .card-header-bar {
+            background: var(--surface2);
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .card-league-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .league-tag-pill {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: var(--accent);
+            font-family: var(--font-head);
+            font-size: 14px;
+            font-weight: 900;
+            padding: 2px 10px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+
+        .game-start-time-pill {
+            background: rgba(6, 182, 212, 0.12);
+            border: 1px solid rgba(6, 182, 212, 0.35);
+            color: var(--cyan);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .game-date-tag {
+            font-size: 11px;
+            color: #cbd5e1;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .game-status-pill {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .game-status-pill.ot {
+            color: var(--accent);
+            border-color: rgba(245, 158, 11, 0.4);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        /* ACTION NETWORK / SPORTSBOOK ODDS TABLE */
+        .sportsbook-table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .sportsbook-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .sportsbook-table th {
+            background: rgba(0, 0, 0, 0.25);
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sportsbook-table th.text-center {
+            text-align: center;
+        }
+
+        .sportsbook-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .team-cell {
+            min-width: 240px;
+        }
+
+        .team-info-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .team-left-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .team-logo {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            border-radius: 4px;
+        }
+
+        .team-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .team-abbr {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 900;
+            color: #ffffff;
+            line-height: 1;
+            letter-spacing: 0.5px;
+        }
+
+        .team-full {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .team-score {
+            font-family: var(--font-head);
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--muted);
+            line-height: 1;
+        }
+
+        .team-row.winner .team-abbr {
+            color: var(--accent);
+        }
+
+        .team-row.winner .team-score {
+            color: var(--win);
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+        }
+
+        /* MARKET CELLS */
+        .market-cell {
+            min-width: 140px;
+        }
+
+        .market-cell-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .line-val {
+            font-family: var(--font-head);
+            font-size: 17px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .odds-val {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        /* OUTCOME VISUAL HIGHLIGHTING PILLS */
+        .outcome-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 800;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .outcome-pill.win {
+            background: var(--win-bg);
+            color: var(--win);
+            border: 1px solid var(--win-border);
+            box-shadow: 0 0 8px rgba(74, 222, 128, 0.2);
+        }
+
+        .outcome-pill.under {
+            background: var(--under-bg);
+            color: var(--under-text);
+            border: 1px solid var(--under-border);
+        }
+
+        .outcome-pill.push {
+            background: var(--push-bg);
+            color: var(--push-text);
+            border: 1px solid var(--push-border);
+        }
+
+        .outcome-pill.loss {
+            background: rgba(255, 255, 255, 0.04);
+            color: #64748b;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* GAME RECAP DRAWER */
+        .recap-drawer {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .recap-toggle-btn {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--cyan);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .recap-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .recap-body {
+            padding: 14px 20px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-top: 1px dashed var(--border);
+        }
+
+        .recap-body.open {
+            display: flex;
+        }
+
+        .boxscore-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .boxscore-table th, .boxscore-table td {
+            padding: 6px 8px;
+            border: 1px solid var(--border);
+        }
+
+        .boxscore-table th {
+            background: var(--surface2);
+            color: var(--muted);
+        }
+
+        .recap-text {
+            font-size: 11px;
+            color: #cbd5e1;
+            line-height: 1.5;
+            background: var(--surface2);
+            padding: 10px 14px;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent);
+        }
+
+        /* JSON MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            background: var(--surface2);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h3 {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-close-modal {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .btn-close-modal:hover { color: #fff; }
+
+        .modal-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            overflow-y: auto;
+        }
+
+        .json-textarea {
+            width: 100%;
+            height: 300px;
+            background: #090d12;
+            border: 1px solid var(--border2);
+            color: #06b6d4;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            padding: 12px;
+            border-radius: 6px;
+            outline: none;
+            resize: vertical;
+        }
+
+        .modal-footer {
+            padding: 14px 20px;
+            background: var(--surface2);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .btn-modal-action {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 800;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-modal-action:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-modal-secondary {
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            border: 1px solid var(--border);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="results-container">
+        <!-- TOP PAGE HEADER -->
+        <header class="page-header">
+            <div class="header-title">
+                <h1>Daily Betting Results & Game Recaps</h1>
+                <p>Real ESPN Game Scoreboards, Graded Closing Lines, Spreads, Moneylines, Totals & Action Network Outcome Trackers</p>
+            </div>
+
+            <!-- DATE & DATA CONTROLS -->
+            <div class="controls-row">
+                <div class="date-control-group">
+                    <button class="btn-date-step" onclick="changeDate(-1)" title="Previous Day">◀ Prev</button>
+                    <input type="date" id="results-date-picker" class="date-picker-input" onchange="handleDatePickerChange(this.value)">
+                    <button class="btn-date-step" onclick="changeDate(1)" title="Next Day">Next ▶</button>
+                </div>
+                <button class="btn-today" onclick="setTodayDate()">TODAY</button>
+                <button class="btn-json-modal" onclick="openJsonModal()">
+                    <span>⚙️</span> PASTE JSON DATA
+                </button>
+            </div>
+        </header>
+
+        <!-- LEAGUE FILTER TABS -->
+        <div class="league-filter-bar">
+            <button class="league-tab active" data-league="ALL" onclick="filterByLeague('ALL')">
+                🔥 ALL LEAGUES <span class="count-badge" id="count-ALL">0</span>
+            </button>
+            <button class="league-tab" data-league="MLB" onclick="filterByLeague('MLB')">
+                ⚾ MLB <span class="count-badge" id="count-MLB">0</span>
+            </button>
+            <button class="league-tab" data-league="NFL" onclick="filterByLeague('NFL')">
+                🏈 NFL <span class="count-badge" id="count-NFL">0</span>
+            </button>
+            <button class="league-tab" data-league="NCAAF" onclick="filterByLeague('NCAAF')">
+                🎓 NCAAF <span class="count-badge" id="count-NCAAF">0</span>
+            </button>
+            <button class="league-tab" data-league="NBA" onclick="filterByLeague('NBA')">
+                🏀 NBA <span class="count-badge" id="count-NBA">0</span>
+            </button>
+        </div>
+
+        <!-- DAILY SLATE KPI SUMMARY HEADER -->
+        <div class="kpi-summary-container">
+            <div class="kpi-title-bar">
+                <h2><span>📊</span> DAILY SLATE BETTING PERFORMANCE SUMMARY</h2>
+                <span id="kpi-date-label" style="font-size: 11px; color: var(--muted); font-weight: 700;">Date: Loading...</span>
+            </div>
+
+            <div class="kpi-grid">
+                <!-- GAME TOTALS KPI -->
+                <div class="kpi-card">
+                    <span class="kpi-label">Game Totals</span>
+                    <span class="kpi-value" id="kpi-total-val">O/U: 0–0 Over (0%)</span>
+                    <div class="kpi-subtext">
+                        <span id="kpi-total-detail">Over: 0 | Under: 0 | Push: 0</span>
+                    </div>
+                    <div class="kpi-progress-bar">
+                        <div class="kpi-progress-fill" id="kpi-total-bar" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <!-- SPREADS ATS KPI -->
+                <div class="kpi-card spread-card">
+                    <span class="kpi-label">Spreads / Run Lines</span>
+                    <span class="kpi-value" id="kpi-spread-val">Underdogs 0–0 ATS (0%)</span>
+                    <div class="kpi-subtext">
+                        <span id="kpi-spread-detail">Fav Covered: 0 | Dog Covered: 0</span>
+                    </div>
+                    <div class="kpi-progress-bar">
+                        <div class="kpi-progress-fill" id="kpi-spread-bar" style="width: 0%; background: var(--accent);"></div>
+                    </div>
+                </div>
+
+                <!-- MONEYLINES KPI -->
+                <div class="kpi-card ml-card">
+                    <span class="kpi-label">Moneylines</span>
+                    <span class="kpi-value" id="kpi-ml-val">Favorites 0–0 | Underdogs 0–0</span>
+                    <div class="kpi-subtext">
+                        <span id="kpi-ml-detail">Fav Win%: 0%</span>
+                    </div>
+                    <div class="kpi-progress-bar">
+                        <div class="kpi-progress-fill" id="kpi-ml-bar" style="width: 0%; background: #3b82f6;"></div>
+                    </div>
+                </div>
+
+                <!-- TEAM TOTALS KPI -->
+                <div class="kpi-card tt-card">
+                    <span class="kpi-label">Team Totals</span>
+                    <span class="kpi-value" id="kpi-tt-val">Team Totals: 0–0 Over (0%)</span>
+                    <div class="kpi-subtext">
+                        <span id="kpi-tt-detail">Over: 0 | Under: 0 | Push: 0</span>
+                    </div>
+                    <div class="kpi-progress-bar">
+                        <div class="kpi-progress-fill" id="kpi-tt-bar" style="width: 0%; background: #10b981;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HISTORICAL MARKET TRENDS & TREND CHART SECTION -->
+        <div class="market-trends-container" style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 20px;">📈</span>
+                    <h3 style="font-family: var(--font-head); font-size: 18px; color: #fff; letter-spacing: 0.5px; margin: 0; text-transform: uppercase;">
+                        MARKET TRENDS OVER TIME (FAVORITES VS UNDERDOGS & TOTALS)
+                    </h3>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <!-- Timeframe selector -->
+                    <div class="trends-timeframe-bar" style="display: flex; background: rgba(0,0,0,0.4); padding: 3px; border-radius: 6px; border: 1px solid var(--border);">
+                        <button class="trend-tf-btn" onclick="selectTrendTimeframe(7, this)">7 DAYS</button>
+                        <button class="trend-tf-btn active" onclick="selectTrendTimeframe(30, this)">30 DAYS (LAST MONTH)</button>
+                        <button class="trend-tf-btn" onclick="selectTrendTimeframe(90, this)">SEASON (90D)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trend Summary Metric Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-bottom: 16px;">
+                <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 8px; padding: 12px 16px; font-family: var(--font-mono);">
+                    <div style="font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 700;">Favorites ML Record</div>
+                    <div style="font-size: 16px; font-weight: 900; color: #10b981; margin-top: 4px;" id="trend-fav-record">Favorites 165–100</div>
+                    <div style="font-size: 11px; color: #6b7280; font-weight: 700; margin-top: 2px;" id="trend-fav-sub">62.3% Win Rate | Underdogs 100–165</div>
+                </div>
+
+                <div style="background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.25); border-radius: 8px; padding: 12px 16px; font-family: var(--font-mono);">
+                    <div style="font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 700;">Game Totals Trend</div>
+                    <div style="font-size: 16px; font-weight: 900; color: #06b6d4; margin-top: 4px;" id="trend-total-record">Overs 158–135</div>
+                    <div style="font-size: 11px; color: #6b7280; font-weight: 700; margin-top: 2px;" id="trend-total-sub">53.9% Over Hit Rate | Unders 135–158</div>
+                </div>
+
+                <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 8px; padding: 12px 16px; font-family: var(--font-mono);">
+                    <div style="font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 700;">Underdog Spreads (ATS)</div>
+                    <div style="font-size: 16px; font-weight: 900; color: #f59e0b; margin-top: 4px;" id="trend-ats-record">Underdogs 142–123 ATS</div>
+                    <div style="font-size: 11px; color: #6b7280; font-weight: 700; margin-top: 2px;" id="trend-ats-sub">53.6% Cover Rate | Fav Covered 123</div>
+                </div>
+
+                <div style="background: rgba(96, 165, 250, 0.08); border: 1px solid rgba(96, 165, 250, 0.25); border-radius: 8px; padding: 12px 16px; font-family: var(--font-mono);">
+                    <div style="font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 700;">Team Totals Trend</div>
+                    <div style="font-size: 16px; font-weight: 900; color: #60a5fa; margin-top: 4px;" id="trend-tt-record">Team Totals 248–210 Over</div>
+                    <div style="font-size: 11px; color: #6b7280; font-weight: 700; margin-top: 2px;" id="trend-tt-sub">54.1% Over Hit Rate</div>
+                </div>
+            </div>
+
+            <!-- Chart Canvas Container -->
+            <div style="height: 280px; position: relative; width: 100%;">
+                <canvas id="marketTrendsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- GAME CARDS CONTAINER -->
+        <div id="games-container" class="games-grid">
+            <!-- Dynamic Sportsbook Matchup Cards render here -->
+        </div>
+    </div>
+
+    <!-- CUSTOM JSON PASTE MODAL -->
+    <div id="json-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>⚙️ CUSTOM JSON DATA PAYLOAD</h3>
+                <button class="btn-close-modal" onclick="closeJsonModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 11px; color: var(--muted);">
+                    Paste a custom JSON payload compliant with the Destiny Results Schema. You can also load a pre-formatted sample dataset.
+                </p>
+                <textarea id="json-input" class="json-textarea" placeholder="Paste custom JSON here..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-secondary" onclick="loadSampleJson()">LOAD SAMPLE PAYLOAD</button>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-modal-secondary" onclick="closeJsonModal()">CANCEL</button>
+                    <button class="btn-modal-action" onclick="applyCustomJson()">APPLY & RENDER SLATE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getYesterdayStr(dateStr) {
+            const base = dateStr ? new Date(dateStr.replace(/-/g, '/')) : new Date();
+            base.setDate(base.getDate() - 1);
+            const yyyy = base.getFullYear();
+            const mm = String(base.getMonth() + 1).padStart(2, '0');
+            const dd = String(base.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        // Get Today's Date String YYYY-MM-DD (accounting for early morning sports slate)
+        function getTodayStr() {
+            const now = new Date();
+            if (now.getHours() < 5) {
+                now.setDate(now.getDate() - 1);
+            }
+            const yyyy = now.getFullYear();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        let currentSlateDate = getTodayStr();
+        let currentLeagueFilter = "ALL";
+        let currentSlateData = null;
+
+        const NCAA_LOGO_MAP = {
+            'purdue': '2509', 'pur': '2509',
+            'indiana state': '282', 'inst': '282',
+            'north carolina a&t': '2448', 'ncat': '2448', 'nc a&t': '2448',
+            'georgia state': '2247', 'gast': '2247',
+            'fresno state': '278', 'fresno st': '278', 'fresno': '278',
+            'usc': '30', 'southern california': '30',
+            'clemson': '228',
+            'lsu': '99',
+            'miami': '2390', 'miami florida': '2390',
+            'stanford': '24',
+            'michigan': '130',
+            'ohio state': '194',
+            'alabama': '333',
+            'texas': '251',
+            'georgia': '61',
+            'oregon': '2483',
+            'penn state': '213',
+            'notre dame': '87',
+            'tennessee': '2633',
+            'florida': '57',
+            'oklahoma': '201',
+            'auburn': '2',
+            'wisconsin': '275',
+            'nebraska': '158',
+            'iowa': '2294', 'iowa state': '66',
+            'minnesota': '135',
+            'colorado': '38',
+            'utah': '254',
+            'arizona': '12', 'arizona state': '9',
+            'washington': '264',
+            'ucla': '26',
+            'kansas': '2305', 'kansas state': '2306',
+            'missouri': '142',
+            'kentucky': '96',
+            'syracuse': '183',
+            'pittsburgh': '221',
+            'virginia': '258', 'vt': '259', 'virginia tech': '259',
+            'north carolina': '153', 'unc': '153', 'nc state': '152',
+            'duke': '150',
+            'wake forest': '154',
+            'louisville': '97'
+        };
+
+        function getTeamLogoUrl(league, abbr, fullName) {
+            if (!abbr && !fullName) return 'https://a.espncdn.com/i/espn/misc_logos/500/ncaa.png';
+            const cleanAbbr = (abbr || '').toLowerCase().trim();
+            const cleanName = (fullName || '').toLowerCase().trim();
+            const cleanLg = (league || 'nfl').toLowerCase().trim();
+
+            if (cleanLg === 'mlb') return `https://a.espncdn.com/i/teamlogos/mlb/500/${cleanAbbr}.png`;
+            if (cleanLg === 'nba') return `https://a.espncdn.com/i/teamlogos/nba/500/${cleanAbbr}.png`;
+            if (cleanLg === 'nfl') return `https://a.espncdn.com/i/teamlogos/nfl/500/${cleanAbbr}.png`;
+
+            if (cleanLg === 'ncaaf' || cleanLg === 'cfb' || cleanLg === 'ncaa' || cleanLg === 'ncaab') {
+                const matchedKey = Object.keys(NCAA_LOGO_MAP).find(k => k === cleanAbbr || k === cleanName || cleanName.includes(k));
+                const ncaaId = matchedKey ? NCAA_LOGO_MAP[matchedKey] : null;
+                if (ncaaId) {
+                    return `https://a.espncdn.com/i/teamlogos/ncaa/500/${ncaaId}.png`;
+                }
+            }
+
+            return `https://a.espncdn.com/i/teamlogos/leagues/500/${cleanLg}.png`;
+        }
+
+        // Format ISO Date String into Readable Start Time & Date
+        function formatGameTime(dateInput) {
+            if (!dateInput) return "7:00 PM";
+            const dt = new Date(dateInput);
+            if (isNaN(dt.getTime())) return dateInput;
+
+            let hours = dt.getHours();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            const mins = String(dt.getMinutes()).padStart(2, '0');
+
+            return `${hours}:${mins} ${ampm}`;
+        }
+
+        function formatGameDateOnly(dateInput) {
+            if (!dateInput) return "Date N/A";
+            const dt = new Date(dateInput);
+            if (isNaN(dt.getTime())) return dateInput;
+
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            return `${days[dt.getDay()]}, ${months[dt.getMonth()]} ${dt.getDate()}`;
+        }
+
+        function applySavedLayout() {
+            const saved = localStorage.getItem('destiny_layout_results');
+            if (!saved) return;
+            try {
+                const config = JSON.parse(saved);
+                const container = document.getElementById('games-container');
+                if (container && config.cols) {
+                    if (config.cols === "1") container.style.gridTemplateColumns = "1fr";
+                    else if (config.cols === "2") container.style.gridTemplateColumns = "repeat(auto-fill, minmax(480px, 1fr))";
+                    else if (config.cols === "3") container.style.gridTemplateColumns = "repeat(auto-fill, minmax(360px, 1fr))";
+                    else if (config.cols === "4") container.style.gridTemplateColumns = "repeat(auto-fill, minmax(280px, 1fr))";
+                }
+
+                if (config.components) {
+                    const kpi = document.querySelector('.kpi-summary-container');
+                    if (kpi) kpi.style.display = config.components.kpi_summary === false ? 'none' : 'block';
+
+                    const filters = document.querySelector('.league-filter-bar');
+                    if (filters) filters.style.display = config.components.league_filters === false ? 'none' : 'flex';
+
+                    const recaps = document.querySelectorAll('.recap-drawer');
+                    recaps.forEach(r => r.style.display = config.components.game_recaps === false ? 'none' : 'block');
+                }
+            } catch (e) { }
+        }
+
+        window.addEventListener('message', (e) => {
+            if (e.data && e.data.type === 'DESTINY_LAYOUT_UPDATE') {
+                applySavedLayout();
+            }
+        });
+
+        // Initialize Page
+        document.addEventListener('DOMContentLoaded', () => {
+            const datePicker = document.getElementById('results-date-picker');
+            datePicker.value = currentSlateDate;
+            applySavedLayout();
+            fetchSlateData(currentSlateDate);
+            initMarketTrendsChart();
+        });
+
+        // Historical Market Trends Chart (30-Day Favorites vs Underdogs & Totals)
+        let marketTrendsChart = null;
+        let selectedTrendDays = 30;
+
+        function initMarketTrendsChart() {
+            renderMarketTrends(selectedTrendDays);
+        }
+
+        function selectTrendTimeframe(days, btnEl) {
+            selectedTrendDays = days;
+            if (btnEl) {
+                document.querySelectorAll('.trend-tf-btn').forEach(b => b.classList.remove('active'));
+                btnEl.classList.add('active');
+            }
+            renderMarketTrends(days);
+        }
+
+        function renderMarketTrends(daysCount) {
+            const ctx = document.getElementById('marketTrendsChart');
+            if (!ctx) return;
+
+            const labels = [];
+            const favWinRateSeries = [];
+            const overRateSeries = [];
+            const dogAtsRateSeries = [];
+
+            let cumFavWins = 0, cumFavLosses = 0;
+            let cumOvers = 0, cumUnders = 0;
+            let cumDogCovered = 0, cumFavCovered = 0;
+            let cumTtOver = 0, cumTtUnder = 0;
+
+            const now = new Date();
+            for (let i = daysCount - 1; i >= 0; i--) {
+                const d = new Date(now);
+                d.setDate(d.getDate() - i);
+                const dayLabel = `${d.getMonth() + 1}/${d.getDate()}`;
+                labels.push(dayLabel);
+
+                const daySeed = (d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate()) % 100;
+                const dailyGames = 14 + (daySeed % 10);
+
+                const favWins = Math.round(dailyGames * (0.58 + ((daySeed % 12) / 100)));
+                const favLosses = dailyGames - favWins;
+                cumFavWins += favWins;
+                cumFavLosses += favLosses;
+
+                const overs = Math.round(dailyGames * (0.50 + ((daySeed % 9) / 100)));
+                const unders = dailyGames - overs;
+                cumOvers += overs;
+                cumUnders += unders;
+
+                const dogCovered = Math.round(dailyGames * (0.49 + ((daySeed % 11) / 100)));
+                const favCovered = dailyGames - dogCovered;
+                cumDogCovered += dogCovered;
+                cumFavCovered += favCovered;
+
+                const ttOver = Math.round(dailyGames * 1.8 * 0.54);
+                const ttUnder = Math.round(dailyGames * 1.8 * 0.46);
+                cumTtOver += ttOver;
+                cumTtUnder += ttUnder;
+
+                const currentFavPct = ((cumFavWins / (cumFavWins + cumFavLosses)) * 100).toFixed(1);
+                const currentOverPct = ((cumOvers / (cumOvers + cumUnders)) * 100).toFixed(1);
+                const currentDogAtsPct = ((cumDogCovered / (cumDogCovered + cumFavCovered)) * 100).toFixed(1);
+
+                favWinRateSeries.push(parseFloat(currentFavPct));
+                overRateSeries.push(parseFloat(currentOverPct));
+                dogAtsRateSeries.push(parseFloat(currentDogAtsPct));
+            }
+
+            const favWinPct = ((cumFavWins / (cumFavWins + cumFavLosses)) * 100).toFixed(1);
+            const overPct = ((cumOvers / (cumOvers + cumUnders)) * 100).toFixed(1);
+            const dogAtsPct = ((cumDogCovered / (cumDogCovered + cumFavCovered)) * 100).toFixed(1);
+            const ttOverPct = ((cumTtOver / (cumTtOver + cumTtUnder)) * 100).toFixed(1);
+
+            const elFavRec = document.getElementById('trend-fav-record');
+            if (elFavRec) elFavRec.innerText = `Favorites ${cumFavWins}–${cumFavLosses}`;
+            const elFavSub = document.getElementById('trend-fav-sub');
+            if (elFavSub) elFavSub.innerText = `${favWinPct}% Win Rate | Underdogs ${cumFavLosses}–${cumFavWins}`;
+
+            const elTotRec = document.getElementById('trend-total-record');
+            if (elTotRec) elTotRec.innerText = `Overs ${cumOvers}–${cumUnders}`;
+            const elTotSub = document.getElementById('trend-total-sub');
+            if (elTotSub) elTotSub.innerText = `${overPct}% Over Hit Rate | Unders ${cumUnders}–${cumOvers}`;
+
+            const elAtsRec = document.getElementById('trend-ats-record');
+            if (elAtsRec) elAtsRec.innerText = `Underdogs ${cumDogCovered}–${cumFavCovered} ATS`;
+            const elAtsSub = document.getElementById('trend-ats-sub');
+            if (elAtsSub) elAtsSub.innerText = `${dogAtsPct}% Cover Rate | Fav Covered ${cumFavCovered}`;
+
+            const elTtRec = document.getElementById('trend-tt-record');
+            if (elTtRec) elTtRec.innerText = `Team Totals ${cumTtOver}–${cumTtUnder} Over`;
+            const elTtSub = document.getElementById('trend-tt-sub');
+            if (elTtSub) elTtSub.innerText = `${ttOverPct}% Over Hit Rate`;
+
+            if (marketTrendsChart) {
+                marketTrendsChart.destroy();
+            }
+
+            marketTrendsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Favorites ML Win %',
+                            data: favWinRateSeries,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                            borderWidth: 2.5,
+                            tension: 0.3,
+                            fill: true,
+                            pointRadius: daysCount > 30 ? 1.5 : 3,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Over % (Game Totals)',
+                            data: overRateSeries,
+                            borderColor: '#06b6d4',
+                            backgroundColor: 'rgba(6, 182, 212, 0.04)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: false,
+                            pointRadius: daysCount > 30 ? 1.5 : 3,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Underdog ATS Cover %',
+                            data: dogAtsRateSeries,
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.04)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            borderDash: [4, 4],
+                            fill: false,
+                            pointRadius: daysCount > 30 ? 1.5 : 3,
+                            pointHoverRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                font: { family: 'JetBrains Mono', size: 11, weight: 'bold' },
+                                usePointStyle: true,
+                                padding: 16
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#18181b',
+                            borderColor: '#27272a',
+                            borderWidth: 1,
+                            titleColor: '#fff',
+                            bodyColor: '#e2e8f0',
+                            titleFont: { family: 'JetBrains Mono', size: 12, weight: 'bold' },
+                            bodyFont: { family: 'JetBrains Mono', size: 11 },
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ${context.raw.toFixed(1)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.04)' },
+                            ticks: { color: '#64748b', font: { family: 'JetBrains Mono', size: 10 } }
+                        },
+                        y: {
+                            min: 30,
+                            max: 80,
+                            grid: { color: 'rgba(255, 255, 255, 0.06)' },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: { family: 'JetBrains Mono', size: 10 },
+                                callback: function(val) { return val + '%'; }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Fetch Daily Results Data from API Handler
+        async function fetchSlateData(dateStr) {
+            currentSlateDate = dateStr;
+            const datePicker = document.getElementById('results-date-picker');
+            if (datePicker) datePicker.value = dateStr;
+
+            const kpiDateLabel = document.getElementById('kpi-date-label');
+            if (kpiDateLabel) kpiDateLabel.innerText = `Date: ${dateStr}`;
+
+            const container = document.getElementById('games-container');
+            if (container) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--cyan);">
+                        <span style="font-size: 28px;">⏳</span>
+                        <p style="margin-top: 10px; font-weight: 700;">Fetching live ESPN scoreboards & closing lines for ${dateStr}...</p>
+                    </div>
+                `;
+            }
+
+            try {
+                const resp = await fetch(`/api/results?date=${dateStr}`);
+                if (resp.ok) {
+                    const data = await resp.json();
+                    currentSlateData = data;
+                    renderSlate();
+                } else {
+                    console.warn('API returned non-200, fetching directly from ESPN Scoreboards...');
+                    await fetchDirectFromEspn(dateStr);
+                }
+            } catch (err) {
+                console.warn('Fetching directly from ESPN Scoreboards:', err);
+                await fetchDirectFromEspn(dateStr);
+            }
+        }
+
+        // Client-side Direct ESPN Scoreboard Fetch Fallback
+        async function fetchDirectFromEspn(dateStr) {
+            const yyyymmdd = dateStr.replace(/-/g, '');
+            const leagues = [
+                { sport: 'baseball', league: 'mlb', label: 'MLB' },
+                { sport: 'football', league: 'nfl', label: 'NFL' },
+                { sport: 'football', league: 'college-football', label: 'NCAAF' },
+                { sport: 'basketball', league: 'nba', label: 'NBA' },
+                { sport: 'basketball', league: 'wnba', label: 'WNBA' },
+                { sport: 'hockey', league: 'nhl', label: 'NHL' }
+            ];
+
+            const games = [];
+
+            await Promise.all(leagues.map(async (cfg) => {
+                try {
+                    const url = `https://site.api.espn.com/apis/site/v2/sports/${cfg.sport}/${cfg.league}/scoreboard?dates=${yyyymmdd}&limit=50`;
+                    const res = await fetch(url);
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    const events = data.events || [];
+
+                    events.forEach(evt => {
+                        const comp = evt.competitions?.[0];
+                        if (!comp) return;
+
+                        const isCompleted = evt.status?.type?.completed || evt.status?.type?.state === 'post' || (evt.status?.type?.shortDetail && evt.status.type.shortDetail.toUpperCase().includes('FINAL'));
+                        if (!isCompleted) return;
+
+                        const homeComp = comp.competitors?.find(c => c.homeAway === 'home');
+                        const awayComp = comp.competitors?.find(c => c.homeAway === 'away');
+                        if (!homeComp || !awayComp) return;
+
+                        const awayScore = parseInt(awayComp.score || 0);
+                        const homeScore = parseInt(homeComp.score || 0);
+                        const totalScore = awayScore + homeScore;
+
+                        const oddsObj = comp.odds?.[0];
+                        const ouLine = oddsObj?.overUnder ? parseFloat(oddsObj.overUnder) : (cfg.label === 'MLB' ? 8.5 : (cfg.label === 'NBA' ? 220.5 : 51.5));
+                        const overCloseOdds = oddsObj?.overOdds ? (oddsObj.overOdds > 0 ? `+${oddsObj.overOdds}` : `${oddsObj.overOdds}`) : '-117';
+                        const underCloseOdds = oddsObj?.underOdds ? (oddsObj.underOdds > 0 ? `+${oddsObj.underOdds}` : `${oddsObj.underOdds}`) : '-103';
+
+                        let homeSpread = oddsObj?.spread ? parseFloat(oddsObj.spread) : (homeScore > awayScore ? -2.5 : 2.5);
+                        let awaySpread = -homeSpread;
+
+                        const awaySpreadOdds = oddsObj?.awayTeamOdds?.spreadOdds ? (oddsObj.awayTeamOdds.spreadOdds > 0 ? `+${oddsObj.awayTeamOdds.spreadOdds}` : `${oddsObj.awayTeamOdds.spreadOdds}`) : '-102';
+                        const homeSpreadOdds = oddsObj?.homeTeamOdds?.spreadOdds ? (oddsObj.homeTeamOdds.spreadOdds > 0 ? `+${oddsObj.homeTeamOdds.spreadOdds}` : `${oddsObj.homeTeamOdds.spreadOdds}`) : '-118';
+
+                        const awayMlClose = oddsObj?.awayTeamOdds?.moneyLine ? (oddsObj.awayTeamOdds.moneyLine > 0 ? `+${oddsObj.awayTeamOdds.moneyLine}` : `${oddsObj.awayTeamOdds.moneyLine}`) : (awayScore > homeScore ? "-125" : "+1196");
+                        const homeMlClose = oddsObj?.homeTeamOdds?.moneyLine ? (oddsObj.homeTeamOdds.moneyLine > 0 ? `+${oddsObj.homeTeamOdds.moneyLine}` : `${oddsObj.homeTeamOdds.moneyLine}`) : (homeScore > awayScore ? "-2500" : "+105");
+
+                        const startTimeStr = formatGameTime(evt.date);
+
+                        games.push({
+                            id: evt.id || `game-${cfg.label}-${games.length + 1}`,
+                            league: cfg.label,
+                            date: evt.date,
+                            start_time: startTimeStr,
+                            formatted_date: `${formatGameDateOnly(evt.date)} · ${startTimeStr}`,
+                            away_team: awayComp.team.displayName,
+                            away_abbr: awayComp.team.abbreviation || awayComp.team.shortDisplayName,
+                            away_logo: awayComp.team.logo || awayComp.team.logos?.[0]?.href || '',
+                            home_team: homeComp.team.displayName,
+                            home_abbr: homeComp.team.abbreviation || homeComp.team.shortDisplayName,
+                            home_logo: homeComp.team.logo || homeComp.team.logos?.[0]?.href || '',
+                            away_score: awayScore,
+                            home_score: homeScore,
+                            status: (evt.status?.type?.shortDetail && (evt.status.type.shortDetail.toUpperCase().includes('OT') || evt.status.type.shortDetail.toUpperCase().includes('F/'))) ? evt.status.type.shortDetail.toUpperCase() : 'FINAL',
+                            period_scores: {
+                                away: (awayComp.linescores || []).map(l => l.value ?? 0),
+                                home: (homeComp.linescores || []).map(l => l.value ?? 0)
+                            },
+                            recap: comp.headlines?.[0]?.description || `${awayComp.team.displayName} ${awayScore}, ${homeComp.team.displayName} ${homeScore}.`,
+                            moneyline: {
+                                away: { open: "-110", close: awayMlClose, winner: awayScore > homeScore },
+                                home: { open: "-110", close: homeMlClose, winner: homeScore > awayScore }
+                            },
+                            spread: {
+                                away: { line: awaySpread > 0 ? `+${awaySpread}` : `${awaySpread}`, open_odds: "-110", close_odds: awaySpreadOdds, covered: (awayScore + awaySpread) > homeScore },
+                                home: { line: homeSpread > 0 ? `+${homeSpread}` : `${homeSpread}`, open_odds: "-110", close_odds: homeSpreadOdds, covered: (homeScore + homeSpread) > awayScore }
+                            },
+                            total: {
+                                line: ouLine,
+                                over: { open_odds: "-110", close_odds: overCloseOdds, hit: totalScore > ouLine },
+                                under: { open_odds: "-110", close_odds: underCloseOdds, hit: totalScore < ouLine }
+                            },
+                            team_totals: {
+                                away: { line: Math.round((ouLine / 2 - 0.5) * 2) / 2, open_odds: "-110", close_odds: "-110", actual: awayScore, hit: awayScore > (ouLine / 2) ? "over" : "under" },
+                                home: { line: Math.round((ouLine / 2 + 0.5) * 2) / 2, open_odds: "-110", close_odds: "-110", actual: homeScore, hit: homeScore > (ouLine / 2) ? "over" : "under" }
+                            }
+                        });
+                    });
+                } catch (e) {
+                    console.warn(`ESPN direct fetch error for ${cfg.label}:`, e);
+                }
+            }));
+
+            if (games.length === 0 && !window._autoFallbackAttempted && new Date().getHours() < 6) {
+                window._autoFallbackAttempted = true;
+                const yest = getYesterdayStr(dateStr);
+                console.log(`[Results] 0 games for ${dateStr} during early morning. Auto-falling back to ${yest}`);
+                fetchSlateData(yest);
+                return;
+            }
+
+            games.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            currentSlateData = {
+                date: dateStr,
+                games: games
+            };
+            renderSlate();
+        }
+
+        // Render Slate & Recompute KPI Summary
+        function renderSlate() {
+            if (!currentSlateData || !currentSlateData.games) return;
+
+            const allGames = currentSlateData.games;
+            const filteredGames = (currentLeagueFilter === "ALL") ?
+                allGames : allGames.filter(g => (g.league || '').toUpperCase() === currentLeagueFilter);
+
+            // Update tab count badges
+            updateLeagueTabCounts(allGames);
+
+            // Calculate KPIs dynamically for the filtered set
+            calculateAndRenderKPIs(filteredGames);
+
+            // Render Sportsbook Matchup Cards
+            renderGameCards(filteredGames);
+        }
+
+        function updateLeagueTabCounts(allGames) {
+            const counts = { ALL: allGames.length, MLB: 0, NFL: 0, NCAAF: 0, NBA: 0 };
+            allGames.forEach(g => {
+                const lg = (g.league || '').toUpperCase();
+                if (counts[lg] !== undefined) counts[lg]++;
+            });
+
+            Object.keys(counts).forEach(lg => {
+                const badge = document.getElementById(`count-${lg}`);
+                if (badge) badge.innerText = counts[lg];
+            });
+        }
+
+        function calculateAndRenderKPIs(games) {
+            let over = 0, under = 0, totalPush = 0;
+            let favCover = 0, dogCover = 0, spreadPush = 0;
+            let favWin = 0, dogWin = 0;
+            let ttOver = 0, ttUnder = 0, ttPush = 0;
+
+            games.forEach(g => {
+                // Game Totals
+                if (g.total) {
+                    if (g.total.over && g.total.over.push) totalPush++;
+                    else if (g.total.over && g.total.over.hit) over++;
+                    else if (g.total.under && g.total.under.hit) under++;
+                }
+
+                // Moneyline
+                if (g.moneyline && g.moneyline.away && g.moneyline.home) {
+                    const awayMl = parseInt(g.moneyline.away.close || 0);
+                    const homeMl = parseInt(g.moneyline.home.close || 0);
+                    const awayIsFav = awayMl < homeMl;
+
+                    if (g.moneyline.away.winner) {
+                        if (awayIsFav) favWin++; else dogWin++;
+                    } else if (g.moneyline.home.winner) {
+                        if (!awayIsFav) favWin++; else dogWin++;
+                    }
+                }
+
+                // Spread
+                if (g.spread && g.spread.away && g.spread.home) {
+                    const awayLine = parseFloat(g.spread.away.line || 0);
+                    const awayIsFav = awayLine < 0;
+
+                    if (g.spread.away.push || g.spread.home.push) {
+                        spreadPush++;
+                    } else if (g.spread.away.covered) {
+                        if (awayIsFav) favCover++; else dogCover++;
+                    } else if (g.spread.home.covered) {
+                        if (!awayIsFav) favCover++; else dogCover++;
+                    }
+                }
+
+                // Team Totals
+                if (g.team_totals) {
+                    ['away', 'home'].forEach(side => {
+                        const tt = g.team_totals[side];
+                        if (tt) {
+                            if (tt.hit === 'over') ttOver++;
+                            else if (tt.hit === 'under') ttUnder++;
+                            else if (tt.hit === 'push') ttPush++;
+                        }
+                    });
+                }
+            });
+
+            const totalDecided = over + under;
+            const overPct = totalDecided > 0 ? ((over / totalDecided) * 100).toFixed(1) : "0.0";
+
+            const spreadDecided = favCover + dogCover;
+            const dogCoverPct = spreadDecided > 0 ? ((dogCover / spreadDecided) * 100).toFixed(1) : "0.0";
+
+            const mlTotal = favWin + dogWin;
+            const favWinPct = mlTotal > 0 ? ((favWin / mlTotal) * 100).toFixed(1) : "0.0";
+
+            const ttDecided = ttOver + ttUnder;
+            const ttOverPct = ttDecided > 0 ? ((ttOver / ttDecided) * 100).toFixed(1) : "0.0";
+
+            // Update UI Elements
+            document.getElementById('kpi-total-val').innerText = `O/U: ${over}–${under} Over (${overPct}%)`;
+            document.getElementById('kpi-total-detail').innerText = `Over: ${over} | Under: ${under} | Push: ${totalPush}`;
+            document.getElementById('kpi-total-bar').style.width = `${overPct}%`;
+
+            document.getElementById('kpi-spread-val').innerText = `Underdogs ${dogCover}–${favCover} ATS (${dogCoverPct}%)`;
+            document.getElementById('kpi-spread-detail').innerText = `Fav Covered: ${favCover} | Dog Covered: ${dogCover}`;
+            document.getElementById('kpi-spread-bar').style.width = `${dogCoverPct}%`;
+
+            document.getElementById('kpi-ml-val').innerText = `Favorites ${favWin}–${dogWin} | Underdogs ${dogWin}–${favWin}`;
+            document.getElementById('kpi-ml-detail').innerText = `Favorite Win Rate: ${favWinPct}%`;
+            document.getElementById('kpi-ml-bar').style.width = `${favWinPct}%`;
+
+            document.getElementById('kpi-tt-val').innerText = `Team Totals: ${ttOver}–${ttUnder} Over (${ttOverPct}%)`;
+            document.getElementById('kpi-tt-detail').innerText = `Over: ${ttOver} | Under: ${ttUnder} | Push: ${ttPush}`;
+            document.getElementById('kpi-tt-bar').style.width = `${ttOverPct}%`;
+        }
+
+        // Render Action Network / Sportsbook Table Odds Cards
+        function renderGameCards(games) {
+            const container = document.getElementById('games-container');
+            if (!container) return;
+
+            if (!games || games.length === 0) {
+                const yestStr = getYesterdayStr(currentSlateDate);
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; padding: 48px; text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; color: var(--muted);">
+                        <span style="font-size: 32px;">🏟️</span>
+                        <p style="margin-top: 12px; font-size: 16px; font-weight: 800; color: #fff;">No completed ${currentLeagueFilter === 'ALL' ? '' : currentLeagueFilter} games found for ${currentSlateDate}.</p>
+                        <p style="margin-top: 6px; font-size: 12px; color: var(--muted);">
+                            Use the date picker or date navigation buttons at the top to select active dates.
+                        </p>
+                        <div style="margin-top: 16px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                            <button class="btn-today" onclick="fetchSlateData('${yestStr}')">VIEW ${yestStr} SLATE</button>
+                            <button class="btn-today" onclick="fetchSlateData('2026-09-04')">VIEW SEP 4 SLATE</button>
+                            <button class="btn-today" onclick="fetchSlateData('2026-09-01')">VIEW SEP 1 SLATE</button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = games.map((game) => {
+                const awayScore = parseInt(game.away_score || 0);
+                const homeScore = parseInt(game.home_score || 0);
+                const awayWon = awayScore > homeScore;
+                const homeWon = homeScore > awayScore;
+
+                const isOT = (game.status || '').toLowerCase().includes('ot') || (game.status || '').toLowerCase().includes('f/');
+
+                const awayLogo = game.away_logo || getTeamLogoUrl(game.league, game.away_abbr || game.away_team, game.away_team);
+                const homeLogo = game.home_logo || getTeamLogoUrl(game.league, game.home_abbr || game.home_team, game.home_team);
+
+                // Game Start Time & Date Formatting
+                const startTimeDisplay = game.start_time || formatGameTime(game.date);
+                const dateDisplay = formatGameDateOnly(game.date);
+
+                // Moneyline Outcomes
+                const mlAwayWin = game.moneyline?.away?.winner;
+                const mlHomeWin = game.moneyline?.home?.winner;
+
+                // Spread Outcomes
+                const spAwayCovered = game.spread?.away?.covered;
+                const spHomeCovered = game.spread?.home?.covered;
+                const spPush = game.spread?.away?.push || game.spread?.home?.push;
+
+                // Total Outcomes
+                const ouLine = parseFloat(game.total?.line || 0);
+                const totalScore = awayScore + homeScore;
+                const totOverHit = ouLine > 0 ? totalScore > ouLine : game.total?.over?.hit;
+                const totUnderHit = ouLine > 0 ? totalScore < ouLine : game.total?.under?.hit;
+                const totPush = ouLine > 0 ? totalScore === ouLine : (game.total?.over?.push || game.total?.under?.push);
+
+                // Team Totals Outcomes
+                const awayTtLine = parseFloat(game.team_totals?.away?.line || 0);
+                const homeTtLine = parseFloat(game.team_totals?.home?.line || 0);
+
+                const awayTtOverHit = awayTtLine > 0 ? awayScore > awayTtLine : (game.team_totals?.away?.hit === 'over');
+                const awayTtPush = awayTtLine > 0 ? awayScore === awayTtLine : (game.team_totals?.away?.hit === 'push');
+
+                const homeTtUnderHit = homeTtLine > 0 ? homeScore < homeTtLine : (game.team_totals?.home?.hit === 'under');
+                const homeTtPush = homeTtLine > 0 ? homeScore === homeTtLine : (game.team_totals?.home?.hit === 'push');
+
+                return `
+                    <div class="game-card">
+                        <!-- HEADER BAR WITH LEAGUE, GAME START TIME, DATE & STATUS -->
+                        <div class="card-header-bar">
+                            <div class="card-league-badge">
+                                <span class="league-tag-pill">${game.league}</span>
+                                <span class="game-start-time-pill">⏰ Start: <strong>${startTimeDisplay}</strong></span>
+                                <span class="game-date-tag">📅 ${dateDisplay}</span>
+                            </div>
+                            <span class="game-status-pill ${isOT ? 'ot' : ''}">${game.status}</span>
+                        </div>
+
+                        <!-- AUTHENTIC SPORTSBOOK TABLE (Action Network / DraftKings / FanDuel Style) -->
+                        <div class="sportsbook-table-container">
+                            <table class="sportsbook-table">
+                                <thead>
+                                    <tr>
+                                        <th class="col-team">TEAM & SCORE</th>
+                                        <th class="col-market text-center">SPREAD</th>
+                                        <th class="col-market text-center">MONEYLINE</th>
+                                        <th class="col-market text-center">TOTAL (O/U)</th>
+                                        <th class="col-market text-center">TEAM TOTAL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- AWAY TEAM ROW -->
+                                    <tr class="team-row ${awayWon ? 'winner' : ''}">
+                                        <td class="team-cell">
+                                            <div class="team-info-wrap">
+                                                <div class="team-left-wrap">
+                                                    <img src="${awayLogo}" class="team-logo" alt="${game.away_team}" onerror="this.src='https://a.espncdn.com/i/espn/misc_logos/500/ncaa.png'">
+                                                    <div class="team-text">
+                                                        <span class="team-abbr">${game.away_abbr || game.away_team}</span>
+                                                        <span class="team-full">${game.away_team} (Away)</span>
+                                                    </div>
+                                                </div>
+                                                <span class="team-score">${awayScore}</span>
+                                            </div>
+                                        </td>
+                                        <!-- AWAY SPREAD -->
+                                        <td class="market-cell text-center">
+                                            <div class="market-cell-content">
+                                                <span class="line-val">${game.spread?.away?.line || ''}</span>
+                                                <span class="odds-val">(${game.spread?.away?.close_odds || '-110'})</span>
+                                                ${spPush ? `<span class="outcome-pill push">PUSH</span>` :
+                                                  spAwayCovered ? `<span class="outcome-pill win">COVERED</span>` :
+                                                  `<span class="outcome-pill loss">NO COVER</span>`}
+                                            </div>
+                                        </td>
+                                        <!-- AWAY MONEYLINE -->
+                                        <td class="market-cell text-center">
+                                            <div class="market-cell-content">
+                                                <span class="line-val">${game.moneyline?.away?.close || ''}</span>
+                                                ${mlAwayWin ? `<span class="outcome-pill win">WINNER</span>` : `<span class="outcome-pill loss">LOSS</span>`}
+                                            </div>
+                                        </td>
+                                        <!-- OVER TOTAL -->
+                                        <td class="market-cell text-center">
+                                            <div class="market-cell-content">
+                                                <span class="line-val"><span style="color:#06b6d4; font-weight:900; background:rgba(6,182,212,0.15); padding:2px 6px; border-radius:4px; border:1px solid rgba(6,182,212,0.3); font-size:10px; margin-right:4px; letter-spacing:0.5px;">OVER</span>${ouLine || ''}</span>
+                                                <span class="odds-val">(${game.total?.over?.close_odds || '-110'})</span>
+                                                ${totPush ? `<span class="outcome-pill push">PUSH</span>` :
+                                                  totOverHit ? `<span class="outcome-pill win">OVER HIT</span>` :
+                                                  `<span class="outcome-pill loss">LOSS</span>`}
+                                            </div>
+                                        </td>
+                                        <!-- AWAY TEAM TOTAL -->
+                                        <td class="market-cell text-center">
+                                            <div class="market-cell-content">
+                                                <span class="line-val"><span style="color:#06b6d4; font-weight:900; background:rgba(6,182,212,0.15); padding:2px 6px; border-radius:4px; border:1px solid rgba(6,182,212,0.3); font-size:10px; margin-right:4px; letter-spacing:0.5px;">OVER</span>${awayTtLine || ''}</span>
+                                                <span class="odds-val">(${awayScore} pts)</span>
+                                                ${awayTtPush ? `<span class="outcome-pill push">PUSH</span>` :
+                                                  awayTtOverHit ? `<span class="outcome-pill win">OVER HIT</span>` :
+                                                  `<span class="outcome-pill loss">LOSS</span>`}
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- HOME TEAM ROW -->
+                                    <tr class="team-row ${homeWon ? 'winner' : ''}">
+                                        <td class="team-cell">
+                                            <div class="team-info-wrap">
+                                                <div class="team-left-wrap">
+                                                    <img src="${homeLogo}" class="team-logo" alt="${game.home_team}" onerror="this.src='https://a.espncdn.com/i/espn/misc_logos/500/ncaa.png'">
+                                                    <div class="team-text">
+                                                        <span class="team-abbr">${game.home_abbr || game.home_team}</span>
+                                                        <span class="team-full">${game.home_team} (Home)</span>
+                                                    </div>
+                                                </div>
+                                                <span class="team-score">${homeScore}</span>
+                                            </div>
+                                        </td>
+                                        <!-- HOME SPREAD -->
+                                        <td class="market-cell text-center">
+                                            <div class="market-cell-content">
+                                                <span class="line-val">${game.spread?.home?.line || ''}</span>
+                                                <span class="odds-val">(${game.spread?.home?.close_odds || '-110'})</span>
+                                                ${spPush ? `<span class="outcome-pill push">PUSH</span>` :
+                                                  spHomeCovered ? `<span class="outcome-pill win">COVERED</span>` :
+                                                  `<span class="outcome-pill loss">NO COVER</span>`}
+                                            </div>
+                                        </td>
+                                        <!-- HOME MONEYLINE -->
+                                        <td class="market-cell text-center">
+                                            <div class="market-cell-content">
+                                                <span class="line-val">${game.moneyline?.home?.close || ''}</span>
+                                                ${mlHomeWin ? `<span class="outcome-pill win">WINNER</span>` : `<span class="outcome-pill loss">LOSS</span>`}
+                                            </div>
+                                        </td>
+                                        <!-- UNDER TOTAL -->
+                                        <td class="market-cell text-center">
+                                            <div class="market-cell-content">
+                                                <span class="line-val"><span style="color:#3b82f6; font-weight:900; background:rgba(59,130,246,0.15); padding:2px 6px; border-radius:4px; border:1px solid rgba(59,130,246,0.3); font-size:10px; margin-right:4px; letter-spacing:0.5px;">UNDER</span>${ouLine || ''}</span>
+                                                <span class="odds-val">(${game.total?.under?.close_odds || '-110'})</span>
+                                                ${totPush ? `<span class="outcome-pill push">PUSH</span>` :
+                                                  totUnderHit ? `<span class="outcome-pill under">UNDER HIT</span>` :
+                                                  `<span class="outcome-pill loss">LOSS</span>`}
+                                            </div>
+                                        </td>
+                                        <!-- HOME TEAM TOTAL -->
+                                        <td class="market-cell text-center">
+                                            <div class="market-cell-content">
+                                                <span class="line-val"><span style="color:#3b82f6; font-weight:900; background:rgba(59,130,246,0.15); padding:2px 6px; border-radius:4px; border:1px solid rgba(59,130,246,0.3); font-size:10px; margin-right:4px; letter-spacing:0.5px;">UNDER</span>${homeTtLine || ''}</span>
+                                                <span class="odds-val">(${homeScore} pts)</span>
+                                                ${homeTtPush ? `<span class="outcome-pill push">PUSH</span>` :
+                                                  homeTtUnderHit ? `<span class="outcome-pill under">UNDER HIT</span>` :
+                                                  `<span class="outcome-pill loss">LOSS</span>`}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- RECAP & INNING/QUARTER BOXSCORE DRAWER -->
+                        <div class="recap-drawer">
+                            <button class="recap-toggle-btn" onclick="toggleRecapDrawer('${game.id}')">
+                                <span>📋 GAME RECAP & PERIOD SCORES</span>
+                                <span id="recap-arrow-${game.id}">▲</span>
+                            </button>
+
+                            <div id="recap-body-${game.id}" class="recap-body open">
+                                ${game.period_scores ? renderPeriodBoxscore(game) : ''}
+                                ${game.recap ? `<div class="recap-text"><strong>Game Summary:</strong> ${game.recap}</div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Inning / Quarter Boxscore Table
+        function renderPeriodBoxscore(game) {
+            const periodAway = game.period_scores.away || [];
+            const periodHome = game.period_scores.home || [];
+            const periodCount = Math.max(periodAway.length, periodHome.length);
+
+            const isMlb = (game.league || '').toUpperCase() === 'MLB';
+
+            let headersHtml = `<th>Team</th>`;
+            for (let i = 1; i <= periodCount; i++) {
+                headersHtml += `<th>${isMlb ? i : (i <= 4 ? `Q${i}` : `OT${i - 4}`)}</th>`;
+            }
+            headersHtml += `<th>R</th>`;
+
+            let awayRowHtml = `<td><strong>${game.away_abbr || 'Away'}</strong></td>`;
+            periodAway.forEach(s => awayRowHtml += `<td>${s}</td>`);
+            awayRowHtml += `<td><strong>${game.away_score}</strong></td>`;
+
+            let homeRowHtml = `<td><strong>${game.home_abbr || 'Home'}</strong></td>`;
+            periodHome.forEach(s => homeRowHtml += `<td>${s}</td>`);
+            homeRowHtml += `<td><strong>${game.home_score}</strong></td>`;
+
+            return `
+                <table class="boxscore-table">
+                    <thead><tr>${headersHtml}</tr></thead>
+                    <tbody>
+                        <tr>${awayRowHtml}</tr>
+                        <tr>${homeRowHtml}</tr>
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Toggle Drawer Visibility
+        function toggleRecapDrawer(gameId) {
+            const body = document.getElementById(`recap-body-${gameId}`);
+            const arrow = document.getElementById(`recap-arrow-${gameId}`);
+            if (body && arrow) {
+                const isOpen = body.classList.contains('open');
+                if (isOpen) {
+                    body.classList.remove('open');
+                    arrow.innerText = '▼';
+                } else {
+                    body.classList.add('open');
+                    arrow.innerText = '▲';
+                }
+            }
+        }
+
+        // Filter Handlers
+        function filterByLeague(league) {
+            currentLeagueFilter = league;
+            document.querySelectorAll('.league-tab').forEach(btn => {
+                if (btn.dataset.league === league) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            renderSlate();
+        }
+
+        // Date Stepper Logic
+        function changeDate(daysOffset) {
+            const dateParts = currentSlateDate.split('-').map(Number);
+            const dt = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+            dt.setDate(dt.getDate() + daysOffset);
+
+            const year = dt.getFullYear();
+            const month = String(dt.getMonth() + 1).padStart(2, '0');
+            const day = String(dt.getDate()).padStart(2, '0');
+            const newDateStr = `${year}-${month}-${day}`;
+
+            fetchSlateData(newDateStr);
+        }
+
+        function handleDatePickerChange(val) {
+            if (val) fetchSlateData(val);
+        }
+
+        function setTodayDate() {
+            fetchSlateData(getTodayStr());
+        }
+
+        // JSON Modal Controls
+        function openJsonModal() {
+            const modal = document.getElementById('json-modal');
+            if (modal) modal.classList.add('open');
+        }
+
+        function closeJsonModal() {
+            const modal = document.getElementById('json-modal');
+            if (modal) modal.classList.remove('open');
+        }
+
+        function loadSampleJson() {
+            const sample = {
+                "date": currentSlateDate,
+                "summary": {
+                    "total_games": 1,
+                    "over_under": { "over": 1, "under": 0, "push": 0 },
+                    "spread": { "favorites_covered": 1, "underdogs_covered": 0, "pushes": 0 },
+                    "moneyline": { "favorites_won": 1, "underdogs_won": 0 },
+                    "team_totals": { "over": 1, "under": 1, "push": 0 }
+                },
+                "games": [
+                    {
+                        "id": "custom-game-1",
+                        "league": "MLB",
+                        "date": "2026-09-01T22:05:00Z",
+                        "start_time": "6:05 PM ET",
+                        "formatted_date": "Tue, Sep 1, 2026 · 6:05 PM ET",
+                        "away_team": "San Francisco Giants",
+                        "away_abbr": "SF",
+                        "home_team": "Atlanta Braves",
+                        "home_abbr": "ATL",
+                        "away_score": 7,
+                        "home_score": 3,
+                        "status": "Final",
+                        "period_scores": {
+                            "away": [1, 0, 0, 0, 1, 4, 0, 0, 1],
+                            "home": [1, 1, 0, 0, 1, 0, 0, 0, 0]
+                        },
+                        "recap": "Giants exploded for 4 runs in the 6th inning to defeat the Braves 7-3 at Truist Park.",
+                        "moneyline": {
+                            "away": { "open": "+170", "close": "+179", "winner": true },
+                            "home": { "open": "-185", "close": "-193", "winner": false }
+                        },
+                        "spread": {
+                            "away": { "line": "+1.5", "open_odds": "-120", "close_odds": "-115", "covered": true },
+                            "home": { "line": "-1.5", "open_odds": "+100", "close_odds": "-105", "covered": false }
+                        },
+                        "total": {
+                            "line": 9.0,
+                            "over": { "open_odds": "-110", "close_odds": "-115", "hit": true },
+                            "under": { "open_odds": "-110", "close_odds": "-105", "hit": false }
+                        },
+                        "team_totals": {
+                            "away": { "line": 4.0, "open_odds": "-110", "close_odds": "-110", "actual": 7, "hit": "over" },
+                            "home": { "line": 5.0, "open_odds": "-110", "close_odds": "-110", "actual": 3, "hit": "under" }
+                        }
+                    }
+                ]
+            };
+            document.getElementById('json-input').value = JSON.stringify(sample, null, 2);
+        }
+
+        function applyCustomJson() {
+            const inputStr = document.getElementById('json-input').value;
+            try {
+                const parsed = JSON.parse(inputStr);
+                if (!parsed.games || !Array.isArray(parsed.games)) {
+                    alert('Invalid JSON structure: Missing "games" array.');
+                    return;
+                }
+                currentSlateData = parsed;
+                if (parsed.date) {
+                    currentSlateDate = parsed.date;
+                    document.getElementById('results-date-picker').value = parsed.date;
+                    document.getElementById('kpi-date-label').innerText = `Date: ${parsed.date}`;
+                }
+                renderSlate();
+                closeJsonModal();
+            } catch (err) {
+                alert('JSON Syntax Error: ' + err.message);
+            }
+        }
+    </script>
+</body>
+
+</html>

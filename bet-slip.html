@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny — Bet Slip & Parlay Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        :root {
+            --bg: #0a0c0f;
+            --surface: #111418;
+            --surface2: #181c22;
+            --surface3: #222933;
+            --border: rgba(255, 255, 255, 0.07);
+            --border2: rgba(255, 255, 255, 0.13);
+            --text: #e8eaed;
+            --muted: #6b7280;
+            --accent: #f59e0b;
+            --accent2: #3b82f6;
+            --cyan: #06b6d4;
+            --win: #10b981;
+            --lost: #ef4444;
+            --font-head: 'Barlow Condensed', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px 28px;
+        }
+
+        /* HEADER */
+        .slip-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border2);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .slip-title-area h1 {
+            font-family: var(--font-head);
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .slip-title-area p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        /* MAIN GRID */
+        .slip-grid {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .slip-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-family: var(--font-head);
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #fff;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* QUICK PRESETS */
+        .presets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .preset-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 6px;
+            padding: 10px 14px;
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--accent);
+            background: rgba(245, 158, 11, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .preset-event {
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .preset-pick {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .preset-odds {
+            color: var(--accent);
+            font-size: 10px;
+        }
+
+        /* CUSTOM ADD FORM */
+        .add-form {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr 1fr auto;
+            gap: 10px;
+            align-items: end;
+            margin-bottom: 20px;
+            background: var(--surface2);
+            padding: 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .add-form {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-group label {
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input, .form-group select {
+            background: var(--surface3);
+            border: 1px solid var(--border2);
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            padding: 8px 10px;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--accent);
+        }
+
+        .btn-add {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            font-family: var(--font-mono);
+            font-weight: 800;
+            font-size: 12px;
+            padding: 9px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-add:hover {
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+            transform: scale(1.02);
+        }
+
+        /* LEGS TABLE */
+        .legs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .leg-row {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            border-radius: 6px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            transition: border-color 0.2s;
+        }
+
+        .leg-row:hover {
+            border-color: var(--border2);
+        }
+
+        .leg-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .leg-matchup {
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .leg-selection {
+            font-weight: bold;
+            color: #fff;
+            font-size: 13px;
+        }
+
+        .leg-meta {
+            font-size: 10px;
+            color: var(--cyan);
+        }
+
+        .leg-odds-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 13px;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .btn-remove-leg {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--lost);
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-family: var(--font-mono);
+            transition: all 0.2s;
+        }
+
+        .btn-remove-leg:hover {
+            background: var(--lost);
+            color: #fff;
+        }
+
+        /* SLIP SUMMARY SIDEBAR */
+        .slip-summary-card {
+            position: sticky;
+            top: 80px;
+        }
+
+        .wager-type-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+            background: var(--surface2);
+            padding: 4px;
+            border-radius: 6px;
+        }
+
+        .wager-type-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: bold;
+            padding: 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .wager-type-btn.active {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .summary-metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+        }
+
+        .summary-metric-row.total {
+            border-bottom: none;
+            border-top: 1px solid var(--border2);
+            margin-top: 10px;
+            padding-top: 14px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .summary-label {
+            color: var(--muted);
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .summary-val {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .summary-val.accent {
+            color: var(--accent);
+        }
+
+        .summary-val.win {
+            color: var(--win);
+        }
+
+        .stake-input-group {
+            margin: 16px 0;
+        }
+
+        .stake-input-group label {
+            display: block;
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .stake-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+
+        .stake-currency {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 14px;
+            margin-right: 6px;
+        }
+
+        .stake-input-wrapper input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            outline: none;
+        }
+
+        .quick-stake-btns {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .quick-stake-btn {
+            flex: 1;
+            background: var(--surface3);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 10px;
+            padding: 4px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-stake-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-place-wager {
+            width: 100%;
+            background: var(--win);
+            color: #000;
+            border: none;
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            padding: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            margin-top: 16px;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-place-wager:hover {
+            background: #10b981;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn-clear-slip {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-clear-slip:hover {
+            border-color: var(--lost);
+            color: var(--lost);
+        }
+
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .empty-state-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Global Header injected by nav.js -->
+    <script src="nav.js?v=2"></script>
+
+    <div class="page-container">
+        <!-- HEADER -->
+        <div class="slip-header">
+            <div class="slip-title-area">
+                <h1>🧾 BET SLIP & PARLAY BUILDER</h1>
+                <p>Build custom wagers, calculate multi-leg parlay odds, and track EV prior to submission</p>
+            </div>
+        </div>
+
+        <!-- MAIN LAYOUT -->
+        <div class="slip-grid">
+            <!-- LEFT: Leg Management -->
+            <div>
+                <!-- QUICK PRESET PICKS -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">⚡ QUICK PRESET PICKS</div>
+                        <span style="font-size: 10px; color: var(--muted);">Click to add leg</span>
+                    </div>
+                    <div class="presets-grid">
+                        <button class="preset-btn" onclick="addPresetLeg('KC Chiefs vs BAL Ravens', 'KC Chiefs -3.5', '-110', 'FanDuel')">
+                            <span class="preset-event">NFL · KC vs BAL</span>
+                            <span class="preset-pick">Chiefs -3.5</span>
+                            <span class="preset-odds">-110 (FanDuel)</span>
+                        </button>
+                        <button class="preset-btn" onclick="addPresetLeg('SF 49ers vs DAL Cowboys', 'SF 49ers ML', '-145', 'DraftKings')">
+                            <span class="preset-event">NFL · SF vs DAL</span>
+                            <span class="preset-pick">49ers Moneyline</span>
+                            <span class="preset-odds">-145 (DraftKings)</span>
+                        </button>
+                        <button class="preset-btn" onclick="addPresetLeg('Patrick Mahomes Props', 'Over 265.5 Pass Yds', '-115', 'BetMGM')">
+                            <span class="preset-event">PROP · P. Mahomes</span>
+                            <span class="preset-pick">Over 265.5 Pass Yds</span>
+                            <span class="preset-odds">-115 (BetMGM)</span>
+                        </button>
+                        <button class="preset-btn" onclick="addPresetLeg('LAL Lakers vs BOS Celtics', 'LAL Lakers +4.5', '-108', 'Caesars')">
+                            <span class="preset-event">NBA · LAL vs BOS</span>
+                            <span class="preset-pick">Lakers +4.5</span>
+                            <span class="preset-odds">-108 (Caesars)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ADD CUSTOM LEG FORM -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">➕ ADD CUSTOM SELECTION</div>
+                    </div>
+                    <form class="add-form" id="custom-leg-form" onsubmit="handleCustomLegSubmit(event)">
+                        <div class="form-group">
+                            <label>Matchup / Event</label>
+                            <input type="text" id="leg-matchup" placeholder="e.g. PHI Eagles vs NY Giants" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Selection / Pick</label>
+                            <input type="text" id="leg-selection" placeholder="e.g. Eagles -6.5" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Odds (US)</label>
+                            <input type="text" id="leg-odds" placeholder="-110" value="-110" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Sportsbook</label>
+                            <select id="leg-bookmaker">
+                                <option value="FanDuel">FanDuel</option>
+                                <option value="DraftKings">DraftKings</option>
+                                <option value="BetMGM">BetMGM</option>
+                                <option value="Caesars">Caesars</option>
+                                <option value="Kalshi">Kalshi</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-add">+ ADD</button>
+                    </form>
+
+                    <!-- LEGS LIST -->
+                    <div class="card-header" style="margin-top: 24px;">
+                        <div class="card-title">📋 ACTIVE SELECTIONS (<span id="legs-count">0</span>)</div>
+                    </div>
+                    <div class="legs-list" id="legs-container">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🎟️</div>
+                            <div>Your bet slip is currently empty.</div>
+                            <div style="font-size: 10px; margin-top: 4px;">Click a quick preset above or use the custom form to add legs.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Bet Summary & Wager Placement -->
+            <div>
+                <div class="card slip-summary-card">
+                    <div class="card-header">
+                        <div class="card-title">💰 WAGER SUMMARY</div>
+                    </div>
+
+                    <!-- Wager Type Tabs -->
+                    <div class="wager-type-tabs">
+                        <button class="wager-type-btn active" id="tab-straight" onclick="setWagerType('Straight')">STRAIGHT</button>
+                        <button class="wager-type-btn" id="tab-parlay" onclick="setWagerType('Parlay')">PARLAY</button>
+                        <button class="wager-type-btn" id="tab-teaser" onclick="setWagerType('Teaser')">TEASER (+6)</button>
+                    </div>
+
+                    <!-- Stake Input -->
+                    <div class="stake-input-group">
+                        <label>TOTAL STAKE AMOUNT</label>
+                        <div class="stake-input-wrapper">
+                            <span class="stake-currency">$</span>
+                            <input type="number" id="stake-input" value="100" min="1" step="10" oninput="calculateSlip()">
+                        </div>
+                        <div class="quick-stake-btns">
+                            <button class="quick-stake-btn" onclick="setQuickStake(25)">$25</button>
+                            <button class="quick-stake-btn" onclick="setQuickStake(50)">$50</button>
+                            <button class="quick-stake-btn" onclick="setQuickStake(100)">$100</button>
+                            <button class="quick-stake-btn" onclick="setQuickStake(250)">$250</button>
+                            <button class="quick-stake-btn" onclick="setQuickStake(500)">$500</button>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Breakdown -->
+                    <div class="summary-metric-row">
+                        <span class="summary-label">Legs Count</span>
+                        <span class="summary-val" id="sum-legs">0</span>
+                    </div>
+                    <div class="summary-metric-row">
+                        <span class="summary-label">Combined Odds (US)</span>
+                        <span class="summary-val accent" id="sum-odds-us">+0</span>
+                    </div>
+                    <div class="summary-metric-row">
+                        <span class="summary-label">Decimal Odds</span>
+                        <span class="summary-val" id="sum-odds-dec">0.00</span>
+                    </div>
+                    <div class="summary-metric-row">
+                        <span class="summary-label">Implied Probability</span>
+                        <span class="summary-val" id="sum-implied">0.0%</span>
+                    </div>
+                    <div class="summary-metric-row">
+                        <span class="summary-label">Est. Net Profit</span>
+                        <span class="summary-val win" id="sum-profit">$0.00</span>
+                    </div>
+                    <div class="summary-metric-row total">
+                        <span class="summary-label" style="color: #fff;">EST. TOTAL PAYOUT</span>
+                        <span class="summary-val win" style="font-size: 18px;" id="sum-payout">$0.00</span>
+                    </div>
+
+                    <!-- Place Bet Button -->
+                    <button class="btn-place-wager" onclick="placeWager()">⚡ PLACE WAGER</button>
+                    <button class="btn-clear-slip" onclick="clearSlip()">Clear All Selections</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bet Slip State Script -->
+    <script>
+        let currentLegs = [];
+        let activeWagerType = 'Straight';
+
+        function setWagerType(type) {
+            activeWagerType = type;
+            document.querySelectorAll('.wager-type-btn').forEach(btn => btn.classList.remove('active'));
+            if (type === 'Straight') document.getElementById('tab-straight').classList.add('active');
+            if (type === 'Parlay') document.getElementById('tab-parlay').classList.add('active');
+            if (type === 'Teaser') document.getElementById('tab-teaser').classList.add('active');
+            calculateSlip();
+        }
+
+        function setQuickStake(amt) {
+            document.getElementById('stake-input').value = amt;
+            calculateSlip();
+        }
+
+        function addPresetLeg(matchup, selection, odds, bookmaker) {
+            currentLegs.push({
+                id: 'leg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+                matchup,
+                selection,
+                odds,
+                bookmaker
+            });
+            renderLegs();
+            calculateSlip();
+            if (window.DestinyState) {
+                DestinyState.showToast(`Added leg: ${selection}`, 'accent');
+            }
+        }
+
+        function handleCustomLegSubmit(e) {
+            e.preventDefault();
+            const matchup = document.getElementById('leg-matchup').value.trim();
+            const selection = document.getElementById('leg-selection').value.trim();
+            const odds = document.getElementById('leg-odds').value.trim();
+            const bookmaker = document.getElementById('leg-bookmaker').value;
+
+            if (!matchup || !selection || !odds) return;
+
+            addPresetLeg(matchup, selection, odds, bookmaker);
+
+            document.getElementById('leg-matchup').value = '';
+            document.getElementById('leg-selection').value = '';
+            document.getElementById('leg-odds').value = '-110';
+        }
+
+        function removeLeg(id) {
+            currentLegs = currentLegs.filter(l => l.id !== id);
+            renderLegs();
+            calculateSlip();
+        }
+
+        function clearSlip() {
+            currentLegs = [];
+            renderLegs();
+            calculateSlip();
+        }
+
+        function renderLegs() {
+            const container = document.getElementById('legs-container');
+            document.getElementById('legs-count').innerText = currentLegs.length;
+
+            if (currentLegs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎟️</div>
+                        <div>Your bet slip is currently empty.</div>
+                        <div style="font-size: 10px; margin-top: 4px;">Click a quick preset above or use the custom form to add legs.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = currentLegs.map(leg => `
+                <div class="leg-row">
+                    <div class="leg-info">
+                        <span class="leg-matchup">${leg.matchup}</span>
+                        <span class="leg-selection">${leg.selection}</span>
+                        <span class="leg-meta">Bookmaker: ${leg.bookmaker}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="leg-odds-box">${leg.odds}</span>
+                        <button class="btn-remove-leg" onclick="removeLeg('${leg.id}')">✕</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function parseAmericanOdds(oddsStr) {
+            let num = parseInt(String(oddsStr).replace('+', ''), 10);
+            return isNaN(num) ? -110 : num;
+        }
+
+        function americanToDecimal(usOdds) {
+            if (usOdds > 0) {
+                return (usOdds / 100) + 1;
+            } else {
+                return (100 / Math.abs(usOdds)) + 1;
+            }
+        }
+
+        function decimalToAmerican(decOdds) {
+            if (decOdds >= 2.0) {
+                return '+' + Math.round((decOdds - 1) * 100);
+            } else {
+                return '-' + Math.round(100 / (decOdds - 1));
+            }
+        }
+
+        function calculateSlip() {
+            const stake = parseFloat(document.getElementById('stake-input').value) || 0;
+            document.getElementById('sum-legs').innerText = currentLegs.length;
+
+            if (currentLegs.length === 0 || stake <= 0) {
+                document.getElementById('sum-odds-us').innerText = '+0';
+                document.getElementById('sum-odds-dec').innerText = '0.00';
+                document.getElementById('sum-implied').innerText = '0.0%';
+                document.getElementById('sum-profit').innerText = '$0.00';
+                document.getElementById('sum-payout').innerText = '$0.00';
+                return;
+            }
+
+            let combinedDec = 1.0;
+
+            if (activeWagerType === 'Straight') {
+                // For straight with multiple legs, take first leg
+                const firstUs = parseAmericanOdds(currentLegs[0].odds);
+                combinedDec = americanToDecimal(firstUs);
+            } else if (activeWagerType === 'Parlay') {
+                currentLegs.forEach(leg => {
+                    const us = parseAmericanOdds(leg.odds);
+                    combinedDec *= americanToDecimal(us);
+                });
+            } else if (activeWagerType === 'Teaser') {
+                // Teaser calculation (+6 pts adjusts odds to approx -120 each)
+                currentLegs.forEach(() => {
+                    combinedDec *= americanToDecimal(-120);
+                });
+            }
+
+            const combinedUs = decimalToAmerican(combinedDec);
+            const impliedProb = ((1 / combinedDec) * 100).toFixed(1);
+            const payout = stake * combinedDec;
+            const profit = payout - stake;
+
+            document.getElementById('sum-odds-us').innerText = combinedUs;
+            document.getElementById('sum-odds-dec').innerText = combinedDec.toFixed(2);
+            document.getElementById('sum-implied').innerText = impliedProb + '%';
+            document.getElementById('sum-profit').innerText = '$' + profit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('sum-payout').innerText = '$' + payout.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function placeWager() {
+            if (currentLegs.length === 0) {
+                alert('Please add at least one selection to your bet slip before placing a wager.');
+                return;
+            }
+
+            const stake = parseFloat(document.getElementById('stake-input').value) || 0;
+            if (stake <= 0) {
+                alert('Please enter a valid stake amount.');
+                return;
+            }
+
+            // Check current bankroll if DestinyState is available
+            let bankroll = 1000000;
+            if (window.DestinyState) {
+                bankroll = DestinyState.getBankroll();
+            }
+
+            if (stake > bankroll) {
+                alert(`Insufficient Bankroll. Current Bankroll: $${bankroll.toLocaleString()} | Wager Stake: $${stake.toLocaleString()}`);
+                return;
+            }
+
+            // Construct Wager Object
+            const combinedOddsUs = document.getElementById('sum-odds-us').innerText;
+            const eventName = activeWagerType === 'Parlay' || activeWagerType === 'Teaser' 
+                ? `${currentLegs.length}-Leg ${activeWagerType}` 
+                : currentLegs[0].matchup;
+
+            const wagerObj = {
+                id: 'w_' + Date.now(),
+                event: eventName,
+                matchup: currentLegs.map(l => l.selection).join(' | '),
+                stake: stake,
+                odds: combinedOddsUs,
+                type: activeWagerType,
+                bookmaker: currentLegs[0].bookmaker || 'Destiny Book',
+                status: 'PENDING',
+                timestamp: new Date().toISOString(),
+                legs: currentLegs
+            };
+
+            if (window.DestinyState) {
+                DestinyState.addWager(wagerObj);
+                DestinyState.setBankroll(bankroll - stake);
+            } else {
+                // Fallback local storage
+                let wagers = JSON.parse(localStorage.getItem('destiny_game_wagers') || '[]');
+                wagers.unshift(wagerObj);
+                localStorage.setItem('destiny_game_wagers', JSON.stringify(wagers));
+                localStorage.setItem('bankroll', (bankroll - stake).toFixed(2));
+                alert(`Wager placed successfully! $${stake} deducted from bankroll.`);
+            }
+
+            clearSlip();
+        }
+
+        // Initialize empty state
+        renderLegs();
+        calculateSlip();
+    </script>
+    <script src="nav.js?v=2"></script>
+</body>
+
+</html>

@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny — Player Props Command Center</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0c0f;
+            --surface: #111418;
+            --surface2: #181c22;
+            --border: rgba(255, 255, 255, 0.07);
+            --border2: rgba(255, 255, 255, 0.13);
+            --text: #e8eaed;
+            --muted: #6b7280;
+            --accent: #f59e0b;
+            --accent2: #3b82f6;
+            --live: #ef4444;
+            --win: #10b981;
+            --lost: #ef4444;
+            --pending: #6b7280;
+            --font-head: 'Barlow Condensed', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        /* Nav Spacer - since nav.js adds a sticky header of 48px */
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px 28px;
+        }
+
+        /* HEADER & TOP SUMMARY */
+        .props-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border2);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .props-title-area h1 {
+            font-family: var(--font-head);
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .props-title-area p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .record-badge {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 8px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+        }
+
+        .record-val {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--win);
+        }
+
+        .record-pending {
+            color: var(--accent2);
+            font-size: 11px;
+            border-left: 1px solid var(--border);
+            padding-left: 16px;
+        }
+
+        /* FILTERS BAR */
+        .filters-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 20px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .filters-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            width: 260px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.2);
+        }
+
+        .league-btn {
+            background: none;
+            border: 1px solid transparent;
+            color: var(--muted);
+            font-family: var(--font-head);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 6px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .league-btn:hover {
+            color: var(--text);
+        }
+
+        .league-btn.active {
+            background: var(--surface2);
+            border-color: var(--border2);
+            color: var(--accent);
+        }
+
+        /* DYNAMIC PLAYER PROP CARDS GRID */
+        .props-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .prop-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s, border-color 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .prop-card:hover {
+            border-color: rgba(245, 158, 11, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .prop-card-header {
+            margin-bottom: 14px;
+        }
+
+        .player-name {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 0.5px;
+        }
+
+        .player-matchup {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .prop-rows-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .prop-row {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 12px;
+        }
+
+        .prop-row-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text);
+            font-weight: 700;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            padding-bottom: 4px;
+        }
+
+        .prop-stat-name {
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .prop-line-val {
+            color: #fff;
+        }
+
+        .odds-comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1.5fr;
+            gap: 6px;
+            align-items: center;
+            font-size: 10px;
+        }
+
+        .bookmaker-col {
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .odds-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 10px;
+            padding: 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .odds-btn:hover {
+            background: rgba(245, 158, 11, 0.08);
+            border-color: var(--accent);
+        }
+
+        .odds-btn.best-odds {
+            background: rgba(16, 185, 129, 0.09);
+            border-color: var(--win);
+            color: var(--win);
+            font-weight: 700;
+            box-shadow: 0 0 6px rgba(16, 185, 129, 0.15);
+        }
+
+        .odds-btn.best-odds:hover {
+            background: rgba(16, 185, 129, 0.18);
+        }
+
+        .odds-label {
+            font-size: 7px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .odds-btn.best-odds .odds-label {
+            color: rgba(16, 185, 129, 0.7);
+        }
+
+        /* INTERACTIVE BET SLIP / MY PROPS TRACKER */
+        .tracker-section {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 10px;
+            padding: 22px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .tracker-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .tracker-title {
+            font-family: var(--font-head);
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: var(--text);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tracker-title span {
+            color: var(--accent);
+        }
+
+        .clear-btn {
+            background: none;
+            border: 1px solid var(--border2);
+            color: var(--muted);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .clear-btn:hover {
+            border-color: var(--live);
+            color: var(--live);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .tracker-table-container {
+            overflow-x: auto;
+        }
+
+        .tracker-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            text-align: left;
+        }
+
+        .tracker-table th {
+            color: var(--muted);
+            font-weight: 400;
+            padding: 10px 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tracker-table td {
+            padding: 14px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .tracker-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge-btn {
+            background: none;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .badge-btn.pending {
+            border: 1px solid var(--border2);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--muted);
+        }
+
+        .badge-btn.pending:hover {
+            border-color: var(--accent2);
+            color: var(--accent2);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .badge-btn.won {
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--win);
+        }
+
+        .badge-btn.won:hover {
+            border-color: var(--win);
+            box-shadow: 0 0 6px rgba(16, 185, 129, 0.2);
+        }
+
+        .badge-btn.lost {
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--live);
+        }
+
+        .badge-btn.lost:hover {
+            border-color: var(--live);
+            box-shadow: 0 0 6px rgba(239, 68, 68, 0.2);
+        }
+
+        .tracker-empty {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* CUSTOM PROP MODAL / DRAWER FORM */
+        .add-custom-panel {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .add-custom-title {
+            font-family: var(--font-head);
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .add-custom-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 9px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input,
+        .form-group select {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            outline: none;
+            width: 100%;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--accent);
+        }
+
+        .submit-btn {
+            background: var(--accent);
+            border: 1px solid var(--accent);
+            color: #000;
+            font-family: var(--font-head);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #fff;
+            border-color: #fff;
+        }
+
+        .delete-prop-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 12px;
+            transition: color 0.2s;
+        }
+
+        .delete-prop-btn:hover {
+            color: var(--live);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top global nav injected dynamically by nav.js -->
+
+    <div class="page-container">
+
+        <!-- PROPS COMMAND CENTER HEADER -->
+        <div class="props-header">
+            <div class="props-title-area">
+                <h1>Props Command Center</h1>
+                <p>Real-time Bookmaker Line Optimization & Bet Slip Tracker</p>
+            </div>
+            <div class="record-badge" id="recordArea">
+                <div>RECORD</div>
+                <div class="record-val" id="recordVal">0W - 0L</div>
+                <div class="record-pending" id="recordPending">0 PENDING</div>
+            </div>
+        </div>
+
+        <!-- ADD CUSTOM PROP DROPDOWN PANEL -->
+        <div class="add-custom-panel">
+            <div class="add-custom-title">Add Custom Player Prop Card</div>
+            <form class="add-custom-form" id="customPropForm" onsubmit="handleAddCustomProp(event)">
+                <div class="form-group">
+                    <label>Player Name</label>
+                    <input type="text" id="cpName" placeholder="e.g. A'ja Wilson" required>
+                </div>
+                <div class="form-group">
+                    <label>Team & Opponent</label>
+                    <input type="text" id="cpMatchup" placeholder="e.g. LVA @ NYL" required>
+                </div>
+                <div class="form-group">
+                    <label>League</label>
+                    <select id="cpLeague">
+                        <option value="NBA">NBA</option>
+                        <option value="WNBA">WNBA</option>
+                        <option value="NFL">NFL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Stat Type</label>
+                    <select id="cpStat">
+                        <option value="Points">Points</option>
+                        <option value="Rebounds">Rebounds</option>
+                        <option value="Assists">Assists</option>
+                        <option value="3-Pointers">3-Pointers</option>
+                        <option value="Passing Yards">Passing Yards</option>
+                        <option value="Rushing Yards">Rushing Yards</option>
+                        <option value="Receiving Yards">Receiving Yards</option>
+                        <option value="Receptions">Receptions</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Stat Line</label>
+                    <input type="number" step="0.5" id="cpLine" placeholder="e.g. 24.5" required>
+                </div>
+                <div class="form-group">
+                    <label>FD Over/Under Odds</label>
+                    <input type="text" id="cpFDOdds" placeholder="Over/Under (e.g. -110/+105)" default="-115/-115">
+                </div>
+                <button type="submit" class="submit-btn">Create Card</button>
+            </form>
+        </div>
+
+        <!-- FILTERS CONTROL BAR -->
+        <div class="filters-bar">
+            <div class="filters-left">
+                <button class="league-btn active" onclick="switchLeagueTab('ALL', this)">ALL LEAGUES</button>
+                <button class="league-btn" onclick="switchLeagueTab('NBA', this)">NBA</button>
+                <button class="league-btn" onclick="switchLeagueTab('WNBA', this)">WNBA</button>
+                <button class="league-btn" onclick="switchLeagueTab('NFL', this)">NFL</button>
+
+                <div
+                    style="display: flex; align-items: center; gap: 8px; margin-left: 16px; border-left: 1px solid var(--border); padding-left: 16px;">
+                    <button onclick="fetchKalshiPlayerProps()"
+                        style="background: var(--surface2); border: 1px solid var(--border2); color: var(--text); font-family: var(--font-mono); font-size: 11px; padding: 6px 12px; border-radius: 4px; outline: none; cursor: pointer;">
+                        ↻ Refresh Kalshi Props
+                    </button>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div id="apiStatusBadge"
+                    style="font-size: 9px; font-weight: 700; display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 4px; background: rgba(255,255,255,0.03); border: 1px solid var(--border2); color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s;">
+                    <span
+                        style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--muted);"></span>
+                    LOADING KALSHI...
+                </div>
+                <input type="text" id="playerSearch" class="search-input" placeholder="Search players by name..."
+                    oninput="handleSearch()">
+            </div>
+        </div>
+
+        <!-- DYNAMIC PLAYER CARDS GRID -->
+        <div class="props-grid" id="propsGrid">
+            <!-- Populated via Javascript -->
+        </div>
+
+        <!-- MY PROPS SLIP TRACKER SECTION -->
+        <div class="tracker-section">
+            <div class="tracker-header">
+                <div class="tracker-title">
+                    My Props <span>Tracker</span>
+                </div>
+                <button class="clear-btn" onclick="clearCompletedPicks()">Clear Completed</button>
+            </div>
+
+            <div class="tracker-table-container">
+                <table class="tracker-table">
+                    <thead>
+                        <tr>
+                            <th>Player</th>
+                            <th>Matchup</th>
+                            <th>Selection</th>
+                            <th>Stat Line</th>
+                            <th>Odds</th>
+                            <th>Bookmaker</th>
+                            <th style="text-align: center;">Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trackerBody">
+                        <!-- Populated via Javascript -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="trackerEmptyMsg" class="tracker-empty">
+                No active player props tracked. Click on any Over or Under odds badge above to add to your slip!
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Dynamic Player Props Data & Interaction Script -->
+    <script>
+        // Player props are pulled entirely from Kalshi's free markets via
+        // /api/kalshi-props (server-side proxy — no paid odds API, no
+        // fabricated / mock data). Covers NBA + WNBA: Points, Rebounds,
+        // Assists, 3-Pointers.
+
+        // System states
+        let players = [];          // combined = kalshiPlayers + customPlayers, rebuilt on every change
+        let kalshiPlayers = [];    // live real data from Kalshi (never persisted — always re-fetched)
+        let customPlayers = [];    // user-added manual cards (persisted)
+        let trackedPicks = [];
+        let activeLeagueFilter = 'ALL';
+        let searchQuery = '';
+
+        function rebuildPlayers() {
+            players = [...customPlayers, ...kalshiPlayers];
+            renderPropsGrid();
+        }
+
+        // Initialize state
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load tracked picks from localStorage
+            if (window.DestinyState) {
+                trackedPicks = window.DestinyState.getProps();
+                window.DestinyState.subscribe(window.DestinyState.KEYS.PROPS, (data) => {
+                    trackedPicks = data || [];
+                    renderTrackerTable();
+                });
+            } else {
+                const localPicks = localStorage.getItem('destiny_tracked_picks');
+                if (localPicks) trackedPicks = JSON.parse(localPicks);
+            }
+            renderTrackerTable();
+
+            // Custom (manually-entered) cards persist across visits
+            const savedCustom = localStorage.getItem('destiny_custom_players');
+            customPlayers = savedCustom ? JSON.parse(savedCustom) : [];
+            rebuildPlayers();
+
+            // Real player props, live from Kalshi
+            fetchKalshiPlayerProps();
+        });
+
+        function setStatusBadge(state, text) {
+            const statusEl = document.getElementById('apiStatusBadge');
+            if (!statusEl) return;
+            const colors = {
+                loading: 'var(--accent)', live: 'var(--win)', error: 'var(--live)', off: 'var(--muted)'
+            };
+            const col = colors[state] || 'var(--muted)';
+            statusEl.innerHTML = `<span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: ${col}; ${state === 'loading' ? 'box-shadow: 0 0 6px ' + col + '; animation: pulse 1s infinite;' : ''}"></span> ${text}`;
+            statusEl.style.color = col;
+        }
+
+        function americanFromCents(cents) {
+            const p = parseFloat(cents);
+            if (isNaN(p) || p <= 0 || p >= 100) return null;
+            if (p === 50) return 100;
+            return p > 50 ? -Math.round((p / (100 - p)) * 100) : Math.round(((100 - p) / p) * 100);
+        }
+
+        function realPriceCents(m) {
+            const bid = parseFloat(m.yes_bid_dollars);
+            const last = parseFloat(m.last_price_dollars);
+            const raw = (!isNaN(bid) && bid > 0) ? bid : ((!isNaN(last) && last > 0) ? last : null);
+            return raw === null ? null : Math.round(raw * 100);
+        }
+
+        // Pull matchup ("New York vs Connecticut") out of Kalshi's own rules
+        // text — every player market includes it, so no separate game lookup
+        // is needed.
+        function extractMatchup(market) {
+            const text = market.rules_primary || '';
+            // Kalshi phrases this two different ways depending on market
+            // ("...in the X vs Y..." or "...in the X at Y...") — handle both.
+            const m = text.match(/in the (.+?) (?:vs|at) (.+?) (?:women's )?Pro (?:Basketball|Football|Baseball|Hockey) game/);
+            if (!m) return '';
+            return `${m[1]} @ ${m[2]}`;
+        }
+
+        // 1. Fetch real player prop markets from Kalshi (NBA + WNBA), no
+        //    paid odds API, never fabricated — only real, currently-priced
+        //    markets are shown.
+        async function fetchKalshiPlayerProps() {
+            setStatusBadge('loading', 'LOADING KALSHI...');
+            try {
+                const res = await fetch('/api/kalshi-props');
+                if (!res.ok) throw new Error(`Proxy returned ${res.status}`);
+                const data = await res.json();
+                if (data.error) throw new Error(data.error);
+
+                const markets = data.markets || [];
+                kalshiPlayers = buildPlayersFromKalshiMarkets(markets);
+                rebuildPlayers();
+
+                if (kalshiPlayers.length === 0) {
+                    setStatusBadge('off', 'NO LIVE PROPS PRICED YET');
+                } else {
+                    setStatusBadge('live', `LIVE ACTIVE · ${kalshiPlayers.length} PLAYERS`);
+                }
+            } catch (e) {
+                console.error('Failed to load Kalshi player props:', e);
+                kalshiPlayers = [];
+                rebuildPlayers();
+                setStatusBadge('error', 'KALSHI DATA UNAVAILABLE');
+            }
+        }
+
+        // 2. Group raw Kalshi markets into the player-card schema the grid
+        //    renderer expects. For each player+stat, several threshold
+        //    markets exist (e.g. 15+, 20+, 25+ points) — we pick the one
+        //    priced closest to 50/50 as "the line", the same way a
+        //    sportsbook settles on one number.
+        function buildPlayersFromKalshiMarkets(markets) {
+            const groups = {}; // key: league||player||stat -> { player, league, matchup, entries: [] }
+
+            markets.forEach(m => {
+                const yesPrice = realPriceCents(m);
+                if (yesPrice === null) return; // no real liquidity yet — skip, never guess
+
+                const label = m.yes_sub_title || '';
+                const playerName = label.includes(':') ? label.split(':')[0].trim() : label.trim();
+                if (!playerName) return;
+
+                const key = `${m._league}||${playerName}||${m._stat}`;
+                if (!groups[key]) {
+                    groups[key] = {
+                        player: playerName,
+                        league: m._league,
+                        stat: m._stat,
+                        matchup: extractMatchup(m),
+                        entries: []
+                    };
+                }
+                groups[key].entries.push({ line: m.floor_strike, yesPrice });
+            });
+
+            const playersMap = {};
+            Object.values(groups).forEach(g => {
+                if (g.entries.length === 0) return;
+                const closest = g.entries.reduce((best, e) =>
+                    Math.abs(e.yesPrice - 50) < Math.abs(best.yesPrice - 50) ? e : best
+                );
+                const overAm = americanFromCents(closest.yesPrice);
+                const underAm = americanFromCents(100 - closest.yesPrice);
+                if (overAm === null || underAm === null) return;
+
+                const pKey = `${g.league}||${g.player}`;
+                if (!playersMap[pKey]) {
+                    playersMap[pKey] = {
+                        id: 'kalshi-' + pKey.replace(/\s+/g, '-').toLowerCase(),
+                        name: g.player,
+                        teamMatchup: g.matchup,
+                        league: g.league,
+                        props: {}
+                    };
+                }
+                playersMap[pKey].props[g.stat] = {
+                    line: closest.line,
+                    books: {
+                        'Kalshi': { over: overAm, under: underAm }
+                    }
+                };
+            });
+
+            return Object.values(playersMap).sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        // Loop through sportsbooks to locate the best (highest payout) American odds
+        function findBestOddsForProp(books, type) {
+            let bestBook = '';
+            let bestOddsVal = -Infinity;
+            let bestAmerican = '';
+
+            for (const [book, lineData] of Object.entries(books)) {
+                const americanOdds = lineData[type];
+                if (americanOdds === null || americanOdds === undefined) continue;
+                const payoutVal = getOddsPayoutValue(americanOdds);
+                if (payoutVal > bestOddsVal) {
+                    bestOddsVal = payoutVal;
+                    bestBook = book;
+                    bestAmerican = americanOdds;
+                }
+            }
+            return { book: bestBook, odds: bestAmerican };
+        }
+
+        // Render the player cards matching filters
+        function renderPropsGrid() {
+            const gridEl = document.getElementById('propsGrid');
+            gridEl.innerHTML = '';
+
+            const filtered = players.filter(p => {
+                const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+                const matchesLeague = activeLeagueFilter === 'ALL' || p.league === activeLeagueFilter;
+                return matchesSearch && matchesLeague;
+            });
+
+            if (filtered.length === 0) {
+                gridEl.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 40px 0; font-size: 13px;">
+                        No player prop matches found.
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'prop-card';
+
+                // Custom prop card flag
+                const isCustom = p.id.startsWith('custom-');
+                const deleteBtn = isCustom ? `<button class="delete-prop-btn" onclick="deletePropCard('${p.id}')" title="Delete custom prop card">×</button>` : '';
+
+                let rowsHtml = '';
+                for (const [statName, statDetails] of Object.entries(p.props)) {
+                    const line = statDetails.line;
+
+                    const bestOver = findBestOddsForProp(statDetails.books, 'over');
+                    const bestUnder = findBestOddsForProp(statDetails.books, 'under');
+
+                    let comparisonRows = '';
+
+                    // Always query a standard list of major books if they exist in bookmaker map, 
+                    // else show what was retrieved
+                    const bookmakerList = Object.keys(statDetails.books).length > 0
+                        ? Object.keys(statDetails.books).slice(0, 3) // restrict to top 3 books for beautiful layout
+                        : ["FanDuel", "DraftKings", "BetMGM"];
+
+                    bookmakerList.forEach(bookName => {
+                        const oddsData = statDetails.books[bookName] || { over: null, under: null };
+
+                        const isBestOver = (bookName === bestOver.book && oddsData.over === bestOver.odds);
+                        const isBestUnder = (bookName === bestUnder.book && oddsData.under === bestUnder.odds);
+
+                        const formattedOver = oddsData.over !== null ? (oddsData.over > 0 ? `+${oddsData.over}` : oddsData.over) : '—';
+                        const formattedUnder = oddsData.under !== null ? (oddsData.under > 0 ? `+${oddsData.under}` : oddsData.under) : '—';
+
+                        comparisonRows += `
+                            <div class="bookmaker-col">${bookName.substring(0, 3).toUpperCase()}</div>
+                            <button class="odds-btn ${isBestOver && oddsData.over !== null ? 'best-odds' : ''}" 
+                                ${oddsData.over !== null ? '' : 'disabled style="opacity:0.25; cursor:not-allowed;"'}
+                                onclick="addPickToSlip('${p.name}', '${p.teamMatchup}', '${statName}', ${line}, 'OVER', '${formattedOver}', '${bookName}')">
+                                <span class="odds-label">OVER</span>
+                                <span>${formattedOver}</span>
+                            </button>
+                            <button class="odds-btn ${isBestUnder && oddsData.under !== null ? 'best-odds' : ''}" 
+                                ${oddsData.under !== null ? '' : 'disabled style="opacity:0.25; cursor:not-allowed;"'}
+                                onclick="addPickToSlip('${p.name}', '${p.teamMatchup}', '${statName}', ${line}, 'UNDER', '${formattedUnder}', '${bookName}')">
+                                <span class="odds-label">UNDER</span>
+                                <span>${formattedUnder}</span>
+                            </button>
+                        `;
+                    });
+
+                    rowsHtml += `
+                        <div class="prop-row">
+                            <div class="prop-row-header">
+                                <span class="prop-stat-name">${statName}</span>
+                                <span class="prop-line-val">${line}</span>
+                            </div>
+                            <div class="odds-comparison-grid">
+                                ${comparisonRows}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    ${deleteBtn}
+                    <div class="prop-card-header">
+                        <div class="player-name">${p.name}</div>
+                        <div class="player-matchup">${p.teamMatchup} · ${p.league}</div>
+                    </div>
+                    <div class="prop-rows-container">
+                        ${rowsHtml}
+                    </div>
+                `;
+
+                gridEl.appendChild(card);
+            });
+        }
+
+        // Add a selection to tracking list
+        function addPickToSlip(playerName, matchup, statName, line, choice, odds, sportsbook) {
+            // Avoid duplicates
+            const duplicate = trackedPicks.find(k =>
+                k.player === playerName &&
+                k.stat === statName &&
+                k.choice === choice &&
+                k.status === 'PENDING'
+            );
+
+            if (duplicate) {
+                alert(`You already have ${playerName} ${choice} ${line} ${statName} pending on your slip!`);
+                return;
+            }
+
+            const newPick = {
+                id: 'pick-' + Date.now() + Math.floor(Math.random() * 100),
+                player: playerName,
+                matchup: matchup,
+                stat: statName,
+                line: line,
+                choice: choice,
+                odds: odds,
+                sportsbook: sportsbook,
+                status: 'PENDING'
+            };
+
+            trackedPicks.unshift(newPick);
+            if (window.DestinyState) {
+                window.DestinyState.addProp(newPick);
+            } else {
+                localStorage.setItem('destiny_tracked_picks', JSON.stringify(trackedPicks));
+            }
+            renderTrackerTable();
+        }
+
+        // Cycle through pick status (PENDING -> WON -> LOST -> PENDING)
+        function togglePickStatus(pickId) {
+            const pick = trackedPicks.find(p => p.id === pickId);
+            if (!pick) return;
+
+            if (pick.status === 'PENDING') {
+                pick.status = 'WON';
+            } else if (pick.status === 'WON') {
+                pick.status = 'LOST';
+            } else {
+                pick.status = 'PENDING';
+            }
+
+            if (window.DestinyState) {
+                window.DestinyState.saveProps(trackedPicks);
+            } else {
+                localStorage.setItem('destiny_tracked_picks', JSON.stringify(trackedPicks));
+            }
+            renderTrackerTable();
+        }
+
+        // Delete a single pick from tracker
+        function deleteTrackedPick(pickId) {
+            trackedPicks = trackedPicks.filter(p => p.id !== pickId);
+            if (window.DestinyState) {
+                window.DestinyState.saveProps(trackedPicks);
+            } else {
+                localStorage.setItem('destiny_tracked_picks', JSON.stringify(trackedPicks));
+            }
+            renderTrackerTable();
+        }
+
+        // Clear completed (WON/LOST) picks
+        function clearCompletedPicks() {
+            trackedPicks = trackedPicks.filter(p => p.status === 'PENDING');
+            if (window.DestinyState) {
+                window.DestinyState.saveProps(trackedPicks);
+            } else {
+                localStorage.setItem('destiny_tracked_picks', JSON.stringify(trackedPicks));
+            }
+            renderTrackerTable();
+        }
+
+        // Render My Props tracker block and recalculate metrics
+        function renderTrackerTable() {
+            const bodyEl = document.getElementById('trackerBody');
+            const emptyEl = document.getElementById('trackerEmptyMsg');
+            bodyEl.innerHTML = '';
+
+            if (trackedPicks.length === 0) {
+                emptyEl.style.display = 'block';
+            } else {
+                emptyEl.style.display = 'none';
+            }
+
+            let wins = 0;
+            let losses = 0;
+            let pending = 0;
+
+            trackedPicks.forEach(p => {
+                if (p.status === 'WON') wins++;
+                else if (p.status === 'LOST') losses++;
+                else pending++;
+
+                const row = document.createElement('tr');
+
+                let badgeClass = 'pending';
+                if (p.status === 'WON') badgeClass = 'won';
+                else if (p.status === 'LOST') badgeClass = 'lost';
+
+                row.innerHTML = `
+                    <td style="font-weight: 700; color: #fff;">${p.player}</td>
+                    <td style="color: var(--muted);">${p.matchup}</td>
+                    <td>
+                        <span style="color: ${p.choice === 'OVER' ? 'var(--accent)' : 'var(--accent2)'}; font-weight:700;">
+                            ${p.choice}
+                        </span>
+                    </td>
+                    <td style="color: #fff; font-weight:500;">${p.line} ${p.stat}</td>
+                    <td style="color: var(--win); font-weight:700;">${p.odds}</td>
+                    <td style="color: var(--muted); text-transform: uppercase;">${p.sportsbook}</td>
+                    <td style="text-align: center;">
+                        <button class="badge-btn ${badgeClass}" onclick="togglePickStatus('${p.id}')">
+                            ${p.status}
+                        </button>
+                    </td>
+                    <td>
+                        <button class="clear-btn" style="padding: 4px 10px; border-color: rgba(239, 68, 68, 0.2); color: var(--muted);" 
+                            onclick="deleteTrackedPick('${p.id}')">
+                            Remove
+                        </button>
+                    </td>
+                `;
+                bodyEl.appendChild(row);
+            });
+
+            // Update top record Area
+            document.getElementById('recordVal').textContent = `${wins}W - ${losses}L`;
+            document.getElementById('recordPending').textContent = `${pending} PENDING`;
+        }
+
+        // Add a completely custom mock prop card
+        function handleAddCustomProp(e) {
+            e.preventDefault();
+            const name = document.getElementById('cpName').value.trim();
+            const matchup = document.getElementById('cpMatchup').value.trim();
+            const league = document.getElementById('cpLeague').value;
+            const stat = document.getElementById('cpStat').value;
+            const line = parseFloat(document.getElementById('cpLine').value);
+            const oddsVal = document.getElementById('cpFDOdds').value.trim() || '-110/-110';
+
+            const parts = oddsVal.split('/');
+            const oOdds = parseInt(parts[0]) || -110;
+            const uOdds = parseInt(parts[1] || parts[0]) || -110;
+
+            // See if a custom card for this player already exists
+            let player = customPlayers.find(p => p.name.toLowerCase() === name.toLowerCase());
+
+            if (!player) {
+                player = {
+                    id: 'custom-' + Date.now(),
+                    name: name,
+                    teamMatchup: matchup,
+                    league: league,
+                    props: {}
+                };
+                customPlayers.unshift(player);
+            }
+
+            // Single "Custom" book — this is the number you typed in, not a
+            // real sportsbook quote, so it's never shown as one.
+            player.props[stat] = {
+                line: line,
+                books: {
+                    'Custom': { over: oOdds, under: uOdds }
+                }
+            };
+
+            localStorage.setItem('destiny_custom_players', JSON.stringify(customPlayers));
+
+            document.getElementById('customPropForm').reset();
+            rebuildPlayers();
+        }
+
+        // Delete a custom card
+        function deletePropCard(id) {
+            customPlayers = customPlayers.filter(p => p.id !== id);
+            localStorage.setItem('destiny_custom_players', JSON.stringify(customPlayers));
+            rebuildPlayers();
+        }
+
+        // Filters controls
+        function switchLeagueTab(league, btn) {
+            activeLeagueFilter = league;
+            document.querySelectorAll('.league-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderPropsGrid();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('playerSearch').value;
+            renderPropsGrid();
+        }
+
+        // Sub-Second Kalshi Stream Handler for Props
+        if (window.DestinyLiveFeed) {
+            window.DestinyLiveFeed.onKalshiTick((tick) => {
+                if (!tick || !tick.team) return;
+                document.querySelectorAll('.prop-card').forEach(card => {
+                    if (card.innerText.toUpperCase().includes(tick.team)) {
+                        card.classList.remove('flash-green', 'flash-red');
+                        void card.offsetWidth;
+                        card.classList.add(tick.direction === 'UP' ? 'flash-green' : 'flash-red');
+                    }
+                });
+            });
+        }
+    </script>
+
+    <!-- Global Nav script injected at bottom -->
+    <script src="nav.js?v=2"></script>
+</body>
+
+</html>

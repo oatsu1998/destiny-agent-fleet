@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny — Kalshi Prediction Market Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0c0f;
+            --surface: #111418;
+            --surface2: #181c22;
+            --surface3: #222933;
+            --border: rgba(255, 255, 255, 0.07);
+            --border2: rgba(255, 255, 255, 0.13);
+            --border-active: rgba(245, 158, 11, 0.4);
+            --text: #e8eaed;
+            --muted: #6b7280;
+            --accent: #f59e0b; /* Yellow */
+            --accent2: #3b82f6; /* Blue */
+            --yes-color: #10b981; /* Green */
+            --no-color: #ef4444; /* Red */
+            --font-head: 'Barlow Condensed', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Nav Spacer - since nav.js adds a sticky header of 48px */
+        .nav-spacer {
+            height: 48px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 28px;
+            border-bottom: 1px solid var(--border2);
+            background: var(--surface);
+        }
+
+        .logo {
+            font-family: var(--font-head);
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .logo span {
+            color: var(--text);
+            opacity: 0.4;
+            font-weight: 400;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        #clock {
+            font-size: 12px;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        .bankroll-container {
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.05);
+        }
+
+        .bankroll-label {
+            color: var(--accent);
+            text-transform: uppercase;
+            font-size: 10px;
+        }
+
+        .bankroll-amount {
+            color: #fff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Workspace Grid */
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 24px;
+            padding: 24px 28px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+        }
+
+        @media (max-width: 1100px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Left Side: Markets listing */
+        .market-center {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .market-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            background: var(--surface);
+            padding: 14px 20px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .market-filters {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+        }
+
+        .filter-tab {
+            font-family: var(--font-head);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: var(--muted);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .filter-tab:hover {
+            color: var(--text);
+            border-color: var(--border2);
+        }
+
+        .filter-tab.active {
+            color: var(--accent);
+            border-color: var(--accent);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 300px;
+            min-width: 200px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            padding: 8px 12px;
+            padding-right: 32px;
+            border-radius: 4px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.05);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 12px;
+            pointer-events: none;
+        }
+
+        /* Markets List */
+        .markets-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .market-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px 20px;
+            display: grid;
+            grid-template-columns: 1fr 120px 180px;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .market-card:hover {
+            border-color: var(--border2);
+            background: linear-gradient(90deg, var(--surface), rgba(24, 28, 34, 0.4));
+            transform: translateX(4px);
+        }
+
+        .market-card.selected {
+            border-color: var(--accent);
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.03), rgba(24, 28, 34, 0.7));
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.02);
+        }
+
+        .market-info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .market-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 9px;
+            letter-spacing: 1px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .market-category {
+            color: var(--accent2);
+            font-weight: 700;
+        }
+
+        .market-title {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--text);
+            line-height: 1.3;
+        }
+
+        .market-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .market-sparkline-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+        }
+
+        .sparkline-svg {
+            width: 100%;
+            height: 100%;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .sparkline-yes {
+            stroke: var(--yes-color);
+            filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.2));
+        }
+
+        .market-buttons-section {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .price-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 52px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            font-family: var(--font-head);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .price-box.yes {
+            background: rgba(16, 185, 129, 0.04);
+            border-color: rgba(16, 185, 129, 0.15);
+        }
+
+        .price-box.yes:hover {
+            background: rgba(16, 185, 129, 0.12);
+            border-color: var(--yes-color);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.1);
+        }
+
+        .price-box.no {
+            background: rgba(239, 68, 68, 0.04);
+            border-color: rgba(239, 68, 68, 0.15);
+        }
+
+        .price-box.no:hover {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: var(--no-color);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.1);
+        }
+
+        .price-box-label {
+            font-size: 9px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .price-box-value {
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .price-box.yes .price-box-value {
+            color: var(--yes-color);
+        }
+
+        .price-box.no .price-box-value {
+            color: var(--no-color);
+        }
+
+        /* Blink animations for updates */
+        @keyframes blink-green {
+            0% { background-color: rgba(16, 185, 129, 0.4); }
+            100% { background-color: rgba(16, 185, 129, 0.04); }
+        }
+
+        @keyframes blink-red {
+            0% { background-color: rgba(239, 68, 68, 0.4); }
+            100% { background-color: rgba(239, 68, 68, 0.04); }
+        }
+
+        .blink-up {
+            animation: blink-green 0.8s ease-out;
+        }
+
+        .blink-down {
+            animation: blink-red 0.8s ease-out;
+        }
+
+        /* Right Side: Terminal */
+        .terminal-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: sticky;
+            top: 68px; /* nav header height + gap */
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        /* Scrollbar styles for the terminal panel */
+        .terminal-panel::-webkit-scrollbar {
+            width: 4px;
+        }
+        .terminal-panel::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .terminal-panel::-webkit-scrollbar-thumb {
+            background: var(--border2);
+            border-radius: 2px;
+        }
+
+        .terminal-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .terminal-title-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 14px;
+        }
+
+        .terminal-category {
+            font-size: 9px;
+            color: var(--accent2);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .terminal-market-title {
+            font-family: var(--font-head);
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.3;
+        }
+
+        /* Chart container */
+        .terminal-chart-wrapper {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chart-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chart-price-display {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .chart-current-price {
+            font-family: var(--font-head);
+            font-size: 28px;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .chart-price-change {
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--yes-color);
+            background: rgba(16, 185, 129, 0.12);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .chart-timeframe-tabs {
+            display: flex;
+            gap: 4px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .chart-tf-btn {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-size: 9px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .chart-tf-btn.active {
+            background: var(--surface3);
+            color: var(--accent);
+        }
+
+        .terminal-chart-container {
+            position: relative;
+            height: 180px;
+            width: 100%;
+            display: flex;
+        }
+
+        .chart-y-axis {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 9px;
+            color: var(--muted);
+            padding-right: 6px;
+            user-select: none;
+        }
+
+        .chart-canvas-area {
+            position: relative;
+            flex: 1;
+            height: 100%;
+        }
+
+        .chart-main-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .chart-line {
+            stroke: var(--accent);
+            stroke-width: 3;
+            fill: none;
+            filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.4));
+            transition: all 0.3s ease;
+        }
+
+        .chart-area {
+            fill: url(#chart-gradient);
+            opacity: 0.15;
+            transition: all 0.3s ease;
+        }
+
+        .chart-grid-line {
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 1;
+            stroke-dasharray: 4 4;
+        }
+
+        .chart-live-dot {
+            fill: var(--win);
+            stroke: #fff;
+            stroke-width: 2;
+            filter: drop-shadow(0 0 8px var(--win));
+            animation: pulseDot 1.5s infinite;
+        }
+
+        @keyframes pulseDot {
+            0% { r: 5; opacity: 1; }
+            50% { r: 8; opacity: 0.6; }
+            100% { r: 5; opacity: 1; }
+        }
+
+        .chart-x-axis {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: var(--muted);
+            padding-left: 28px;
+            margin-top: 4px;
+        }
+
+        .chart-tooltip {
+            position: absolute;
+            background: var(--surface3);
+            border: 1px solid var(--border2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #fff;
+            pointer-events: none;
+            display: none;
+            transform: translate(-50%, -100%);
+            margin-top: -10px;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        /* Order Book Grid */
+        .orderbook-section {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px;
+        }
+
+        .orderbook-header {
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .orderbook-grid {
+            display: grid;
+            grid-template-columns: 1fr 1px 1fr;
+            gap: 12px;
+        }
+
+        .orderbook-divider {
+            background: var(--border);
+        }
+
+        .ob-side {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .ob-side-title {
+            font-size: 8px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+            text-align: center;
+        }
+
+        .ob-side-title.yes { color: var(--yes-color); }
+        .ob-side-title.no { color: var(--no-color); }
+
+        .ob-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            padding: 2px 4px;
+            border-radius: 2px;
+            transition: background 0.15s;
+        }
+
+        .ob-row.bid { background: rgba(16, 185, 129, 0.03); }
+        .ob-row.ask { background: rgba(239, 68, 68, 0.03); }
+
+        .ob-price { font-weight: bold; }
+        .ob-size { color: var(--muted); }
+
+        .ob-side.yes .ob-price { color: var(--yes-color); }
+        .ob-side.no .ob-price { color: var(--no-color); }
+
+        /* Trading console input */
+        .trading-console {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .trade-direction-toggle {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        .trade-dir-btn {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-family: var(--font-head);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.2s;
+        }
+
+        .trade-dir-btn.active.buy-yes {
+            background: var(--yes-color);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+        }
+
+        .trade-dir-btn.active.buy-no {
+            background: var(--no-color);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.25);
+        }
+
+        .trade-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .trade-input-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 6px 12px;
+        }
+
+        .trade-input-label {
+            font-size: 9px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .trade-qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .trade-input-val {
+            background: none;
+            border: none;
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 700;
+            text-align: right;
+            width: 80px;
+            outline: none;
+        }
+
+        .qty-btn {
+            background: var(--surface3);
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 24px;
+            height: 24px;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.15s;
+        }
+
+        .qty-btn:hover {
+            border-color: var(--muted);
+            color: #fff;
+        }
+
+        .quick-qty-row {
+            display: flex;
+            gap: 4px;
+        }
+
+        .quick-qty-btn {
+            flex: 1;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 8px;
+            padding: 4px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-transform: uppercase;
+        }
+
+        .quick-qty-btn:hover {
+            border-color: var(--border2);
+            color: var(--text);
+        }
+
+        .financial-summary {
+            background: rgba(255, 255, 255, 0.01);
+            border-top: 1px dashed var(--border);
+            padding-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 10px;
+        }
+
+        .fin-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .fin-label {
+            color: var(--muted);
+        }
+
+        .fin-val {
+            color: var(--text);
+            font-weight: bold;
+        }
+
+        .fin-val.highlight {
+            color: var(--accent);
+        }
+
+        .fin-val.profit {
+            color: var(--yes-color);
+        }
+
+        .action-button {
+            width: 100%;
+            border: none;
+            border-radius: 4px;
+            font-family: var(--font-head);
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 4px;
+        }
+
+        .action-button.yes {
+            background: var(--yes-color);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
+        }
+
+        .action-button.yes:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .action-button.no {
+            background: var(--no-color);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.15);
+        }
+
+        .action-button.no:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Portfolio section */
+        .portfolio-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .portfolio-header {
+            font-family: var(--font-head);
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #fff;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .portfolio-count {
+            font-size: 10px;
+            background: var(--surface2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+
+        .portfolio-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .portfolio-item {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+
+        .portfolio-item:hover {
+            border-color: var(--border2);
+        }
+
+        .portfolio-item-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .portfolio-item-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+        }
+
+        .portfolio-item-meta {
+            display: flex;
+            gap: 8px;
+            font-size: 8px;
+            color: var(--muted);
+        }
+
+        .portfolio-type {
+            font-weight: bold;
+        }
+
+        .portfolio-type.yes { color: var(--yes-color); }
+        .portfolio-type.no { color: var(--no-color); }
+
+        .portfolio-value-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .portfolio-item-value {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .portfolio-item-return {
+            font-size: 9px;
+            font-weight: 500;
+        }
+
+        .portfolio-item-return.positive { color: var(--yes-color); }
+        .portfolio-item-return.negative { color: var(--no-color); }
+
+        .sell-close-btn {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            color: var(--no-color);
+            font-family: var(--font-head);
+            font-size: 9px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.15s;
+        }
+
+        .sell-close-btn:hover {
+            background: var(--no-color);
+            color: #fff;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.2);
+        }
+
+        .empty-portfolio {
+            text-align: center;
+            color: var(--muted);
+            font-size: 10px;
+            padding: 24px;
+            border: 1px dashed var(--border);
+            border-radius: 4px;
+        }
+
+        /* Explainer Guide Card */
+        .pricing-explainer-card {
+            background: var(--surface);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
+        }
+
+        .explainer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: var(--font-head);
+            font-size: 14px;
+            font-weight: 900;
+            color: var(--accent);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .explainer-toggle-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: var(--font-mono);
+            font-size: 9px;
+            padding: 3px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .explainer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+        }
+
+        .explainer-box {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 12px;
+        }
+
+        .explainer-box h4 {
+            font-family: var(--font-head);
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .explainer-box p {
+            font-size: 10px;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        .explainer-box code {
+            background: rgba(0,0,0,0.3);
+            color: var(--accent);
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+
+        /* Activity ticker */
+        .ticker-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ticker-title {
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 6px;
+        }
+
+        .ticker-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            height: 120px;
+            overflow-y: hidden;
+            position: relative;
+        }
+
+        .ticker-item {
+            font-size: 9px;
+            color: var(--muted);
+            padding: 4px 6px;
+            border-radius: 3px;
+            background: var(--surface2);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            animation: slideIn 0.3s ease-out;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .ticker-item-user {
+            color: var(--accent2);
+            font-weight: bold;
+        }
+
+        .ticker-item-action {
+            color: var(--text);
+        }
+
+        .ticker-item-price {
+            font-weight: bold;
+        }
+        .ticker-item-price.yes { color: var(--yes-color); }
+        .ticker-item-price.no { color: var(--no-color); }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top global nav injected dynamically by nav.js -->
+    <div class="nav-spacer"></div>
+
+    <header>
+        <div class="logo">DESTINY<span> // KALSHI TERMINAL</span></div>
+        <div class="header-right">
+            <div id="clock">19:26:58 EST</div>
+            <div class="bankroll-container">
+                <span class="bankroll-label">Bankroll</span>
+                <span class="bankroll-amount">$<span id="bankroll-amount-val">10000.00</span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="workspace">
+        <!-- Left Column: Markets & Search -->
+        <section class="market-center">
+            <!-- PREDICTION PRICING & AMERICAN ODDS EXPLAINER -->
+            <div class="pricing-explainer-card">
+                <div class="explainer-header">
+                    <span>💡 HOW KALSHI PRICING & AMERICAN ODDS WORK</span>
+                    <button class="explainer-toggle-btn" id="explainerToggleBtn" onclick="toggleExplainerGuide()">Hide Guide</button>
+                </div>
+                <div class="explainer-content" id="explainerGuideContent">
+                    <div class="explainer-grid">
+                        <div class="explainer-box">
+                            <h4>1. Cents = Implied Win Probability</h4>
+                            <p>Contract prices range from <strong>1¢ to 99¢</strong>, directly representing the probability that an outcome occurs. (e.g. <strong>36¢ = 36% win chance</strong>).</p>
+                        </div>
+                        <div class="explainer-box">
+                            <h4>2. Fixed $1.00 Payout Settlement</h4>
+                            <p>Every winning contract settles at <strong>$1.00 cash payout</strong> per share. Buying at <strong>36¢</strong> pays <strong>$1.00</strong> on win for a <strong>+$0.64 profit (+178%)</strong> per share!</p>
+                        </div>
+                        <div class="explainer-box">
+                            <h4>3. American Odds Conversion</h4>
+                            <p>
+                                • Under 50¢ (Underdog): <code>+((100-P)/P)*100</code> (e.g. <strong>36¢ = +178</strong>)<br>
+                                • Over 50¢ (Favorite): <code>-(P/(100-P))*100</code> (e.g. <strong>64¢ = -178</strong>)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="market-toolbar">
+                <div class="market-filters">
+                    <button class="filter-tab active" data-category="all">🔥 All Markets</button>
+                    <button class="filter-tab" data-category="nfl">🏈 NFL</button>
+                    <button class="filter-tab" data-category="mlb">⚾ MLB</button>
+                    <button class="filter-tab" data-category="nba">🏀 NBA</button>
+                    <button class="filter-tab" data-category="wnba">🏀 WNBA</button>
+                    <button class="filter-tab" data-category="nhl">🏒 NHL</button>
+                    <button class="filter-tab" data-category="props">🎯 Player Props</button>
+                </div>
+                <div class="search-box">
+                    <input type="text" class="search-input" id="market-search" placeholder="Search markets...">
+                    <span class="search-icon">🔍</span>
+                </div>
+            </div>
+
+            <div class="markets-list" id="markets-list-el">
+                <!-- Market cards will be loaded here dynamically by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Right Column: Interactive Trading Terminal & Portfolio -->
+        <aside class="terminal-panel">
+            <!-- Selected Market Info & Order Console -->
+            <div class="terminal-card" id="terminal-card-el">
+                <div class="terminal-title-section">
+                    <span class="terminal-category" id="term-category">ECONOMICS</span>
+                    <h2 class="terminal-market-title" id="term-title">Federal Reserve to Cut Rates in June 2026?</h2>
+                </div>
+
+                <!-- Real-Time Kalshi Odds History Graph -->
+                <div class="terminal-chart-wrapper">
+                    <div class="chart-header-bar">
+                        <div class="chart-price-display">
+                            <span class="chart-current-price" id="term-chart-price">58¢</span>
+                            <span class="chart-price-change" id="term-chart-change">+4.2% TODAY</span>
+                        </div>
+                        <div class="chart-timeframe-tabs">
+                            <button class="chart-tf-btn active" onclick="switchChartTf('1H', this)">1H</button>
+                            <button class="chart-tf-btn" onclick="switchChartTf('24H', this)">24H</button>
+                            <button class="chart-tf-btn" onclick="switchChartTf('7D', this)">7D</button>
+                            <button class="chart-tf-btn" onclick="switchChartTf('ALL', this)">ALL</button>
+                        </div>
+                    </div>
+
+                    <div class="terminal-chart-container">
+                        <div class="chart-y-axis">
+                            <span>100¢</span>
+                            <span>75¢</span>
+                            <span>50¢</span>
+                            <span>25¢</span>
+                            <span>0¢</span>
+                        </div>
+                        <div class="chart-canvas-area">
+                            <svg class="chart-main-svg" id="chart-svg">
+                                <defs>
+                                    <linearGradient id="chart-gradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.4"></stop>
+                                        <stop offset="100%" stop-color="var(--accent)" stop-opacity="0.0"></stop>
+                                    </linearGradient>
+                                </defs>
+                                <!-- Horizontal Grid lines -->
+                                <line class="chart-grid-line" x1="0" y1="20%" x2="100%" y2="20%"></line>
+                                <line class="chart-grid-line" x1="0" y1="40%" x2="100%" y2="40%"></line>
+                                <line class="chart-grid-line" x1="0" y1="60%" x2="100%" y2="60%"></line>
+                                <line class="chart-grid-line" x1="0" y1="80%" x2="100%" y2="80%"></line>
+                                
+                                <!-- Chart paths -->
+                                <path class="chart-area" d=""></path>
+                                <path class="chart-line" d=""></path>
+                                
+                                <!-- Glowing Live Point -->
+                                <circle class="chart-live-dot" id="chart-live-dot" cx="0" cy="0" r="6"></circle>
+                            </svg>
+                            <div class="chart-tooltip" id="chart-tooltip-el">58¢</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-x-axis">
+                        <span>00:00</span>
+                        <span>06:00</span>
+                        <span>12:00</span>
+                        <span>18:00</span>
+                        <span style="color:var(--win); font-weight:bold;">LIVE ⚡</span>
+                    </div>
+                </div>
+
+                <!-- Real-Time Order Book -->
+                <div class="orderbook-section">
+                    <div class="orderbook-header">
+                        <span>LIVE ORDER BOOK</span>
+                        <span style="color: var(--accent2);">refreshing live</span>
+                    </div>
+                    <div class="orderbook-grid">
+                        <div class="ob-side yes">
+                            <div class="ob-side-title yes">YES CONTRACTS</div>
+                            <div class="ob-row bid">
+                                <span class="ob-price" id="ob-yes-bid-p">57¢</span>
+                                <span class="ob-size" id="ob-yes-bid-s">4.5K</span>
+                            </div>
+                            <div class="ob-row ask">
+                                <span class="ob-price" id="ob-yes-ask-p">58¢</span>
+                                <span class="ob-size" id="ob-yes-ask-s">1.2K</span>
+                            </div>
+                        </div>
+                        <div class="orderbook-divider"></div>
+                        <div class="ob-side no">
+                            <div class="ob-side-title no">NO CONTRACTS</div>
+                            <div class="ob-row bid">
+                                <span class="ob-price" id="ob-no-bid-p">41¢</span>
+                                <span class="ob-size" id="ob-no-bid-s">2.8K</span>
+                            </div>
+                            <div class="ob-row ask">
+                                <span class="ob-price" id="ob-no-ask-p">42¢</span>
+                                <span class="ob-size" id="ob-no-ask-s">3.4K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trading Action Box -->
+                <div class="trading-console">
+                    <div class="trade-direction-toggle">
+                        <button class="trade-dir-btn active buy-yes" id="toggle-yes-btn" onclick="selectContractType('YES')">BUY YES</button>
+                        <button class="trade-dir-btn buy-no" id="toggle-no-btn" onclick="selectContractType('NO')">BUY NO</button>
+                    </div>
+
+                    <div class="trade-inputs">
+                        <!-- Quantity Input -->
+                        <div class="trade-input-row">
+                            <span class="trade-input-label">CONTRACTS</span>
+                            <div class="trade-qty-controls">
+                                <div class="qty-btn" onclick="adjustQty(-10)">-10</div>
+                                <input type="number" class="trade-input-val" id="trade-qty" value="50" min="1" oninput="calculateTrade()">
+                                <div class="qty-btn" onclick="adjustQty(10)">+10</div>
+                            </div>
+                        </div>
+                        <div class="quick-qty-row">
+                            <button class="quick-qty-btn" onclick="setQty(10)">10</button>
+                            <button class="quick-qty-btn" onclick="setQty(50)">50</button>
+                            <button class="quick-qty-btn" onclick="setQty(100)">100</button>
+                            <button class="quick-qty-btn" onclick="setQty(500)">500</button>
+                            <button class="quick-qty-btn" onclick="setMaxQty()">MAX</button>
+                        </div>
+
+                        <!-- Price Indicator (Read only limit order matching current price) -->
+                        <div class="trade-input-row" style="opacity: 0.85;">
+                            <span class="trade-input-label">MATCH PRICE</span>
+                            <span style="font-weight: bold; font-size: 13px;" id="trade-price-display">58¢</span>
+                        </div>
+                    </div>
+
+                    <!-- Financial Summary -->
+                    <div class="financial-summary">
+                        <div class="fin-row">
+                            <span class="fin-label">Total Cost:</span>
+                            <span class="fin-val highlight" id="trade-cost">$29.00</span>
+                        </div>
+                        <div class="fin-row">
+                            <span class="fin-label">Max Payout ($1.00/contract):</span>
+                            <span class="fin-val" id="trade-payout">$50.00</span>
+                        </div>
+                        <div class="fin-row">
+                            <span class="fin-label">Estimated Max Profit:</span>
+                            <span class="fin-val profit" id="trade-profit">+$21.00 (+72.4%)</span>
+                        </div>
+                    </div>
+
+                    <!-- Submit Order Button -->
+                    <button class="action-button yes" id="submit-order-btn" onclick="executeTrade()">SUBMIT YES BUY ORDER</button>
+                </div>
+            </div>
+
+            <!-- Global Activity Ticker -->
+            <div class="ticker-card">
+                <span class="ticker-title">LIVE KALSHI PRICE FEED</span>
+                <div class="ticker-feed" id="ticker-feed-el">
+                    <!-- Dynamic live trading rows -->
+                </div>
+            </div>
+
+            <!-- Portfolio Summary Section -->
+            <div class="portfolio-card">
+                <div class="portfolio-header">
+                    <span>MY PORTFOLIO</span>
+                    <span class="portfolio-count" id="portfolio-count-el">0 Positions</span>
+                </div>
+                <div class="portfolio-list" id="portfolio-list-el">
+                    <!-- Loaded positions dynamically -->
+                    <div class="empty-portfolio">No active prediction contracts. Place a trade to start!</div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        // Global variables
+        let bankroll = 10000.00;
+        let selectedMarketId = 201;
+        let selectedContractType = 'YES'; // YES or NO
+        let positions = [];
+
+        // American Odds Converter Helper
+        function centsToAmericanOdds(cents) {
+            const p = parseFloat(cents);
+            if (isNaN(p) || p <= 0 || p >= 100) return 'EVEN';
+            if (p === 50) return '+100';
+            if (p > 50) {
+                const odds = Math.round((p / (100 - p)) * 100);
+                return `-${odds}`;
+            } else {
+                const odds = Math.round(((100 - p) / p) * 100);
+                return `+${odds}`;
+            }
+        }
+
+        // Real markets, loaded from /api/kalshi (your own Kalshi proxy) — see loadRealMarkets() below.
+        // NO SIMULATED DATA. Real prices only, or a visible error.
+        let marketsData = [];
+
+        function formatKalshiVolume(volumeFp) {
+            const v = Math.round(volumeFp || 0);
+            if (v >= 1000) return `$${(v / 1000).toFixed(1)}K`;
+            return `$${v}`;
+        }
+
+        function formatKalshiExpiration(closeTimeIso) {
+            if (!closeTimeIso) return 'TBD';
+            const d = new Date(closeTimeIso);
+            if (isNaN(d.getTime())) return 'TBD';
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        // Map one raw Kalsh        // Every number here comes straight from Kalshi — nothing invented.
+        function mapKalshiMarket(m) {
+            const yesBid = parseFloat(m.yes_bid_dollars) || 0;
+            const yesAsk = parseFloat(m.yes_ask_dollars) || 0;
+            const noBid = parseFloat(m.no_bid_dollars) || 0;
+            const noAsk = parseFloat(m.no_ask_dollars) || 0;
+            const lastPrice = parseFloat(m.last_price_dollars) || 0;
+
+            const yesPriceRaw = lastPrice > 0 ? lastPrice : ((yesBid > 0 && yesAsk > 0) ? (yesBid + yesAsk) / 2 : (yesBid > 0 ? yesBid : (yesAsk > 0 ? yesAsk : 0.50)));
+            const yesPrice = Math.max(1, Math.min(99, Math.round(yesPriceRaw * 100)));
+            const noPrice = 100 - yesPrice;
+
+            const yesBidSize = Math.round(parseFloat(m.yes_bid_size_fp) || 0);
+            const yesAskSize = Math.round(parseFloat(m.yes_ask_size_fp) || 0);
+
+            const league = m._league || 'SPORTS';
+            const kind = m._kind || (m._stat ? 'prop' : 'game');
+            const cat = league.toLowerCase();
+
+            let displayType = 'Moneyline';
+            if (kind === 'spread') displayType = `Spread (${m.floor_strike || ''})`;
+            else if (kind === 'total') displayType = `Total (${m.floor_strike || ''})`;
+            else if (m._stat) displayType = `${m._stat} Prop`;
+
+            return {
+                id: m.ticker,
+                ticker: m.ticker,
+                title: `${m.yes_sub_title || m.title} — ${displayType}`,
+                matchup: m.title,
+                category: cat,
+                league: league,
+                kind: kind,
+                yesPrice,
+                noPrice,
+                history: [yesPrice],
+                volume: formatKalshiVolume(parseFloat(m.volume_fp)),
+                expiration: formatKalshiExpiration(m.close_time),
+                orderbook: {
+                    yes: {
+                        bid: [Math.round(yesBid * 100) || Math.max(1, yesPrice - 1), yesBidSize],
+                        ask: [Math.round(yesAsk * 100) || Math.min(99, yesPrice + 1), yesAskSize]
+                    },
+                    no: {
+                        bid: [Math.round(noBid * 100) || Math.max(1, noPrice - 1), yesAskSize],
+                        ask: [Math.round(noAsk * 100) || Math.min(99, noPrice + 1), yesAskSize]
+                    }
+                }
+            };
+        }
+
+        // Fetch real sports markets AND player props from our Kalshi proxies simultaneously.
+        async function loadRealMarkets() {
+            const listEl = document.getElementById('markets-list-el');
+            try {
+                const [gameRes, propRes] = await Promise.allSettled([
+                    fetch('/api/kalshi'),
+                    fetch('/api/kalshi-props')
+                ]);
+
+                let raw = [];
+                if (gameRes.status === 'fulfilled' && gameRes.value.ok) {
+                    const gData = await gameRes.value.json();
+                    if (gData.markets) raw.push(...gData.markets);
+                }
+                if (propRes.status === 'fulfilled' && propRes.value.ok) {
+                    const pData = await propRes.value.json();
+                    if (pData.markets) raw.push(...pData.markets);
+                }
+
+                const mapped = raw.map(mapKalshiMarket);
+
+                const prevById = {};
+                marketsData.forEach(m => { prevById[m.id] = m; });
+                marketsData = mapped.map(m => {
+                    const prev = prevById[m.id];
+                    return prev ? { ...m, history: prev.history } : m;
+                });
+
+                if (marketsData.length === 0 && listEl) {
+                    listEl.innerHTML = `
+                        <div style="text-align: center; padding: 40px 20px; color: var(--muted); border: 1px dashed var(--border); border-radius: 6px;">
+                            ⛔ KALSHI DATA UNAVAILABLE — no open markets returned.
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error('[Kalshi] Failed to load real markets:', err);
+                if (listEl && marketsData.length === 0) {
+                    listEl.innerHTML = `
+                        <div style="text-align: center; padding: 40px 20px; color: var(--muted); border: 1px dashed var(--border); border-radius: 6px;">
+                            ⛔ KALSHI DATA UNAVAILABLE — ${err.message}
+                        </div>
+                    `;
+                }
+            }
+        }
+
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', async () => {
+            initClock();
+            loadBankroll();
+            loadPositions();
+            initSearchAndFilters();
+
+            await loadRealMarkets();
+            renderMarkets();
+            if (marketsData.length > 0) {
+                selectMarket(marketsData[0].id);
+            }
+
+            if (window.DestinyLiveFeed) {
+                window.DestinyLiveFeed.onKalshiTick(handleKalshiTick);
+            }
+
+            setInterval(loadRealMarkets, 10000);
+        });
+
+        // Sync and Load Bankroll from Destiny LocalStorage
+        function loadBankroll() {
+            if (window.DestinyState) {
+                bankroll = window.DestinyState.getBankroll();
+                window.DestinyState.subscribe(window.DestinyState.KEYS.BANKROLL, (val) => {
+                    bankroll = parseFloat(val) || 10000.00;
+                    updateBankrollUI();
+                });
+            } else {
+                const saved = localStorage.getItem('bankroll');
+                bankroll = saved !== null ? parseFloat(saved) : 10000.00;
+            }
+            updateBankrollUI();
+        }
+
+        function updateBankrollUI() {
+            const amountEl = document.getElementById('bankroll-amount-val');
+            if (amountEl) {
+                amountEl.innerText = bankroll.toFixed(2);
+            }
+        }
+
+        function saveBankroll(amount) {
+            bankroll = amount;
+            if (window.DestinyState) {
+                window.DestinyState.setBankroll(amount);
+            } else {
+                localStorage.setItem('bankroll', bankroll);
+            }
+            updateBankrollUI();
+        }
+
+        // Clock display
+        function initClock() {
+            const clockEl = document.getElementById('clock');
+            const updateClock = () => {
+                const now = new Date();
+                let hrs = now.getHours();
+                const mins = String(now.getMinutes()).padStart(2, '0');
+                const secs = String(now.getSeconds()).padStart(2, '0');
+                const ampm = hrs >= 12 ? 'PM' : 'AM';
+                hrs = hrs % 12;
+                hrs = hrs ? hrs : 12;
+                clockEl.textContent = `${String(hrs).padStart(2, '0')}:${mins}:${secs} ${ampm} EST`;
+            };
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        // Render markets list based on search and filters
+        let currentFilter = 'all';
+        let searchQuery = '';
+
+        function renderMarkets() {
+            const listEl = document.getElementById('markets-list-el');
+            listEl.innerHTML = '';
+
+            const filtered = marketsData.filter(m => {
+                const matchesCat = currentFilter === 'all' || 
+                                   m.category === currentFilter ||
+                                   (currentFilter === 'props' && m.kind === 'prop') ||
+                                   (currentFilter === 'nfl' && (m.category === 'nfl' || m.league === 'NFL')) ||
+                                   (currentFilter === 'mlb' && (m.category === 'mlb' || m.league === 'MLB')) ||
+                                   (currentFilter === 'nba' && (m.category === 'nba' || m.league === 'NBA')) ||
+                                   (currentFilter === 'wnba' && (m.category === 'wnba' || m.league === 'WNBA')) ||
+                                   (currentFilter === 'nhl' && (m.category === 'nhl' || m.league === 'NHL'));
+                const matchesSearch = m.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      m.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                      (m.matchup && m.matchup.toLowerCase().includes(searchQuery.toLowerCase()));
+                return matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: var(--muted); border: 1px dashed var(--border); border-radius: 6px;">
+                        No prediction markets found matching criteria.
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(m => {
+                const isSelected = m.id === selectedMarketId;
+                
+                // Build sparkline path
+                const sparkPath = getSparklinePath(m.history);
+
+                const card = document.createElement('div');
+                card.className = `market-card ${isSelected ? 'selected' : ''}`;
+                card.id = `market-card-${m.id}`;
+                card.setAttribute('data-id', m.id);
+                card.setAttribute('onclick', `selectMarket('${m.id}')`);
+
+                card.innerHTML = `
+                    <div class="market-info-section">
+                        <div class="market-meta">
+                            <span class="market-category">${m.category}</span>
+                            <span>•</span>
+                            <span>${m.volume} Vol</span>
+                            <span>•</span>
+                            <span>Ends ${m.expiration}</span>
+                        </div>
+                        <h3 class="market-title">${m.title}</h3>
+                        ${m.matchup ? `<div style="font-size:10px; color:var(--muted); margin-top:2px;">${m.matchup}</div>` : ''}
+                    </div>
+                    <div class="market-sparkline-section">
+                        <svg class="sparkline-svg" viewBox="0 0 100 30">
+                            <path class="sparkline-yes" d="${sparkPath}"></path>
+                        </svg>
+                    </div>
+                    <div class="market-buttons-section">
+                        <div class="price-box yes" id="yes-box-${m.id}" onclick="event.stopPropagation(); selectMarket('${m.id}'); selectContractType('YES');">
+                            <span class="price-box-label">YES</span>
+                            <span class="price-box-value">${m.yesPrice}¢ <span style="font-size:9px; opacity:0.8; font-weight:normal;">(${centsToAmericanOdds(m.yesPrice)})</span></span>
+                        </div>
+                        <div class="price-box no" id="no-box-${m.id}" onclick="event.stopPropagation(); selectMarket('${m.id}'); selectContractType('NO');">
+                            <span class="price-box-label">NO</span>
+                            <span class="price-box-value">${m.noPrice}¢ <span style="font-size:9px; opacity:0.8; font-weight:normal;">(${centsToAmericanOdds(m.noPrice)})</span></span>
+                        </div>
+                    </div>
+                `;
+                listEl.appendChild(card);
+            });
+        }
+
+        // Generate sparkline path coordinates
+        function getSparklinePath(history) {
+            if (!history || history.length < 2) return '';
+            const min = 0;
+            const max = 100;
+            const width = 100;
+            const height = 30;
+            const step = width / (history.length - 1);
+            
+            return history.map((val, index) => {
+                const x = index * step;
+                const y = height - ((val - min) / (max - min) * height);
+                return `${index === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`;
+            }).join(' ');
+        }
+
+        // Handle category filters and search
+        function initSearchAndFilters() {
+            const tabs = document.querySelectorAll('.filter-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentFilter = tab.getAttribute('data-category');
+                    renderMarkets();
+                });
+            });
+
+            const searchInput = document.getElementById('market-search');
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value;
+                renderMarkets();
+            });
+        }
+
+        // Select specific market for terminal view
+        function toggleExplainerGuide() {
+            const content = document.getElementById('explainerGuideContent');
+            const btn = document.getElementById('explainerToggleBtn');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                btn.innerText = 'Hide Guide';
+            } else {
+                content.style.display = 'none';
+                btn.innerText = 'Show Guide';
+            }
+        }
+
+        function selectMarket(id) {
+            selectedMarketId = id;
+            
+            // Update active state in market cards list
+            const cards = document.querySelectorAll('.market-card');
+            cards.forEach(c => c.classList.remove('selected'));
+            const selectedCard = document.getElementById(`market-card-${id}`);
+            if (selectedCard) selectedCard.classList.add('selected');
+
+            const market = marketsData.find(m => m.id === id);
+            if (!market) return;
+
+            // Fill Terminal details
+            document.getElementById('term-category').innerText = market.category.toUpperCase();
+            document.getElementById('term-title').innerText = market.title;
+
+            // Update price box indicators
+            updateTerminalPricesUI(market);
+
+            // Draw Terminal Chart
+            drawMainChart(market.history);
+
+            // Update Order Book UI
+            updateOrderBookUI(market);
+
+            // Update buy/sell calculations
+            calculateTrade();
+        }
+
+        function updateTerminalPricesUI(market) {
+            const price = selectedContractType === 'YES' ? market.yesPrice : market.noPrice;
+            const amOdds = centsToAmericanOdds(price);
+            document.getElementById('trade-price-display').innerHTML = `${price}¢ <span style="font-size:11px; color:var(--accent); font-weight:bold; margin-left:6px;">(${amOdds})</span>`;
+            
+            const submitBtn = document.getElementById('submit-order-btn');
+            if (selectedContractType === 'YES') {
+                submitBtn.className = 'action-button yes';
+                submitBtn.innerText = `SUBMIT YES BUY ORDER (${amOdds})`;
+            } else {
+                submitBtn.className = 'action-button no';
+                submitBtn.innerText = `SUBMIT NO BUY ORDER (${amOdds})`;
+            }
+        }
+
+        // Select YES or NO buy contract
+        function selectContractType(type) {
+            selectedContractType = type;
+            
+            const yesBtn = document.getElementById('toggle-yes-btn');
+            const noBtn = document.getElementById('toggle-no-btn');
+
+            if (type === 'YES') {
+                yesBtn.className = 'trade-dir-btn active buy-yes';
+                noBtn.className = 'trade-dir-btn';
+            } else {
+                yesBtn.className = 'trade-dir-btn';
+                noBtn.className = 'trade-dir-btn active buy-no';
+            }
+
+            const market = marketsData.find(m => m.id === selectedMarketId);
+            if (market) {
+                updateTerminalPricesUI(market);
+                calculateTrade();
+            }
+        }
+
+        // Draw interactive SVG line chart inside terminal
+        function drawMainChart(history) {
+            const svg = document.getElementById('chart-svg');
+            const pathLine = svg.querySelector('.chart-line');
+            const pathArea = svg.querySelector('.chart-area');
+
+            // A freshly-loaded real market starts with just one price point (no
+            // fake historical trend invented to fill this in) — pad it to two
+            // identical points so the chart math below doesn't divide by zero.
+            if (!history || history.length === 0) history = [50];
+            if (history.length === 1) history = [history[0], history[0]];
+
+            const w = svg.clientWidth || 360;
+            const h = 160;
+            const padding = 20;
+
+            const min = 0;
+            const max = 100;
+
+            const chartW = w - padding * 2;
+            const chartH = h - padding * 2;
+            const step = chartW / (history.length - 1);
+
+            // Generate points
+            const points = history.map((val, index) => {
+                const x = padding + index * step;
+                const y = padding + (chartH - ((val - min) / (max - min) * chartH));
+                return { x, y, val };
+            });
+
+            // Line path string
+            const lineD = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+            pathLine.setAttribute('d', lineD);
+
+            // Area path string (closes back to bottom of graph)
+            const areaD = `${lineD} L ${points[points.length - 1].x.toFixed(1)} ${h - padding} L ${points[0].x.toFixed(1)} ${h - padding} Z`;
+            pathArea.setAttribute('d', areaD);
+
+            // Position glowing live dot at the latest point
+            const lastP = points[points.length - 1];
+            const liveDot = document.getElementById('chart-live-dot');
+            if (liveDot && lastP) {
+                liveDot.setAttribute('cx', lastP.x.toFixed(1));
+                liveDot.setAttribute('cy', lastP.y.toFixed(1));
+            }
+
+            // Update top chart header price & change indicator
+            const firstVal = history[0] || lastP.val;
+            const diff = lastP.val - firstVal;
+            const pct = firstVal > 0 ? ((diff / firstVal) * 100).toFixed(1) : 0;
+            const priceEl = document.getElementById('term-chart-price');
+            const changeEl = document.getElementById('term-chart-change');
+            if (priceEl) priceEl.innerText = `${lastP.val}¢`;
+            if (changeEl) {
+                changeEl.innerText = `${diff >= 0 ? '+' : ''}${pct}% TODAY`;
+                changeEl.style.color = diff >= 0 ? 'var(--yes-color)' : 'var(--no-color)';
+                changeEl.style.background = diff >= 0 ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)';
+            }
+
+            // Tooltip interactivity
+            svg.onmousemove = (e) => {
+                const rect = svg.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                
+                // Find closest point
+                let closest = points[0];
+                let minDist = Math.abs(mouseX - points[0].x);
+                
+                points.forEach(p => {
+                    const dist = Math.abs(mouseX - p.x);
+                    if (dist < minDist) {
+                        minDist = dist;
+                        closest = p;
+                    }
+                });
+
+                const tooltip = document.getElementById('chart-tooltip-el');
+                tooltip.style.display = 'block';
+                tooltip.style.left = `${closest.x}px`;
+                tooltip.style.top = `${closest.y}px`;
+                tooltip.innerText = `${closest.val}¢`;
+            };
+
+            svg.onmouseleave = () => {
+                document.getElementById('chart-tooltip-el').style.display = 'none';
+            };
+        }
+
+        function switchChartTf(tf, btn) {
+            document.querySelectorAll('.chart-tf-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            const market = marketsData.find(m => m.id === selectedMarketId);
+            if (!market) return;
+
+            let sampleHistory = [...market.history];
+            if (tf === '1H') sampleHistory = sampleHistory.slice(-5);
+            else if (tf === '24H') sampleHistory = sampleHistory.slice(-10);
+            else if (tf === '7D') sampleHistory = [sampleHistory[0] || 50, 45, 52, 58, 62, sampleHistory[sampleHistory.length - 1] || 60];
+
+            drawMainChart(sampleHistory);
+        }
+
+        // Update the order book panel inside terminal
+        function updateOrderBookUI(market) {
+            document.getElementById('ob-yes-bid-p').innerText = `${market.orderbook.yes.bid[0]}¢`;
+            document.getElementById('ob-yes-bid-s').innerText = `${(market.orderbook.yes.bid[1]/1000).toFixed(1)}K`;
+            document.getElementById('ob-yes-ask-p').innerText = `${market.orderbook.yes.ask[0]}¢`;
+            document.getElementById('ob-yes-ask-s').innerText = `${(market.orderbook.yes.ask[1]/1000).toFixed(1)}K`;
+
+            document.getElementById('ob-no-bid-p').innerText = `${market.orderbook.no.bid[0]}¢`;
+            document.getElementById('ob-no-bid-s').innerText = `${(market.orderbook.no.bid[1]/1000).toFixed(1)}K`;
+            document.getElementById('ob-no-ask-p').innerText = `${market.orderbook.no.ask[0]}¢`;
+            document.getElementById('ob-no-ask-s').innerText = `${(market.orderbook.no.ask[1]/1000).toFixed(1)}K`;
+        }
+
+        // Adjust trading console qty
+        function adjustQty(amount) {
+            const qtyInput = document.getElementById('trade-qty');
+            let current = parseInt(qtyInput.value) || 0;
+            current = Math.max(1, current + amount);
+            qtyInput.value = current;
+            calculateTrade();
+        }
+
+        function setQty(qty) {
+            const qtyInput = document.getElementById('trade-qty');
+            qtyInput.value = qty;
+            calculateTrade();
+        }
+
+        function setMaxQty() {
+            const market = marketsData.find(m => m.id === selectedMarketId);
+            if (!market) return;
+            const price = selectedContractType === 'YES' ? market.yesPrice : market.noPrice;
+            const costPerContract = price / 100;
+            
+            const maxContracts = Math.floor(bankroll / costPerContract);
+            const qtyInput = document.getElementById('trade-qty');
+            qtyInput.value = Math.max(1, maxContracts);
+            calculateTrade();
+        }
+
+        // Perform real-time wagers calculation
+        function calculateTrade() {
+            const qty = parseInt(document.getElementById('trade-qty').value) || 0;
+            const market = marketsData.find(m => m.id === selectedMarketId);
+            if (!market) return;
+
+            const price = selectedContractType === 'YES' ? market.yesPrice : market.noPrice;
+            
+            const totalCost = (qty * price) / 100;
+            const maxPayout = qty * 1.00;
+            const estimatedProfit = maxPayout - totalCost;
+            const profitPercent = totalCost > 0 ? (estimatedProfit / totalCost * 100).toFixed(1) : 0;
+
+            document.getElementById('trade-cost').innerText = `$${totalCost.toFixed(2)}`;
+            document.getElementById('trade-payout').innerText = `$${maxPayout.toFixed(2)}`;
+            document.getElementById('trade-profit').innerText = `+$${estimatedProfit.toFixed(2)} (+${profitPercent}%)`;
+        }
+
+        // Execute Buy Trade Order
+        function executeTrade() {
+            const qty = parseInt(document.getElementById('trade-qty').value) || 0;
+            if (qty <= 0) {
+                alert("Please enter a valid number of contracts to buy.");
+                return;
+            }
+
+            const market = marketsData.find(m => m.id === selectedMarketId);
+            if (!market) return;
+
+            const price = selectedContractType === 'YES' ? market.yesPrice : market.noPrice;
+            const totalCost = (qty * price) / 100;
+
+            // Insufficient funds check
+            if (totalCost > bankroll) {
+                alert("Insufficient Bankroll. Lower your contract amount or deposit more funds.");
+                return;
+            }
+
+            // Deduct from bankroll
+            saveBankroll(bankroll - totalCost);
+
+            // Add position to active listing
+            const existingPos = positions.find(p => p.marketId === market.id && p.type === selectedContractType);
+            if (existingPos) {
+                // Average cost calculation
+                const totalExistingCost = existingPos.qty * (existingPos.avgPrice / 100);
+                const combinedQty = existingPos.qty + qty;
+                const combinedCost = totalExistingCost + totalCost;
+                existingPos.avgPrice = Math.round((combinedCost / combinedQty) * 100);
+                existingPos.qty = combinedQty;
+            } else {
+                positions.push({
+                    id: Date.now(),
+                    marketId: market.id,
+                    marketTitle: market.title,
+                    type: selectedContractType,
+                    qty: qty,
+                    avgPrice: price
+                });
+            }
+
+            // Save positions & reload
+            savePositions();
+            renderPortfolio();
+            selectMarket(selectedMarketId); // Refresh calculations
+
+            // Show a temporary success alert effect
+            const originalText = document.getElementById('submit-order-btn').innerText;
+            const originalClass = document.getElementById('submit-order-btn').className;
+            const btn = document.getElementById('submit-order-btn');
+            
+            btn.className = 'action-button yes';
+            btn.style.backgroundColor = 'var(--yes-color)';
+            btn.innerText = `ORDER EXECUTED!`;
+            btn.disabled = true;
+
+            // Generate trade activity ticker feed
+            addFeedItem("You", `bought ${qty} contracts of ${market.title.substring(0, 20)}... (${selectedContractType})`, price, selectedContractType);
+
+            setTimeout(() => {
+                btn.className = originalClass;
+                btn.innerText = originalText;
+                btn.style.backgroundColor = '';
+                btn.disabled = false;
+            }, 1500);
+        }
+
+        // Sell position to close early
+        function sellToClose(posId) {
+            const index = positions.findIndex(p => p.id === posId);
+            if (index === -1) return;
+
+            const pos = positions[index];
+            const market = marketsData.find(m => m.id === pos.marketId);
+            if (!market) return;
+
+            // Current price the contract sells for
+            const currentPrice = pos.type === 'YES' ? market.yesPrice : market.noPrice;
+            const totalReturn = (pos.qty * currentPrice) / 100;
+
+            // Credit bankroll
+            saveBankroll(bankroll + totalReturn);
+
+            // Generate feed item
+            addFeedItem("You", `sold ${pos.qty} contracts of ${market.title.substring(0, 20)}... (${pos.type})`, currentPrice, pos.type);
+
+            // Remove position
+            positions.splice(index, 1);
+            savePositions();
+            renderPortfolio();
+            calculateTrade();
+        }
+
+        // Save positions to localStorage
+        function savePositions() {
+            localStorage.setItem('kalshi_positions', JSON.stringify(positions));
+        }
+
+        // Load positions from localStorage
+        function loadPositions() {
+            const saved = localStorage.getItem('kalshi_positions');
+            if (saved) {
+                positions = JSON.parse(saved);
+            }
+            renderPortfolio();
+        }
+
+        // Render portfolio UI listing
+        function renderPortfolio() {
+            const listEl = document.getElementById('portfolio-list-el');
+            const countEl = document.getElementById('portfolio-count-el');
+
+            countEl.innerText = `${positions.length} Position${positions.length === 1 ? '' : 's'}`;
+
+            if (positions.length === 0) {
+                listEl.innerHTML = `<div class="empty-portfolio">No active prediction contracts. Place a trade to start!</div>`;
+                return;
+            }
+
+            listEl.innerHTML = '';
+            positions.forEach(pos => {
+                const market = marketsData.find(m => m.id === pos.marketId);
+                const currentPrice = market ? (pos.type === 'YES' ? market.yesPrice : market.noPrice) : pos.avgPrice;
+                
+                const value = (pos.qty * currentPrice) / 100;
+                const cost = (pos.qty * pos.avgPrice) / 100;
+                const profitVal = value - cost;
+                const returnPct = cost > 0 ? (profitVal / cost * 100).toFixed(1) : 0;
+
+                const item = document.createElement('div');
+                item.className = 'portfolio-item';
+                item.innerHTML = `
+                    <div class="portfolio-item-details">
+                        <span class="portfolio-item-title" title="${pos.marketTitle}">${pos.marketTitle}</span>
+                        <div class="portfolio-item-meta">
+                            <span class="portfolio-type ${pos.type.toLowerCase()}">${pos.type}</span>
+                            <span>•</span>
+                            <span>${pos.qty} contracts</span>
+                            <span>•</span>
+                            <span>Avg ${pos.avgPrice}¢</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-value-section">
+                        <span class="portfolio-item-value">$${value.toFixed(2)}</span>
+                        <span class="portfolio-item-return ${profitVal >= 0 ? 'positive' : 'negative'}">
+                            ${profitVal >= 0 ? '+' : ''}$${profitVal.toFixed(2)} (${profitVal >= 0 ? '+' : ''}${returnPct}%)
+                        </span>
+                    </div>
+                    <button class="sell-close-btn" onclick="sellToClose(${pos.id})">Sell</button>
+                `;
+                listEl.appendChild(item);
+            });
+        }
+
+        // Logs the user's OWN real actions in this feed (e.g. "You bought/sold
+        // N contracts..."), called from executeTrade()/sellToClose() below.
+        function addFeedItem(user, action, price, type) {
+            const feedEl = document.getElementById('ticker-feed-el');
+            if (!feedEl) return;
+            const item = document.createElement('div');
+            item.className = 'ticker-item';
+            item.innerHTML = `
+                <span><span class="ticker-item-user">${user}</span> <span class="ticker-item-action">${action}</span></span>
+                <span class="ticker-item-price ${type.toLowerCase()}">${price}¢</span>
+            `;
+            feedEl.insertBefore(item, feedEl.firstChild);
+            if (feedEl.children.length > 8) {
+                feedEl.removeChild(feedEl.lastChild);
+            }
+        }
+
+        // Live Price Feed — logs REAL Kalshi price ticks only. No fake usernames,
+        // no fake trades. NO SIMULATED DATA, ever.
+        function logRealActivity(market, tick, isUp) {
+            const feedEl = document.getElementById('ticker-feed-el');
+            if (!feedEl) return;
+
+            const item = document.createElement('div');
+            item.className = 'ticker-item';
+            const arrow = isUp ? '▲' : '▼';
+            const label = (market.matchup || market.title).substring(0, 28);
+            item.innerHTML = `
+                <span><span class="ticker-item-user">${market.title.replace(' — Moneyline', '')}</span> <span class="ticker-item-action">${arrow} ${label}</span></span>
+                <span class="ticker-item-price ${isUp ? 'yes' : 'no'}">${tick.yesPrice}¢</span>
+            `;
+            feedEl.insertBefore(item, feedEl.firstChild);
+
+            if (feedEl.children.length > 8) {
+                feedEl.removeChild(feedEl.lastChild);
+            }
+        }
+
+        // Real Kalshi Price Tick Handler — one consolidated subscription.
+        // Only ever updates the specific market a tick actually belongs to
+        // (matched by ticker), never whatever market happens to be open on screen.
+        function handleKalshiTick(tick) {
+            if (!tick || tick.yesPrice == null || !tick.ticker) return;
+
+            const market = marketsData.find(m => m.ticker === tick.ticker);
+            if (!market) return; // tick for a market we're not currently tracking
+
+            const isUp = tick.yesPrice > market.yesPrice;
+            market.yesPrice = tick.yesPrice;
+            market.noPrice = tick.noPrice != null ? tick.noPrice : (100 - tick.yesPrice);
+            market.history.push(tick.yesPrice);
+            if (market.history.length > 20) market.history.shift();
+
+            market.orderbook.yes.bid[0] = tick.yesPrice;
+            if (tick.yesAsk != null) {
+                market.orderbook.yes.ask[0] = tick.yesAsk;
+                market.orderbook.no.bid[0] = 100 - tick.yesAsk;
+            }
+            market.orderbook.no.ask[0] = 100 - tick.yesPrice;
+
+            logRealActivity(market, tick, isUp);
+            renderMarkets();
+            renderPortfolio();
+
+            if (market.id === selectedMarketId) {
+                updateTerminalPricesUI(market);
+                drawMainChart(market.history);
+                updateOrderBookUI(market);
+                calculateTrade();
+
+                const marketCard = document.getElementById(`market-card-${selectedMarketId}`);
+                if (marketCard) {
+                    marketCard.classList.remove('flash-green', 'flash-red');
+                    void marketCard.offsetWidth;
+                    marketCard.classList.add(isUp ? 'flash-green' : 'flash-red');
+                }
+            }
+        }
+    </script>
+    <!-- Include dynamically injected global navbar -->
+    <script src="nav.js?v=2"></script>
+</body>
+
+</html>

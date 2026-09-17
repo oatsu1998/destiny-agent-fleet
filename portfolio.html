@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny — The Commissioner's Portfolio</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- Chart.js for High Fidelity Equity Curves -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #07090c;
+            --surface: #0e1116;
+            --surface2: #151a21;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-glow: rgba(245, 158, 11, 0.15);
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --accent: #f59e0b;      /* Neon Gold */
+            --accent-cyan: #06b6d4; /* Neon Cyan */
+            --win: #10b981;         /* Neon Green */
+            --loss: #ef4444;        /* Neon Red */
+            --font-head: 'Barlow Condensed', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            min-height: 100vh;
+            padding-bottom: 60px;
+            overflow-x: hidden;
+        }
+
+        .page-container {
+            max-width: 1550px;
+            margin: 0 auto;
+            padding: 72px 24px 24px 24px;
+        }
+
+        /* ── Header Styling ── */
+        .portfolio-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-title-area h1 {
+            font-family: var(--font-head);
+            font-size: 36px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: var(--accent);
+            text-transform: uppercase;
+            text-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
+        }
+
+        .header-title-area p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .header-status-badge {
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 6px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pulse-circle {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--win);
+            box-shadow: 0 0 10px var(--win);
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 15px var(--win); }
+            100% { transform: scale(0.9); opacity: 0.7; }
+        }
+
+        .status-text {
+            font-size: 11px;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ── Profile & Summary Section ── */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.8fr;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        @media (max-width: 1100px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .profile-card {
+            background: linear-gradient(135deg, var(--surface) 0%, rgba(21, 26, 33, 0.7) 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--accent-cyan) 100%);
+        }
+
+        .avatar-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .avatar-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            object-fit: cover;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .avatar-online-badge {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--win);
+            border: 3px solid var(--surface);
+            box-shadow: 0 0 10px var(--win);
+        }
+
+        .profile-name {
+            font-family: var(--font-head);
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .profile-title {
+            font-size: 11px;
+            color: var(--accent);
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 4px;
+            margin-bottom: 16px;
+        }
+
+        .profile-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .badge-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-size: 10px;
+            font-weight: bold;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+
+        .badge-item:hover {
+            border-color: var(--accent-cyan);
+            color: #fff;
+        }
+
+        .profile-bio {
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+
+        .profile-links {
+            display: flex;
+            gap: 16px;
+            width: 100%;
+        }
+
+        .btn-profile {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+
+        .btn-profile:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        /* ── Leaderboard Statistics Card ── */
+        .stats-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .stats-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stats-header-title {
+            font-family: var(--font-head);
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-net-rank {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #000;
+            font-weight: 900;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 600px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .dashboard-metric {
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: left;
+        }
+
+        .metric-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-family: var(--font-head);
+            font-size: 28px;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .value-green {
+            color: var(--win);
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+        }
+
+        .metric-note {
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .winrate-bar-container {
+            margin-top: 10px;
+        }
+
+        .winrate-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        .winrate-bar-outer {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .winrate-bar-inner {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-cyan) 0%, var(--win) 100%);
+            border-radius: 4px;
+            width: 59.2%;
+        }
+
+        /* ── Staging & Subscriber Middle Area ── */
+        .middle-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        @media (max-width: 1024px) {
+            .middle-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .middle-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+        }
+
+        .panel-title {
+            font-family: var(--font-head);
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-desc {
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        /* ── Monitization Subscription Checkout ── */
+        .packages-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .package-card {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .package-card:hover {
+            border-color: rgba(245, 158, 11, 0.4);
+            background: rgba(245, 158, 11, 0.02);
+        }
+
+        .package-card.selected {
+            border-color: var(--accent);
+            background: rgba(245, 158, 11, 0.05);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.1);
+        }
+
+        .package-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .package-radio {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .package-card.selected .package-radio {
+            border-color: var(--accent);
+        }
+
+        .package-radio-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: transparent;
+            transition: all 0.2s;
+        }
+
+        .package-card.selected .package-radio-dot {
+            background: var(--accent);
+        }
+
+        .package-details h4 {
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .package-details p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .package-price {
+            font-family: var(--font-head);
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--accent);
+        }
+
+        .btn-unlock {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent) 0%, #d97706 100%);
+            border: none;
+            color: #000;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-unlock:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        /* ── Active Locked / Unlocked Content ── */
+        .picks-staged-area {
+            position: relative;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .picks-lock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(7, 9, 12, 0.85);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            z-index: 10;
+        }
+
+        .lock-icon-glow {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 16px;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.15); }
+            50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.4); }
+            100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.15); }
+        }
+
+        .lock-title {
+            font-family: var(--font-head);
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .lock-desc {
+            font-size: 11px;
+            color: var(--muted);
+            max-width: 320px;
+            line-height: 1.5;
+        }
+
+        /* Pick Cards (Rendered when Unlocked) */
+        .picks-list-unlocked {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            text-align: left;
+        }
+
+        .pick-card {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pick-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--accent-cyan);
+        }
+
+        .pick-info h5 {
+            font-size: 11px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .pick-matchup {
+            font-family: var(--font-head);
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            margin-top: 4px;
+        }
+
+        .pick-details {
+            font-size: 12px;
+            color: #cbd5e1;
+            margin-top: 4px;
+        }
+
+        .pick-probability-gauge {
+            text-align: right;
+        }
+
+        .pick-prob-val {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--win);
+        }
+
+        .pick-prob-lbl {
+            font-size: 9px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        /* ── Payment Checkout Modal ── */
+        .payment-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .payment-modal-content {
+            background: var(--surface);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 480px;
+            padding: 32px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(245, 158, 11, 0.15);
+            position: relative;
+            animation: scale-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes scale-up {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .close-payment-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-payment-btn:hover {
+            color: #fff;
+        }
+
+        .payment-header h3 {
+            font-family: var(--font-head);
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .payment-header p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .payment-ledger-box {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 24px 0;
+            text-align: left;
+        }
+
+        .ledger-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .ledger-row:last-child {
+            margin-bottom: 0;
+            border-top: 1px solid var(--border);
+            padding-top: 8px;
+            font-weight: bold;
+        }
+
+        .ledger-row span:last-child {
+            color: #fff;
+        }
+
+        .ledger-row.total span:last-child {
+            color: var(--accent);
+        }
+
+        .secure-notice {
+            font-size: 10px;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 24px;
+        }
+
+        .btn-confirm-payment {
+            width: 100%;
+            background: var(--win);
+            border: none;
+            color: #000;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-confirm-payment:hover {
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* ── Loading Spinner State ── */
+        .payment-loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 0;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(245, 158, 11, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ── Bottom Section: Pick Logs & Live Feed ── */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .bottom-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .feed-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 320px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+            padding-right: 6px;
+        }
+
+        .comment-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .comment-user-area h6 {
+            font-size: 11px;
+            color: var(--accent-cyan);
+            font-weight: bold;
+        }
+
+        .comment-text {
+            font-size: 11px;
+            color: #cbd5e1;
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+
+        .comment-time {
+            font-size: 9px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .comment-reaction-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 10px;
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .comment-reaction-btn:hover {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        .comment-input-area {
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+
+        .comment-textbox {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: #fff;
+            padding: 10px 14px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+        }
+
+        .comment-textbox:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .btn-comment {
+            background: var(--accent);
+            border: none;
+            color: #000;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-comment:hover {
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.25);
+        }
+
+        /* ── Pick History Log ── */
+        .history-table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 11px;
+        }
+
+        .history-table th {
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .history-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .history-table tr:hover td {
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .badge-status {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-status.won {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--win);
+        }
+
+        .badge-status.lost {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--loss);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border2);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--muted);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page-container">
+
+        <!-- ── Title & Leaderboard Rank Header ── -->
+        <header class="portfolio-header">
+            <div class="header-title-area">
+                <h1>The Commissioner's Portfolio</h1>
+                <p>Monetized Sports Betting Models & Expert Projections • Destiny Network Platform</p>
+            </div>
+            <div class="header-status-badge">
+                <span class="pulse-circle"></span>
+                <span class="status-text">SYSTEM MODEL ONLINE</span>
+            </div>
+        </header>
+
+        <!-- ── Top Profile Grid ── -->
+        <section class="profile-grid">
+            
+            <!-- Left: Premium Profile Card -->
+            <div class="profile-card">
+                <div class="avatar-container">
+                    <img src="commissioner.png" alt="The Commissioner Avatar" class="avatar-img">
+                    <div class="avatar-online-badge"></div>
+                </div>
+                <h2 class="profile-name">The Commissioner</h2>
+                <div class="profile-title">Lead Destiny Model Architect</div>
+                <div class="profile-badges">
+                    <span class="badge-item">🏆 #1 Rank Won</span>
+                    <span class="badge-item">🛡️ Model Master</span>
+                    <span class="badge-item">⚡ Pick Seller</span>
+                </div>
+                <p class="profile-bio">
+                    The Commissioner is Destiny's preeminent sports handicapper and model architect. By utilizing 
+                    real-time ESPN box scores, machine learning regression models, and high-frequency edge analytics, 
+                    he automates premium sports predictions and current asset allocations.
+                </p>
+                <div class="profile-links">
+                    <button class="btn-profile" onclick="alert('Destination: destiny-blockchain-ledger.v1')">Verify Ledger</button>
+                    <button class="btn-profile" onclick="document.querySelector('.feed-container').scrollIntoView({ behavior: 'smooth' })">Sub Feed</button>
+                </div>
+            </div>
+
+            <!-- Right: Performance Standings -->
+            <div class="stats-card">
+                <div class="stats-header-row">
+                    <div class="stats-header-title">
+                        <span>📊</span> Performance & Leaderboard Status
+                    </div>
+                    <div class="stats-net-rank">#1 EARNER GLOBAL</div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="dashboard-metric">
+                        <div class="metric-title">Lifetime Profit</div>
+                        <div class="metric-value value-green">+$342,912.40</div>
+                        <div class="metric-note">Destiny verified ledger</div>
+                    </div>
+                    <div class="dashboard-metric">
+                        <div class="metric-title">Implied ROI</div>
+                        <div class="metric-value value-green">+18.4%</div>
+                        <div class="metric-note">1,482 total wagers</div>
+                    </div>
+                    <div class="dashboard-metric">
+                        <div class="metric-title">Win Rate</div>
+                        <div class="metric-value">59.2%</div>
+                        <div class="metric-note">Record: 877 - 605</div>
+                    </div>
+                    <div class="dashboard-metric">
+                        <div class="metric-title">Hot Streak</div>
+                        <div class="metric-value value-green">W8</div>
+                        <div class="metric-note">8 consecutive wins</div>
+                    </div>
+                </div>
+
+                <div class="winrate-bar-container">
+                    <div class="winrate-bar-label">
+                        <span>Implied win rate edge over standard bookmaker vig (-110 equals 52.38%)</span>
+                        <span style="font-weight: bold; color: var(--win);">59.2% / 52.4% (+6.8% Edge)</span>
+                    </div>
+                    <div class="winrate-bar-outer">
+                        <div class="winrate-bar-inner"></div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ── Middle Interactive Area ── -->
+        <section class="middle-grid">
+
+            <!-- Left Panel: Subscription Monetization Staging Area -->
+            <div class="middle-panel">
+                <div class="panel-title">
+                    <span>⚡</span> Unlock Commissioner's Active Projections
+                </div>
+                <p class="panel-desc">
+                    The Commissioner's Destiny sports-betting engine generates highly precise predictive odds edges. Under the Destiny protocol, he is authorized to sell premium picks to the general user base. Select a premium access package below to securely unlock today's active model wagers.
+                </p>
+
+                <!-- Packages List -->
+                <div class="packages-container">
+                    
+                    <div class="package-card selected" onclick="selectPackage(this, 9.99, 'Commissioner Daily Access Pass')">
+                        <div class="package-info">
+                            <div class="package-radio">
+                                <div class="package-radio-dot"></div>
+                            </div>
+                            <div class="package-details">
+                                <h4>Commissioner Daily Pass</h4>
+                                <p>All NBA, MLB, NHL and Kalshi market predictions for the next 24h</p>
+                            </div>
+                        </div>
+                        <div class="package-price">$9.99</div>
+                    </div>
+
+                    <div class="package-card" onclick="selectPackage(this, 49.99, 'Commissioner 7-Day VIP Bundle')">
+                        <div class="package-info">
+                            <div class="package-radio">
+                                <div class="package-radio-dot"></div>
+                            </div>
+                            <div class="package-details">
+                                <h4>Weekly VIP Bundle Access</h4>
+                                <p>Full weekly model logs, active bankroll tracking adjustments</p>
+                            </div>
+                        </div>
+                        <div class="package-price">$49.99</div>
+                    </div>
+
+                    <div class="package-card" onclick="selectPackage(this, 14.99, 'Prop Bets Special Package')">
+                        <div class="package-info">
+                            <div class="package-radio">
+                                <div class="package-radio-dot"></div>
+                            </div>
+                            <div class="package-details">
+                                <h4>Special NBA/MLB Player Props</h4>
+                                <p>High value prop targets extracted from ESPN APIs</p>
+                            </div>
+                        </div>
+                        <div class="package-price">$14.99</div>
+                    </div>
+
+                </div>
+
+                <button class="btn-unlock" onclick="openPaymentModal()">
+                    <span>🔓</span> UNLOCK ACTIVE PICKS NOW
+                </button>
+            </div>
+
+            <!-- Right Panel: Model Graphs & Assets -->
+            <div class="middle-panel" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div class="panel-title">
+                    <span>📈</span> Equity Curve & Allocation
+                </div>
+                
+                <div style="flex: 1; min-height: 220px; position: relative; margin-bottom: 16px;">
+                    <canvas id="equityChart"></canvas>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: center;">
+                    <div style="height: 120px; position: relative;">
+                        <canvas id="allocationChart"></canvas>
+                    </div>
+                    <div style="font-size: 10px; color: var(--muted); line-height: 1.6;">
+                        <div style="color: #fff; font-weight: bold; margin-bottom: 4px; font-size: 11px;">Sport Allocation</div>
+                        • NBA Projections: <span style="color: var(--accent);">45%</span><br>
+                        • MLB Moneyline: <span style="color: var(--accent-cyan);">30%</span><br>
+                        • NHL Spread Edge: <span style="color: var(--win);">15%</span><br>
+                        • Kalshi Markets: <span style="color: #a855f7;">10%</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ── Staged Predictions Dashboard (Locked by Default) ── -->
+        <section class="picks-staged-area" style="margin-bottom: 28px;">
+            
+            <!-- Locked State Overlay -->
+            <div class="picks-lock-overlay">
+                <div class="lock-icon-glow">🔒</div>
+                <h3 class="lock-title">TODAY'S PROJECTIONS ARE ENCRYPTED</h3>
+                <p class="lock-desc">
+                    Purchase any Commissioner access pass to decrypt today's 3 active edge models. Implied win odds average 61.4% with verified ledger security.
+                </p>
+            </div>
+
+            <!-- Unlocked State Picks Content -->
+            <div class="picks-list-unlocked">
+                <div style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 8px;">
+                    <h4 style="font-family: var(--font-head); font-size: 20px; font-weight: 700; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase;">
+                        🔓 UNLOCKED ACTIVE COMMISSIONER MODELS
+                    </h4>
+                </div>
+                
+                <div class="pick-card">
+                    <div class="pick-info">
+                        <h5>NBA Basketball — Spread Target</h5>
+                        <div class="pick-matchup">Oklahoma City Thunder @ San Antonio Spurs</div>
+                        <div class="pick-details">Active Model Choice: <strong>Oklahoma City Thunder -7.0 (-110)</strong></div>
+                    </div>
+                    <div class="pick-probability-gauge">
+                        <div class="pick-prob-val">64.2%</div>
+                        <div class="pick-prob-lbl">Win Prob</div>
+                    </div>
+                </div>
+
+                <div class="pick-card">
+                    <div class="pick-info">
+                        <h5>MLB Baseball — Moneyline Target</h5>
+                        <div class="pick-matchup">Cleveland Guardians @ Minnesota Twins</div>
+                        <div class="pick-details">Active Model Choice: <strong>Cleveland Guardians ML (+125)</strong></div>
+                    </div>
+                    <div class="pick-probability-gauge">
+                        <div class="pick-prob-val">58.7%</div>
+                        <div class="pick-prob-lbl">Win Prob</div>
+                    </div>
+                </div>
+
+                <div class="pick-card">
+                    <div class="pick-info">
+                        <h5>NBA Basketball — Total Points Edge</h5>
+                        <div class="pick-matchup">Oklahoma City Thunder @ San Antonio Spurs</div>
+                        <div class="pick-details">Active Model Choice: <strong>UNDER 222.5 (-104)</strong></div>
+                    </div>
+                    <div class="pick-probability-gauge">
+                        <div class="pick-prob-val">61.5%</div>
+                        <div class="pick-prob-lbl">Win Prob</div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ── Bottom Grid: Chat & History ── -->
+        <section class="bottom-grid">
+
+            <!-- Left: Chat Room/Live Feed -->
+            <div class="feed-container">
+                <div class="panel-title">
+                    <span>💬</span> Live Destiny Network Chat & Feed
+                </div>
+                <div class="comments-list">
+                    
+                    <div class="comment-item">
+                        <div class="comment-user-area">
+                            <h6>@AlphaBettor99</h6>
+                            <div class="comment-text">Unlocked the Daily Pass and got the Thunder spread! Looking solid, their resting pace matches Commissioner's model index perfectly.</div>
+                            <div class="comment-time">12 min ago</div>
+                        </div>
+                        <button class="comment-reaction-btn" onclick="thumbUp(this)">👍 <span>8</span></button>
+                    </div>
+
+                    <div class="comment-item">
+                        <div class="comment-user-area">
+                            <h6>@VegasShark</h6>
+                            <div class="comment-text">The Commissioner is absolutely crushing baseball this season. His ML Guardians valuation has a huge discrepancy vs Caesars. Easiest money of the week.</div>
+                            <div class="comment-time">28 min ago</div>
+                        </div>
+                        <button class="comment-reaction-btn" onclick="thumbUp(this)">👍 <span>14</span></button>
+                    </div>
+
+                    <div class="comment-item">
+                        <div class="comment-user-area">
+                            <h6>@KalshiTrader</h6>
+                            <div class="comment-text">Are there any Kalshi prediction market wagers in today's weekly pack? The inflation index model yesterday was pure gold.</div>
+                            <div class="comment-time">1 hr ago</div>
+                        </div>
+                        <button class="comment-reaction-btn" onclick="thumbUp(this)">👍 <span>5</span></button>
+                    </div>
+
+                </div>
+
+                <!-- Add Comment Form -->
+                <div class="comment-input-area">
+                    <input type="text" class="comment-textbox" id="commentText" placeholder="Post a comment to the feed...">
+                    <button class="btn-comment" onclick="postComment()">POST</button>
+                </div>
+            </div>
+
+            <!-- Right: Historical Logs -->
+            <div class="feed-container">
+                <div class="panel-title">
+                    <span>📜</span> Historical Verified Performance Log
+                </div>
+                <div class="history-table-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Matchup</th>
+                                <th>Wager Detail</th>
+                                <th>Odds</th>
+                                <th>Risk / Win</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Minnesota Timberwolves @ Dallas Mavericks</td>
+                                <td>Timberwolves ML</td>
+                                <td>+120</td>
+                                <td>$500 / $600</td>
+                                <td><span class="badge-status won">WON</span></td>
+                            </tr>
+                            <tr>
+                                <td>Boston Celtics @ New York Knicks</td>
+                                <td>Knicks +4.5 Spread</td>
+                                <td>-110</td>
+                                <td>$330 / $300</td>
+                                <td><span class="badge-status won">WON</span></td>
+                            </tr>
+                            <tr>
+                                <td>Detroit Red Wings @ Tampa Bay Lightning</td>
+                                <td>UNDER 6.0 Goals</td>
+                                <td>-105</td>
+                                <td>$210 / $200</td>
+                                <td><span class="badge-status lost">LOST</span></td>
+                            </tr>
+                            <tr>
+                                <td>Los Angeles Dodgers @ San Diego Padres</td>
+                                <td>Dodgers ML</td>
+                                <td>-145</td>
+                                <td>$580 / $400</td>
+                                <td><span class="badge-status won">WON</span></td>
+                            </tr>
+                            <tr>
+                                <td>Kalshi: Fed Rate Hike in June</td>
+                                <td>No Rate Hike Contracts</td>
+                                <td>-160</td>
+                                <td>$800 / $500</td>
+                                <td><span class="badge-status won">WON</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- ── Payment Processing Overlay Modal ── -->
+    <div class="payment-modal" id="paymentModal">
+        
+        <!-- Interactive Checkout Content -->
+        <div class="payment-modal-content" id="paymentCheckoutContent">
+            <button class="close-payment-btn" onclick="closePaymentModal()">×</button>
+            <div class="payment-header">
+                <h3>Destiny Secure Ledger</h3>
+                <p id="checkoutPackageName">Commissioner Daily Access Pass</p>
+            </div>
+            
+            <div class="payment-ledger-box">
+                <div class="ledger-row">
+                    <span>Base Subscription Cost</span>
+                    <span id="checkoutPriceLabel">$9.99</span>
+                </div>
+                <div class="ledger-row">
+                    <span>Gas / Protocol Fees</span>
+                    <span>$0.00</span>
+                </div>
+                <div class="ledger-row total">
+                    <span>Total Debited Amount</span>
+                    <span id="checkoutTotalPriceLabel">$9.99</span>
+                </div>
+            </div>
+
+            <div class="secure-notice">
+                <span>🔒</span> destiny-ledger.v1 network security verified.
+            </div>
+
+            <button class="btn-confirm-payment" onclick="processPayment()">
+                CONFIRM DEBIT & UNLOCK PICKS
+            </button>
+        </div>
+
+        <!-- Interactive Processing Spinner Content -->
+        <div class="payment-modal-content payment-loading" id="paymentLoadingContent">
+            <div class="spinner"></div>
+            <h3 style="font-family: var(--font-head); font-size: 20px; font-weight: 700; color: #fff; text-transform: uppercase;">
+                DEBITING LEDGER BALANCE...
+            </h3>
+            <p style="font-size: 11px; color: var(--muted); margin-top: 8px; font-family: var(--font-mono);">
+                Verifying transaction signature in Destiny database...
+            </p>
+        </div>
+
+    </div>
+
+    <!-- ── Global Navigation Script Injection ── -->
+    <script src="nav.js?v=2"></script>
+
+    <!-- ── Page Logic Script ── -->
+    <script>
+        let currentSelectedPrice = 9.99;
+        let currentSelectedName = "Commissioner Daily Access Pass";
+
+        function selectPackage(element, price, name) {
+            // Remove selection class from all cards
+            document.querySelectorAll('.package-card').forEach(card => card.classList.remove('selected'));
+            // Add to active selection
+            element.classList.add('selected');
+            currentSelectedPrice = price;
+            currentSelectedName = name;
+        }
+
+        function openPaymentModal() {
+            // Update labels in checkout modal
+            document.getElementById('checkoutPackageName').innerText = currentSelectedName;
+            document.getElementById('checkoutPriceLabel').innerText = "$" + currentSelectedPrice.toFixed(2);
+            document.getElementById('checkoutTotalPriceLabel').innerText = "$" + currentSelectedPrice.toFixed(2);
+            
+            // Show modal and reset layouts
+            document.getElementById('paymentModal').style.display = 'flex';
+            document.getElementById('paymentCheckoutContent').style.display = 'block';
+            document.getElementById('paymentLoadingContent').style.display = 'none';
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        function processPayment() {
+            // Toggle spinner
+            document.getElementById('paymentCheckoutContent').style.display = 'none';
+            document.getElementById('paymentLoadingContent').style.display = 'flex';
+
+            // Simulate debit network transaction delays
+            setTimeout(() => {
+                // Success! Close payment modal
+                closePaymentModal();
+                
+                // Animate pick locks slide-out & fade-in picks!
+                const lockOverlay = document.querySelector('.picks-lock-overlay');
+                if (lockOverlay) {
+                    lockOverlay.style.transition = 'all 0.6s ease';
+                    lockOverlay.style.opacity = '0';
+                    lockOverlay.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        lockOverlay.style.display = 'none';
+                    }, 600);
+                }
+                
+                // Deduct from bankroll dynamically in localStorage
+                if (window.DestinyState) {
+                    let savedBankroll = window.DestinyState.getBankroll();
+                    savedBankroll -= currentSelectedPrice;
+                    window.DestinyState.setBankroll(savedBankroll);
+                } else {
+                    let savedBankroll = parseFloat(localStorage.getItem('bankroll')) || 10000.00;
+                    savedBankroll -= currentSelectedPrice;
+                    localStorage.setItem('bankroll', savedBankroll.toFixed(2));
+                }
+                
+                alert(`Successfully processed payment of $${currentSelectedPrice.toFixed(2)} using your Destiny bankroll ledger! Today's active models are now unlocked.`);
+            }, 2000);
+        }
+
+        // Live chat thumbs up logic
+        function thumbUp(btn) {
+            const span = btn.querySelector('span');
+            let val = parseInt(span.innerText);
+            val++;
+            span.innerText = val;
+            btn.style.borderColor = 'var(--win)';
+            btn.style.color = '#fff';
+            btn.style.boxShadow = '0 0 8px rgba(16, 185, 129, 0.3)';
+        }
+
+        // Live Chat posting logic
+        function postComment() {
+            const textbox = document.getElementById('commentText');
+            const text = textbox.value.trim();
+            if (!text) return;
+
+            const list = document.querySelector('.comments-list');
+            const comment = document.createElement('div');
+            comment.className = 'comment-item';
+            comment.innerHTML = `
+                <div class="comment-user-area">
+                    <h6>@You (DestinyUser)</h6>
+                    <div class="comment-text">${escapeHtml(text)}</div>
+                    <div class="comment-time">Just now</div>
+                </div>
+                <button class="comment-reaction-btn" onclick="thumbUp(this)">👍 <span>0</span></button>
+            `;
+            list.appendChild(comment);
+            textbox.value = '';
+            list.scrollTop = list.scrollHeight;
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                 .replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+        }
+
+        // ── Charts Implementation (High Quality Canvas Graphics) ──
+        window.addEventListener('load', () => {
+            // 1. Equity Chart (Line graph growth curve)
+            const ctxEquity = document.getElementById('equityChart').getContext('2d');
+            const gradientEquity = ctxEquity.createLinearGradient(0, 0, 0, 220);
+            gradientEquity.addColorStop(0, 'rgba(245, 158, 11, 0.2)');
+            gradientEquity.addColorStop(1, 'rgba(245, 158, 11, 0)');
+
+            new Chart(ctxEquity, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May (Active)'],
+                    datasets: [{
+                        label: 'Equity Growth ($)',
+                        data: [10000, 42000, 115000, 240000, 342912],
+                        borderColor: '#f59e0b',
+                        borderWidth: 2,
+                        backgroundColor: gradientEquity,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#000',
+                        pointBorderColor: '#f59e0b',
+                        pointBorderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#64748b', font: { family: 'JetBrains Mono', size: 9 } }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#64748b', font: { family: 'JetBrains Mono', size: 9 }, callback: value => '$' + value / 1000 + 'k' }
+                        }
+                    }
+                }
+            });
+
+            // 2. Allocation Pie Chart
+            const ctxAllocation = document.getElementById('allocationChart').getContext('2d');
+            new Chart(ctxAllocation, {
+                type: 'doughnut',
+                data: {
+                    labels: ['NBA', 'MLB', 'NHL', 'Kalshi'],
+                    datasets: [{
+                        data: [45, 30, 15, 10],
+                        backgroundColor: ['#f59e0b', '#06b6d4', '#10b981', '#a855f7'],
+                        borderWidth: 0,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    cutout: '65%'
+                }
+            });
+        });
+    </script>
+    <script src="nav.js?v=2"></script>
+</body>
+
+</html>

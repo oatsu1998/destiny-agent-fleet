@@ -1,0 +1,2310 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Destiny // Line Tracker</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #060A0E;
+            --bg2: #0C1219;
+            --bg3: #111922;
+            --bg4: #172030;
+            --border: #1A2636;
+            --border2: #243550;
+            --text: #D4E4F4;
+            --muted: #4A6A8A;
+            --dim: #243040;
+            --green: #00C87A;
+            --red: #FF3D5A;
+            --amber: #F5A623;
+            --blue: #2D8EFF;
+            --purple: #8B5CF6;
+            --font-mono: 'IBM Plex Mono', monospace;
+            --font-sans: 'IBM Plex Sans', sans-serif;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-sans);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        .header {
+            height: 44px;
+            min-height: 44px;
+            padding: 0 20px;
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            color: var(--amber);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .live-pill {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            padding: 3px 8px;
+            border-radius: 2px;
+            background: #00C87A15;
+            color: var(--green);
+            border: 1px solid var(--green);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .live-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: blink 1.4s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .2;
+            }
+        }
+
+        .ts {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .refresh-btn {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            border: 1px solid var(--border2);
+            border-radius: 2px;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all .15s;
+        }
+
+        .refresh-btn:hover {
+            border-color: var(--amber);
+            color: var(--amber);
+        }
+
+        .refresh-btn:disabled {
+            opacity: .4;
+            cursor: default;
+        }
+
+        /* LAYOUT */
+        .layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            min-width: 240px;
+            background: var(--bg2);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-head {
+            padding: 10px 14px;
+            font-family: var(--font-mono);
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .game-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .game-list::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        .game-list::-webkit-scrollbar-thumb {
+            background: var(--border2);
+        }
+
+        /* Section dividers in sidebar */
+        .sidebar-section {
+            font-family: var(--font-mono);
+            font-size: 8px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            padding: 5px 14px;
+            background: var(--bg3);
+            color: var(--dim);
+            border-bottom: 1px solid var(--border);
+            border-top: 1px solid var(--border);
+        }
+
+        /* Game card in sidebar */
+        .game-item {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background .1s, opacity .15s;
+            position: relative;
+            user-select: none;
+        }
+
+        .game-item:hover { background: var(--bg3); }
+        .game-item.active { background: var(--bg3); }
+
+        .game-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 2px;
+            background: var(--amber);
+        }
+
+        .game-item.is-live.active::before { background: var(--green); }
+
+        .game-item.drag-over {
+            border-top: 2px solid var(--green);
+        }
+
+        .game-item.dragging {
+            opacity: .4;
+        }
+
+        .gi-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .gi-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .drag-handle {
+            cursor: grab;
+            color: var(--dim);
+            font-size: 11px;
+            padding: 0 2px;
+            line-height: 1;
+        }
+        .drag-handle:active { cursor: grabbing; }
+
+        .pin-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--dim);
+            padding: 0;
+            line-height: 1;
+            transition: color .15s, transform .15s;
+        }
+        .pin-btn:hover { color: var(--amber); transform: scale(1.2); }
+        .pin-btn.pinned { color: var(--amber); }
+
+        .game-item.pinned-card {
+            border-left: 2px solid var(--amber);
+        }
+
+        .gi-status {
+            font-family: var(--font-mono);
+            font-size: 8px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
+        }
+
+        .gi-status.live {
+            color: var(--green);
+        }
+
+        .gi-status.scheduled {
+            color: var(--blue);
+        }
+
+        .gi-status.final {
+            color: var(--muted);
+        }
+
+        .gi-team-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2px 0;
+        }
+
+        .gi-team-row.away-row {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .gi-team-name {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 140px;
+        }
+
+        .gi-score {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .gi-team-name.win {
+            color: var(--green);
+        }
+
+        .gi-score.win {
+            color: var(--green);
+        }
+
+        .gi-label {
+            font-family: var(--font-mono);
+            font-size: 8px;
+            color: var(--dim);
+            width: 28px;
+        }
+
+        /* MAIN PANEL */
+        .main-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        /* GAME HEADER */
+        .game-header {
+            padding: 0;
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .gh-meta {
+            padding: 8px 20px 6px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .gh-matchup {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--muted);
+        }
+
+        .gh-status {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+
+        .gh-status.live {
+            color: var(--green);
+        }
+
+        .gh-status.scheduled {
+            color: var(--blue);
+        }
+
+        .gh-status.final {
+            color: var(--muted);
+        }
+
+        .gh-clock {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text);
+            background: var(--bg3);
+            padding: 2px 8px;
+            border-radius: 2px;
+            border: 1px solid var(--border2);
+        }
+
+        /* Scoreboard */
+        .scoreboard-wrap {
+            padding: 0 20px;
+        }
+
+        .sb-row {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sb-row:last-child {
+            border-bottom: none;
+        }
+
+        .sb-team-label {
+            font-family: var(--font-mono);
+            font-size: 8px;
+            color: var(--dim);
+            width: 34px;
+            letter-spacing: 1px;
+        }
+
+        .sb-team-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sb-team-name.win {
+            color: var(--green);
+        }
+
+        .sb-score {
+            font-family: var(--font-mono);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text);
+            min-width: 52px;
+            text-align: right;
+        }
+
+        .sb-score.win {
+            color: var(--green);
+        }
+
+        .sb-score.losing {
+            color: var(--muted);
+        }
+
+        /* Movement chips */
+        .gh-chips {
+            padding: 6px 20px 8px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            padding: 3px 10px;
+            border-radius: 2px;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 78px;
+        }
+
+        .chip-label {
+            font-size: 8px;
+            color: var(--muted);
+            letter-spacing: 1px;
+            margin-bottom: 1px;
+        }
+
+        .chip-val {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .chip-val.pos {
+            color: var(--green);
+        }
+
+        .chip-val.neg {
+            color: var(--red);
+        }
+
+        .chip-val.neu {
+            color: var(--amber);
+        }
+
+        /* CHART AREA */
+        .chart-area {
+            flex: 1;
+            padding: 14px 18px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .chart-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+
+        .ctrl-label {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        .ctrl-select {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            background: var(--bg3);
+            color: var(--text);
+            border: 1px solid var(--border2);
+            padding: 3px 8px;
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .legend {
+            display: flex;
+            gap: 14px;
+            margin-left: auto;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .legend-line {
+            width: 16px;
+            height: 2px;
+            border-radius: 1px;
+        }
+
+        .chart-box {
+            flex: 1;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .chart-msg {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 2px;
+        }
+
+        /* ODDS STRIP */
+        .odds-strip {
+            height: 130px;
+            min-height: 130px;
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            flex-shrink: 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        .odds-strip::-webkit-scrollbar {
+            height: 3px;
+        }
+
+        .odds-strip::-webkit-scrollbar-thumb {
+            background: var(--border2);
+        }
+
+        .strip-inner {
+            display: flex;
+            height: 100%;
+            align-items: stretch;
+            min-width: max-content;
+        }
+
+        .strip-head {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 14px;
+            min-width: 80px;
+            border-right: 1px solid var(--border);
+            gap: 3px;
+            flex-shrink: 0;
+        }
+
+        .strip-head-title {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: 1px;
+        }
+
+        .strip-head-sub {
+            font-family: var(--font-mono);
+            font-size: 8px;
+            color: var(--muted);
+        }
+
+        .book-col {
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+            min-width: 120px;
+        }
+
+        .book-name {
+            font-family: var(--font-mono);
+            font-size: 8px;
+            color: var(--muted);
+            letter-spacing: 1px;
+            padding: 6px 10px 4px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg3);
+        }
+
+        .book-team-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 10px;
+            flex: 1;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .book-team-row:last-child {
+            border-bottom: none;
+        }
+
+        .book-team-label {
+            font-family: var(--font-mono);
+            font-size: 8px;
+            color: var(--dim);
+            width: 24px;
+            letter-spacing: 1px;
+        }
+
+        .book-ml {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 500;
+            min-width: 38px;
+        }
+
+        .book-ml.pos {
+            color: var(--green);
+        }
+
+        .book-ml.neg {
+            color: var(--red);
+        }
+
+        .book-ml.best {
+            text-decoration: underline;
+            text-decoration-color: var(--green);
+            text-underline-offset: 2px;
+        }
+
+        .book-spr {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--muted);
+            min-width: 42px;
+        }
+
+        .book-tot {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--purple);
+            min-width: 42px;
+        }
+
+        /* LINE VALUE MATRIX STYLING */
+        .line-matrix-strip {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px 8px;
+            font-family: var(--font-mono);
+        }
+
+        .matrix-title {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .matrix-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .matrix-row {
+            display: grid;
+            grid-template-columns: 110px 1fr 1fr 1fr 120px;
+            align-items: center;
+            padding: 6px 12px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 11px;
+            transition: all 0.2s;
+        }
+
+        /* Set color and styling for the Closing Odds row explicitly */
+        .matrix-row.closing {
+            background: rgba(217, 119, 6, 0.08);
+            border: 1px solid rgba(217, 119, 6, 0.4);
+            box-shadow: 0 0 8px rgba(217, 119, 6, 0.05);
+        }
+
+        .matrix-row.closing .matrix-label {
+            color: #F59E0B;
+            font-weight: 700;
+        }
+
+        .matrix-row.closing .matrix-cell {
+            color: #F59E0B;
+            font-weight: 600;
+        }
+
+        /* Opening Odds styling */
+        .matrix-row.opening {
+            opacity: 0.85;
+        }
+
+        .matrix-row.opening .matrix-label {
+            color: var(--muted);
+        }
+
+        /* Live line styling */
+        .matrix-row.live {
+            background: rgba(45, 142, 255, 0.06);
+            border: 1px solid rgba(45, 142, 255, 0.2);
+        }
+
+        .matrix-row.live .matrix-label {
+            color: #2D8EFF;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .matrix-row.live .matrix-dot {
+            width: 5px;
+            height: 5px;
+            background: #2D8EFF;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 6px #2D8EFF;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Graded line styling */
+        .matrix-row.graded {
+            background: rgba(16, 185, 129, 0.04);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .matrix-row.graded .matrix-label {
+            color: #10B981;
+            font-weight: 700;
+        }
+
+        .matrix-label {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .matrix-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-family: var(--font-mono);
+        }
+
+        .matrix-cell-title {
+            font-size: 8px;
+            color: var(--dim);
+            text-transform: uppercase;
+        }
+
+        .matrix-cell-val {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .clv-badge {
+            font-size: 9px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 3px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+        }
+
+        .clv-badge.pos {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .clv-badge.neg {
+            background: rgba(239, 68, 68, 0.15);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .clv-badge.neu {
+            background: rgba(107, 114, 128, 0.15);
+            color: var(--muted);
+            border: 1px solid rgba(107, 114, 128, 0.3);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.6; }
+        }
+
+        /* Hide TradingView attribution logo */
+        #chartBox a,
+        #chartBox .tv-lightweight-charts-logo {
+            display: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav-spacer" style="height:48px;"></div>
+
+    <div class="header">
+        <div class="logo">DESTINY // LINE TRACKER</div>
+        <div class="header-right">
+            <div class="live-pill"><span class="live-dot"></span>LIVE</div>
+            <span class="ts" id="ts">--:--:--</span>
+            <button class="refresh-btn" id="historyBtn" onclick="fetchHistory()"
+                style="margin-right:8px; background:var(--blue);">&#10010; LOAD HISTORY (100cr)</button><button
+                class="refresh-btn" id="refreshBtn" onclick="manualRefresh()">&#8634; REFRESH (60s)</button>
+        </div>
+    </div>
+
+    <div class="layout">
+        <div class="sidebar">
+            <div class="sidebar-head">GAMES</div>
+            <div class="game-list" id="gameList">
+                <div style="padding:16px;font-family:var(--font-mono);font-size:10px;color:var(--muted);">LOADING...
+                </div>
+            </div>
+        </div>
+
+        <div class="main-panel">
+            <div class="game-header" id="gameHeader">
+                <div class="gh-meta"><span class="gh-matchup" style="color:var(--muted);">Select a game</span></div>
+            </div>
+
+            <div class="chart-area">
+                <div class="chart-controls">
+                    <span class="ctrl-label">BOOK:</span>
+                    <select class="ctrl-select" id="bookSel" onchange="renderChart()">
+                        <option value="all">ALL BOOKS (avg)</option>
+                    </select>
+                    <span class="ctrl-label" style="margin-left:12px;">MARKET:</span>
+                    <select class="ctrl-select" id="marketSel" onchange="renderChart()">
+                        <option value="ml" selected>Moneyline</option>
+                        <option value="spr">Spreads</option>
+                        <option value="tot">Totals</option>
+                    </select>
+                    <div class="legend" style="gap:12px; font-size:10px;">
+                        <div class="legend-item">
+                            <div class="legend-line" style="background:rgba(123, 97, 255, 0.8); border-top:2px dashed #7B61FF;"></div>AWAY SCORE
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-line" style="background:rgba(229, 62, 62, 0.8); border-top:2px solid #E53E3E;"></div>HOME SCORE
+                        </div>
+                        <div class="legend-item" id="legAwayOdds">
+                            <div class="legend-line" style="background:#2D8EFF;"></div>AWAY ODDS
+                        </div>
+                        <div class="legend-item" id="legHomeOdds">
+                            <div class="legend-line" style="background:#F6AD55;"></div>HOME ODDS
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-box" id="chartBox">
+                    <div class="chart-msg" id="chartMsg">SELECT A GAME TO VIEW LINE MOVEMENT</div>
+                </div>
+            </div>
+
+            <!-- Line Value Matrix Strip -->
+            <div class="line-matrix-strip" id="lineMatrixSection" style="display:none;">
+                <div class="matrix-title">LINE VALUE MATRIX (CLV TRACKING)</div>
+                <div class="matrix-grid" id="lineMatrixGrid">
+                    <!-- Dynamic Rows (Opening, Closing, Live, Graded) will render here -->
+                </div>
+            </div>
+
+            <div class="odds-strip">
+                <div class="strip-inner" id="oddsStrip">
+                    <div class="strip-head">
+                        <div class="strip-head-title">ODDS</div>
+                        <div class="strip-head-sub">BY BOOK</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Score Flow Chart -->
+            <div id="scoreFlowSection" style="display:none; flex-direction:column; background:var(--bg2); border-top:1px solid var(--border); padding:12px 16px 8px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+                    <div style="font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:1px;">SCORE FLOW</div>
+                    <div id="leadChangesLabel" style="font-family:var(--font-mono); font-size:10px; color:var(--dim);"></div>
+                </div>
+                <canvas id="scoreFlowCanvas" style="width:100%; height:140px; display:block;"></canvas>
+                <div style="display:flex; justify-content:space-around; font-family:var(--font-mono); font-size:9px; color:var(--muted); margin-top:4px;" id="scoreFlowLabels"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <script>
+        const SPORT = "basketball_nba";
+
+        var BOOKS = [
+            { prefix: 'kalshi', key: 'kalshi', name: 'Kalshi (Live)' },
+            { prefix: 'bol', key: 'betonlineag', name: 'BetOnline' },
+            { prefix: 'dk', key: 'draftkings', name: 'DraftKings' },
+            { prefix: 'fd', key: 'fanduel', name: 'FanDuel' },
+            { prefix: 'mgm', key: 'betmgm', name: 'BetMGM' },
+            { prefix: 'czr', key: 'williamhill_us', name: 'Caesars' },
+            { prefix: 'br', key: 'betrivers', name: 'BetRivers' },
+            { prefix: 'fan', key: 'fanaticsbetting', name: 'Fanatics' },
+            { prefix: 'bov', key: 'bovada', name: 'Bovada' },
+            { prefix: 'mb', key: 'mybookieag', name: 'MyBookie' },
+        ];
+
+        var TZ = 'America/Chicago';
+ 
+        var ltLinesDb = JSON.parse(localStorage.getItem('lt_games_lines') || '{}');
+
+        function saveLinesDb() {
+            // Garbage collection: delete games older than 7 days
+            const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+            for (let id in ltLinesDb) {
+                const cTime = ltLinesDb[id].commence_time;
+                if (cTime) {
+                    const parsedTime = new Date(cTime.replace(' ', 'T')).getTime();
+                    if (!isNaN(parsedTime) && parsedTime < sevenDaysAgo) {
+                        delete ltLinesDb[id];
+                    }
+                }
+            }
+            localStorage.setItem('lt_games_lines', JSON.stringify(ltLinesDb));
+        }
+
+        function getProfit(odds) {
+            if (odds === null || odds === undefined || isNaN(odds) || odds === '') return 100;
+            const o = parseFloat(odds);
+            if (o >= 100) return o;
+            if (o < 0) return 10000 / Math.abs(o);
+            return 100;
+        }
+
+        function calculateClv(liveOdds, closeOdds) {
+            if (liveOdds === null || liveOdds === undefined || isNaN(liveOdds) || liveOdds === '' ||
+                closeOdds === null || closeOdds === undefined || isNaN(closeOdds) || closeOdds === '') {
+                return null;
+            }
+            const pLive = getProfit(liveOdds);
+            const pClose = getProfit(closeOdds);
+            if (pClose === 0) return 0;
+            return ((pLive - pClose) / pClose) * 100;
+        }
+ 
+        var games = {}, selectedGame = null, lwChart = null, lwAwayMl = null, lwHomeMl = null, lwAwaySpr = null, lwHomeSpr = null, lwTotSeries = null, lwAwayScore = null, lwHomeScore = null;
+        let refreshCountdown = 60;
+
+        window.addEventListener('DOMContentLoaded', init);
+
+        async function init() {
+            document.getElementById('gameList').innerHTML = '<div style="padding:14px;font-family:var(--font-mono);font-size:10px;color:var(--muted);">LOADING KALSHI MARKETS...</div>';
+            await refreshData();
+            
+            if (window.DestinyLiveFeed) {
+                const handleIncomingKalshiTick = (tick) => {
+                    if (!tick) return;
+                    const rawTeam = (tick.team || tick.ticker || '').toUpperCase();
+                    if (!rawTeam) return;
+
+                    const matchTeamName = (fullName, query) => {
+                        if (!fullName || !query) return false;
+                        const f = fullName.toUpperCase();
+                        const q = query.toUpperCase();
+                        if (f === q || f.includes(q) || q.includes(f)) return true;
+                        const fWords = f.split(' ');
+                        const qWords = q.split(' ');
+                        const fLast = fWords[fWords.length - 1];
+                        const qLast = qWords[qWords.length - 1];
+                        return fLast.length > 3 && (q.includes(fLast) || fLast === qLast);
+                    };
+
+                    let matchedGameId = null;
+                    const gameIds = Object.keys(games);
+                    for (let id of gameIds) {
+                        const g = games[id];
+                        if (matchTeamName(g.away_team, rawTeam) || matchTeamName(g.home_team, rawTeam)) {
+                            matchedGameId = id;
+                            break;
+                        }
+                    }
+
+                    if (!matchedGameId) {
+                        matchedGameId = selectedGame || gameIds[0];
+                    }
+
+                    if (!matchedGameId || !games[matchedGameId]) return;
+                    const g = games[matchedGameId];
+
+                    if (tick.aScore !== undefined && tick.hScore !== undefined) {
+                        g.away_score = String(tick.aScore);
+                        g.home_score = String(tick.hScore);
+                    }
+                    if (tick.period !== undefined) g.period = String(tick.period);
+                    if (tick.clock !== undefined) g.clock = tick.clock;
+                    if (tick.status_label) g.espn_detail = tick.status_label;
+                    if (tick.game_status) {
+                        g.game_status = tick.game_status;
+                    } else if ((g.period && g.period !== '0') || (g.clock && g.clock !== '00:00') || (g.espn_detail && g.espn_detail.toLowerCase().includes('in progress'))) {
+                        g.game_status = 'live';
+                    }
+
+                    const yesP = tick.yesPrice || (tick.price ? Math.round(tick.price * 100) : 50);
+                    const teamOddsStr = tick.americanOdds || (window.DestinyLiveFeed.centsToAmericanOdds ? window.DestinyLiveFeed.centsToAmericanOdds(yesP) : (yesP > 50 ? '-' + Math.round((yesP/(100-yesP))*100) : '+' + Math.round(((100-yesP)/yesP)*100)));
+                    const teamOddsNum = parseInt(teamOddsStr.replace('+', ''), 10) || -110;
+
+                    const oppP = 100 - yesP;
+                    const oppOddsStr = window.DestinyLiveFeed.centsToAmericanOdds ? window.DestinyLiveFeed.centsToAmericanOdds(oppP) : (oppP > 50 ? '-' + Math.round((oppP/(100-oppP))*100) : '+' + Math.round(((100-oppP)/oppP)*100));
+                    const oppOddsNum = parseInt(oppOddsStr.replace('+', ''), 10) || +100;
+
+                    let awayML, homeML;
+                    if (matchTeamName(g.away_team, rawTeam)) {
+                        awayML = teamOddsNum;
+                        homeML = oppOddsNum;
+                    } else {
+                        homeML = teamOddsNum;
+                        awayML = oppOddsNum;
+                    }
+
+                    const nowSec = Math.floor(Date.now() / 1000);
+                    let lastSnap = g.snapshots[g.snapshots.length - 1];
+
+                    if (!lastSnap || nowSec - lastSnap.time >= 3) {
+                        const newSnapBooks = lastSnap ? JSON.parse(JSON.stringify(lastSnap.books)) : {};
+                        lastSnap = {
+                            time: nowSec,
+                            books: newSnapBooks,
+                            aScore: g.away_score || '0',
+                            hScore: g.home_score || '0'
+                        };
+                        g.snapshots.push(lastSnap);
+                        if (g.snapshots.length > 250) g.snapshots.shift();
+                    }
+
+                    lastSnap.books['kalshi'] = {
+                        bookmaker: 'kalshi',
+                        h2h_away: awayML,
+                        h2h_home: homeML,
+                        spread_away: null,
+                        spread_home: null,
+                        spread_away_point: null,
+                        spread_home_point: null,
+                        total_point: null
+                    };
+
+                    if (!ltLinesDb[g.game_id]) {
+                        ltLinesDb[g.game_id] = {
+                            game_id: g.game_id, commence_time: g.commence_time,
+                            away_team: g.away_team, home_team: g.home_team,
+                            opening: null, closing: null, live: null, graded: null
+                        };
+                    }
+                    const db = ltLinesDb[g.game_id];
+                    db.live = {
+                        away_ml: awayML,
+                        home_ml: homeML,
+                        away_spr: db.live ? db.live.away_spr : null,
+                        home_spr: db.live ? db.live.home_spr : null,
+                        total_line: db.live ? db.live.total_line : null,
+                        timestamp: nowSec
+                    };
+                    saveLinesDb();
+
+                    const giEl = document.getElementById(`gi-${g.game_id}`);
+                    if (giEl) {
+                        giEl.classList.remove('flash-green', 'flash-red');
+                        void giEl.offsetWidth;
+                        giEl.classList.add(tick.direction === 'DOWN' ? 'flash-red' : 'flash-green');
+
+                        let kalshiPill = giEl.querySelector('.kalshi-lead-pill');
+                        if (g.game_status === 'live') {
+                            if (!kalshiPill) {
+                                kalshiPill = document.createElement('span');
+                                kalshiPill.className = 'kalshi-lead-pill';
+                                kalshiPill.style.cssText = 'font-size:9px; font-weight:bold; color:#06b6d4; background:rgba(6,182,212,0.12); padding:1px 5px; border-radius:3px; margin-left:6px;';
+                                const topRow = giEl.querySelector('.gi-top-row') || giEl;
+                                topRow.appendChild(kalshiPill);
+                            }
+                            kalshiPill.innerText = `⚡ ${yesP}¢ (${teamOddsStr})`;
+                        } else if (kalshiPill) {
+                            kalshiPill.remove();
+                        }
+                    }
+
+                    if (g.game_id === selectedGame) {
+                        renderHeader();
+                        renderStrip();
+                        renderChart();
+                        renderLineMatrix();
+                    }
+                };
+
+                window.DestinyLiveFeed.onKalshiTick(handleIncomingKalshiTick);
+                window.DestinyLiveFeed.onLineShift(handleIncomingKalshiTick);
+            }
+
+            setInterval(() => {
+                refreshCountdown--;
+                if (refreshCountdown <= 0) {
+                    refreshCountdown = 60;
+                    refreshData();
+                }
+                const btn = document.getElementById('refreshBtn');
+                if (btn && !btn.disabled) {
+                    btn.innerHTML = `&#8634; REFRESH (${refreshCountdown}s)`;
+                }
+            }, 1000);
+        }
+
+        async function manualRefresh() {
+            refreshCountdown = 60;
+            const btn = document.getElementById('refreshBtn');
+            if (btn) btn.innerHTML = `&#8634; REFRESH (${refreshCountdown}s)`;
+            await refreshData();
+        }
+
+        async function fetchHistory() {
+            const btn = document.getElementById('historyBtn');
+            if (btn) btn.innerText = 'LOADING HISTORY…';
+            if (selectedGame) {
+                const g = games.find(x => x.game_id === selectedGame);
+                if (g) await fetchGameHistory(g);
+            } else {
+                await Promise.all(games.map(g => fetchGameHistory(g)));
+            }
+            if (btn) btn.innerHTML = '&#10010; HISTORY LOADED';
+        }
+
+        async function fetchGameHistory(g) {
+            if (!g || !g.awayTicker || g.historyLoaded) return;
+            g.historyLoaded = true;
+            try {
+                const res = await fetch('/api/kalshi-history?ticker=' + encodeURIComponent(g.awayTicker));
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data.points && Array.isArray(data.points) && data.points.length > 0) {
+                    g.snapshots = data.points.map(p => {
+                        const cents = p.cents;
+                        const awayOddsStr = window.DestinyLiveFeed && window.DestinyLiveFeed.centsToAmericanOdds 
+                            ? window.DestinyLiveFeed.centsToAmericanOdds(cents) 
+                            : (cents > 50 ? '-' + Math.round((cents/(100-cents))*100) : '+' + Math.round(((100-cents)/cents)*100));
+                        const homeOddsStr = window.DestinyLiveFeed && window.DestinyLiveFeed.centsToAmericanOdds 
+                            ? window.DestinyLiveFeed.centsToAmericanOdds(100 - cents) 
+                            : (100-cents > 50 ? '-' + Math.round(((100-cents)/cents)*100) : '+' + Math.round((cents/(100-cents))*100));
+                        
+                        const awayML = parseInt(awayOddsStr.replace('+', ''), 10) || -110;
+                        const homeML = parseInt(homeOddsStr.replace('+', ''), 10) || +100;
+
+                        return {
+                            time: p.ts,
+                            books: {
+                                kalshi: {
+                                    bookmaker: 'kalshi',
+                                    h2h_away: awayML,
+                                    h2h_home: homeML,
+                                    spread_away: null,
+                                    spread_home: null,
+                                    total_point: null
+                                }
+                            },
+                            aScore: g.away_score || '0',
+                            hScore: g.home_score || '0'
+                        };
+                    });
+
+                    if (g.game_id === selectedGame) {
+                        renderChart();
+                        renderHeader();
+                        renderLineMatrix();
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to load Kalshi price history for ' + g.awayTicker, err);
+            }
+        }
+
+        async function fetchEspnScores() {
+            const espnLeagues = [
+                { sport: 'baseball', league: 'mlb', key: 'mlb' },
+                { sport: 'football', league: 'nfl', key: 'nfl' },
+                { sport: 'basketball', league: 'nba', key: 'nba' },
+                { sport: 'hockey', league: 'nhl', key: 'nhl' },
+                { sport: 'football', league: 'college-football', key: 'ncaaf' },
+                { sport: 'basketball', league: 'mens-college-basketball', key: 'ncaab' }
+            ];
+
+            const now = new Date();
+            const todayStr = now.getFullYear().toString() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
+
+            await Promise.all(espnLeagues.map(async (lg) => {
+                try {
+                    const defaultUrl = `https://site.api.espn.com/apis/site/v2/sports/${lg.sport}/${lg.league}/scoreboard?limit=50`;
+                    const todayUrl = `https://site.api.espn.com/apis/site/v2/sports/${lg.sport}/${lg.league}/scoreboard?dates=${todayStr}&limit=50`;
+
+                    const results = await Promise.allSettled([
+                        fetch(defaultUrl).then(r => r.ok ? r.json() : null),
+                        fetch(todayUrl).then(r => r.ok ? r.json() : null)
+                    ]);
+
+                    const map = new Map();
+                    results.forEach(res => {
+                        if (res.status === 'fulfilled' && res.value && res.value.events) {
+                            res.value.events.forEach(e => {
+                                if (e && e.id && !map.has(e.id)) map.set(e.id, e);
+                            });
+                        }
+                    });
+
+                    Array.from(map.values()).forEach(evt => {
+                        const comp = evt.competitions?.[0];
+                        if (!comp) return;
+                        const awayComp = comp.competitors?.find(c => c.homeAway === 'away');
+                        const homeComp = comp.competitors?.find(c => c.homeAway === 'home');
+                        if (!awayComp || !homeComp) return;
+
+                        const gameId = `espn::${lg.key}::${evt.id}`;
+                        const statusState = evt.status?.type?.state;
+                        const isLive = statusState === 'in';
+                        const isDone = statusState === 'post';
+                        const statusLabel = evt.status?.type?.shortDetail || evt.status?.type?.detail || (isLive ? 'LIVE' : (isDone ? 'FINAL' : 'SCHEDULED'));
+
+                        const awayName = awayComp.team?.displayName || awayComp.team?.name || awayComp.team?.abbreviation || 'Away';
+                        const homeName = homeComp.team?.displayName || homeComp.team?.name || homeComp.team?.abbreviation || 'Home';
+
+                        let g = Object.values(games).find(existing => {
+                            if (existing.sport_key !== lg.key) return false;
+                            const a = (existing.away_team || '').toLowerCase();
+                            const h = (existing.home_team || '').toLowerCase();
+                            const awayTarget = (awayComp.team?.name || awayComp.team?.abbreviation || '').toLowerCase();
+                            const homeTarget = (homeComp.team?.name || homeComp.team?.abbreviation || '').toLowerCase();
+                            return (awayTarget && a.includes(awayTarget)) || (homeTarget && h.includes(homeTarget));
+                        });
+
+                        if (!g) {
+                            g = {
+                                game_id: gameId,
+                                away_team: awayName,
+                                home_team: homeName,
+                                away_logo: awayComp.team?.logo || '',
+                                home_logo: homeComp.team?.logo || '',
+                                sport_key: lg.key,
+                                commence_time: evt.date || new Date().toISOString(),
+                                snapshots: [],
+                                away_score: String(awayComp.score || '0'),
+                                home_score: String(homeComp.score || '0'),
+                                game_status: isLive ? 'live' : (isDone ? 'completed' : 'pre_game'),
+                                period: String(evt.status?.period || ''),
+                                clock: statusLabel,
+                                espn_detail: statusLabel,
+                                espn_sport: lg.sport,
+                                away_linescores: awayComp.linescores || [],
+                                home_linescores: homeComp.linescores || []
+                            };
+                            games[gameId] = g;
+                        } else {
+                            g.away_score = String(awayComp.score || g.away_score);
+                            g.home_score = String(homeComp.score || g.home_score);
+                            g.game_status = isLive ? 'live' : (isDone ? 'completed' : 'pre_game');
+                            g.espn_detail = statusLabel;
+                            g.clock = statusLabel;
+                            g.period = String(evt.status?.period || g.period || '');
+                            if (awayComp.team?.logo) g.away_logo = awayComp.team.logo;
+                            if (homeComp.team?.logo) g.home_logo = homeComp.team.logo;
+                            if (awayComp.linescores) g.away_linescores = awayComp.linescores;
+                            if (homeComp.linescores) g.home_linescores = homeComp.linescores;
+                        }
+                    });
+                } catch (e) {
+                    console.warn('[LineTracker] ESPN scoreboard fetch error for ' + lg.key, e);
+                }
+            }));
+        }
+
+        async function refreshData() {
+            const nowTime = Math.floor(Date.now() / 1000);
+            await fetchEspnScores();
+
+            try {
+                const res = await fetch('/api/kalshi');
+                if (!res.ok) throw new Error('Proxy returned ' + res.status);
+                const data = await res.json();
+                const markets = data.markets || [];
+
+                const prefixes = {
+                    MLB:   { game: 'KXMLBGAME' },
+                    NFL:   { game: 'KXNFLGAME' },
+                    NBA:   { game: 'KXNBAGAME' },
+                    NHL:   { game: 'KXNHLGAME' },
+                    NCAAF: { game: 'KXNCAAFGAME' },
+                    WNBA:  { game: 'KXWNBAGAME' }
+                };
+
+                const eventsMap = {};
+                markets.forEach(m => {
+                    if (!m._league || m._kind !== 'game') return;
+                    const p = prefixes[m._league];
+                    if (!p || !m.event_ticker || !m.event_ticker.startsWith(p.game + '-')) return;
+                    const gameId = m._league + '::' + m.event_ticker.slice(p.game.length + 1);
+
+                    if (!eventsMap[gameId]) {
+                        eventsMap[gameId] = {
+                            game_id: gameId,
+                            league: m._league,
+                            title: m.title || '',
+                            markets: []
+                        };
+                    }
+                    eventsMap[gameId].markets.push(m);
+                });
+
+                Object.values(eventsMap).forEach(ev => {
+                    const mList = ev.markets;
+                    if (mList.length < 1) return;
+
+                    const titleClean = ev.title.replace(/\s*(?:women's\s*)?Pro\s*(?:Basketball|Football|Baseball|Hockey)\s*game.*$/i, '').trim();
+                    const titleParts = titleClean.split(/\s+vs\s+|\s+at\s+/i);
+
+                    let awayName = mList[0].yes_sub_title || titleParts[0] || 'Away';
+                    let homeName = (mList[1] && mList[1].yes_sub_title) || titleParts[1] || 'Home';
+                    if (mList.length >= 2 && mList[0].yes_sub_title && mList[1].yes_sub_title) {
+                        awayName = mList[0].yes_sub_title;
+                        homeName = mList[1].yes_sub_title;
+                    }
+
+                    if (!games[ev.game_id]) {
+                        games[ev.game_id] = {
+                            game_id: ev.game_id,
+                            away_team: awayName,
+                            home_team: homeName,
+                            sport_key: ev.league.toLowerCase(),
+                            commence_time: mList[0].close_time || new Date().toISOString(),
+                            snapshots: [],
+                            awayTicker: mList[0].ticker,
+                            homeTicker: mList[1] ? mList[1].ticker : mList[0].ticker,
+                            away_score: '0',
+                            home_score: '0',
+                            game_status: 'pre_game',
+                            period: '',
+                            clock: ''
+                        };
+                    }
+
+                    const g = games[ev.game_id];
+                    fetchGameHistory(g);
+                });
+            } catch (err) {
+                console.error('[LineTracker] Failed to refresh Kalshi markets:', err);
+            }
+
+            renderSidebar();
+            saveLinesDb();
+        }
+
+        function sortGames() {
+            return Object.values(games).sort(function (a, b) {
+                var isPinA = pinnedGames.has(a.game_id), isPinB = pinnedGames.has(b.game_id);
+                if (isPinA !== isPinB) return isPinA ? -1 : 1;
+                var order = { live: 0, pre_game: 1, completed: 2 };
+                var oa = order[a.game_status] || 1, ob = order[b.game_status] || 1;
+                if (oa !== ob) return oa - ob;
+                return (a.commence_time || '').localeCompare(b.commence_time || '');
+            });
+        }
+
+        function lastName(n) { return n || '?'; }
+        function lastWord(n) { return n ? n.split(' ').pop() : '?'; }
+
+        function fmtTime(isoStr) {
+            if (!isoStr) return '';
+            var normalized = isoStr.trim().replace(' UTC', 'Z').replace(' ', 'T');
+            return new Date(normalized).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: TZ });
+        }
+
+        // ── Sidebar state ─────────────────────────────────────────────
+        var pinnedGames = new Set(JSON.parse(localStorage.getItem('lt_pinned') || '[]'));
+        var dragOrder = JSON.parse(localStorage.getItem('lt_drag_order') || '[]');
+        var _dragSrcId = null;
+
+        function savePinned() { localStorage.setItem('lt_pinned', JSON.stringify([...pinnedGames])); }
+        function saveDragOrder(ids) { dragOrder = ids; localStorage.setItem('lt_drag_order', JSON.stringify(ids)); }
+
+        function togglePin(id, evt) {
+            evt.stopPropagation();
+            if (pinnedGames.has(id)) pinnedGames.delete(id); else pinnedGames.add(id);
+            savePinned();
+            renderSidebar();
+        }
+
+        function getTeamLogoUrl(teamName, sportKey) {
+            if (!teamName) return '';
+            const t = teamName.toLowerCase();
+            
+            // NHL
+            if (t.includes('rangers') || t.includes('nyr')) return 'https://a.espncdn.com/i/teamlogos/nhl/500/nyr.png';
+            if (t.includes('bruins') || t.includes('bos')) return 'https://a.espncdn.com/i/teamlogos/nhl/500/bos.png';
+            
+            // MLB
+            if (t.includes('red sox') || t.includes('bos')) return 'https://a.espncdn.com/i/teamlogos/mlb/500/bos.png';
+            if (t.includes('dodgers') || t.includes('lad')) return 'https://a.espncdn.com/i/teamlogos/mlb/500/lad.png';
+            if (t.includes('mets') || t.includes('nym')) return 'https://a.espncdn.com/i/teamlogos/mlb/500/nym.png';
+            if (t.includes('tigers') || t.includes('det')) return 'https://a.espncdn.com/i/teamlogos/mlb/500/det.png';
+            if (t.includes('athletics') || t.includes('oak') || t.includes('ath')) return 'https://a.espncdn.com/i/teamlogos/mlb/500/oak.png';
+            if (t.includes('astros') || t.includes('hou')) return 'https://a.espncdn.com/i/teamlogos/mlb/500/hou.png';
+            if (t.includes('tex') || t.includes('texas')) return 'https://a.espncdn.com/i/teamlogos/mlb/500/tex.png';
+            if (t.includes('royals') || t.includes('kc')) return 'https://a.espncdn.com/i/teamlogos/mlb/500/kc.png';
+            if (t.includes('rockies') || t.includes('col')) return 'https://a.espncdn.com/i/teamlogos/mlb/500/col.png';
+            if (t.includes('brewers') || t.includes('mil')) return 'https://a.espncdn.com/i/teamlogos/mlb/500/mil.png';
+            if (t.includes('angels') || t.includes('laa') || t.includes('ang')) return 'https://a.espncdn.com/i/teamlogos/mlb/500/laa.png';
+            if (t.includes('yankees') || t.includes('nyy')) return 'https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png';
+            
+            // NBA
+            if (t.includes('thunder') || t.includes('okc')) return 'https://a.espncdn.com/i/teamlogos/nba/500/okc.png';
+            if (t.includes('celtics') || t.includes('bos')) return 'https://a.espncdn.com/i/teamlogos/nba/500/bos.png';
+            if (t.includes('lakers') || t.includes('lal')) return 'https://a.espncdn.com/i/teamlogos/nba/500/lal.png';
+            if (t.includes('nuggets') || t.includes('den')) return 'https://a.espncdn.com/i/teamlogos/nba/500/den.png';
+            
+            return '';
+        }
+
+        function renderSidebar() {
+            var el = document.getElementById('gameList');
+            var allGames = sortGames();
+
+            if (!allGames.length) {
+                el.innerHTML = '<div style="padding:24px 14px; font-family:var(--font-mono); font-size:10px; color:var(--muted); text-align:center; line-height:1.8;">'
+                    + '<div style="font-size:18px; margin-bottom:8px;">&#9679;</div>NO GAMES FOUND</div>';
+                return;
+            }
+
+            // Sort: pinned first, then active live games, then remaining scheduled/completed games
+            var pinned = allGames.filter(function(g) { return pinnedGames.has(g.game_id); });
+            var unpinnedLive = allGames.filter(function(g) { return !pinnedGames.has(g.game_id) && g.game_status === 'live'; });
+            var unpinnedOther = allGames.filter(function(g) { return !pinnedGames.has(g.game_id) && g.game_status !== 'live'; });
+
+            // Apply drag order within each group
+            function applyOrder(arr) {
+                if (!dragOrder.length) return arr;
+                var indexed = [];
+                arr.forEach(function(g) {
+                    var idx = dragOrder.indexOf(g.game_id);
+                    indexed.push({ g: g, idx: idx < 0 ? 9999 : idx });
+                });
+                indexed.sort(function(a,b) { return a.idx - b.idx; });
+                return indexed.map(function(x) { return x.g; });
+            }
+
+            var ordered = applyOrder(pinned).concat(unpinnedLive).concat(applyOrder(unpinnedOther));
+
+            var html = '';
+            ordered.forEach(function(g) {
+                var isPinned = pinnedGames.has(g.game_id);
+                var isLiveNow = g.game_status === 'live';
+                var isHalftime = g.espn_status === 'Halftime';
+                var done = g.game_status === 'completed';
+                var stxt = '';
+                if (done) stxt = (g.espn_detail && g.espn_detail.toUpperCase().includes('OT') ? g.espn_detail.toUpperCase() : 'FINAL');
+                else if (isLiveNow) stxt = isHalftime ? 'HALFTIME' : ('&#9679; ' + (g.period ? 'Q'+g.period : '') + ' ' + g.clock);
+                else stxt = fmtTime(g.commence_time) || 'SCHEDULED';
+                
+                var act = selectedGame === g.game_id;
+                var leagueBadge = '';
+                if (g.sport_key) {
+                    if (g.sport_key.includes('nba')) leagueBadge = 'NBA';
+                    else if (g.sport_key.includes('nfl')) leagueBadge = 'NFL';
+                    else if (g.sport_key.includes('ncaaf') || g.sport_key.includes('college-football')) leagueBadge = 'NCAAF';
+                    else if (g.sport_key.includes('nhl') || g.sport_key.includes('hockey')) leagueBadge = 'NHL';
+                    else if (g.sport_key.includes('mlb') || g.sport_key.includes('baseball')) leagueBadge = 'MLB';
+                    else if (g.sport_key.includes('wnba')) leagueBadge = 'WNBA';
+                    else if (g.sport_key.includes('ncaa') || g.sport_key.includes('mens-college-basketball')) leagueBadge = 'NCAAB';
+                    else if (g.sport_key.includes('mls') || g.sport_key.includes('soccer')) leagueBadge = 'MLS';
+                    else leagueBadge = g.sport_key.split('_').pop().toUpperCase();
+                }
+
+                function getLeagueLogoUrl(sk) {
+                    var s = String(sk || '').toLowerCase();
+                    if (s.includes('nfl') || s.includes('americanfootball')) return 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png';
+                    if (s.includes('mlb') || s.includes('baseball')) return 'https://a.espncdn.com/i/teamlogos/leagues/500/mlb.png';
+                    if (s.includes('nba') || s.includes('basketball_nba')) return 'https://a.espncdn.com/i/teamlogos/leagues/500/nba.png';
+                    if (s.includes('nhl') || s.includes('icehockey')) return 'https://a.espncdn.com/i/teamlogos/leagues/500/nhl.png';
+                    if (s.includes('wnba')) return 'https://a.espncdn.com/i/teamlogos/leagues/500/wnba.png';
+                    return 'https://a.espncdn.com/i/espn/misc_logos/500/ncaa.png';
+                }
+
+                var awayLogoUrl = g.away_logo || getTeamLogoUrl(g.away_team, g.sport_key);
+                var homeLogoUrl = g.home_logo || getTeamLogoUrl(g.home_team, g.sport_key);
+
+                html += '<div class="game-item' + (isLiveNow ? ' is-live' : '') + (act ? ' active' : '') + (isPinned ? ' pinned-card' : '') + '"'
+                    + ' id="gi-' + g.game_id + '"'
+                    + ' draggable="true"'
+                    + ' ondragstart="_onDragStart(event, \'' + g.game_id + '\')"'
+                    + ' ondragover="_onDragOver(event)"'
+                    + ' ondragleave="_onDragLeave(event)"'
+                    + ' ondrop="_onDrop(event, \'' + g.game_id + '\')"'
+                    + ' ondragend="_onDragEnd()"'
+                    + ' onclick="selectGame(\'' + g.game_id + '\')"'
+                    + '>'
+                    // Top row: status + actions
+                    + '<div class="gi-top-row">'
+                    + '<div style="display:flex; align-items:center; gap:6px;">'
+                    + '<img src="' + getLeagueLogoUrl(g.sport_key) + '" style="width:16px;height:16px;object-fit:contain;flex-shrink:0;" title="' + (leagueBadge || '') + '">'
+                    + '<span class="drag-handle" title="Drag to reorder">&#8942;</span>'
+                    + '<span class="gi-status ' + (isLiveNow ? 'live' : '') + '" style="' + (isLiveNow ? '' : 'color:var(--muted);') + '">' + stxt + '</span>'
+                    + '</div>'
+                    + '<div class="gi-actions" onclick="event.stopPropagation()">'
+                    + '<button class="pin-btn' + (isPinned ? ' pinned' : '') + '" title="' + (isPinned ? 'Unpin' : 'Pin') + '" onclick="togglePin(\'' + g.game_id + '\', event)">'
+                    + (isPinned ? '&#9733;' : '&#9734;') + '</button>'
+                    + '</div>'
+                    + '</div>'
+                    // Away team
+                    + '<div class="gi-team-row away-row">'
+                    + '<div style="display:flex; align-items:center; gap:8px;">'
+                    + (awayLogoUrl ? '<img src="' + awayLogoUrl + '" style="width:16px;height:16px;object-fit:contain;flex-shrink:0;" onerror="this.style.display=\'none\'">' : '<span class="gi-label">AWAY</span>')
+                    + '<span class="gi-team-name">' + (g.away_team || '?') + '</span>'
+                    + '</div>'
+                    + '<span class="gi-score">' + g.away_score + '</span>'
+                    + '</div>'
+                    // Home team
+                    + '<div class="gi-team-row">'
+                    + '<div style="display:flex; align-items:center; gap:8px;">'
+                    + (homeLogoUrl ? '<img src="' + homeLogoUrl + '" style="width:16px;height:16px;object-fit:contain;flex-shrink:0;" onerror="this.style.display=\'none\'">' : '<span class="gi-label">HOME</span>')
+                    + '<span class="gi-team-name">' + (g.home_team || '?') + '</span>'
+                    + '</div>'
+                    + '<span class="gi-score">' + g.home_score + '</span>'
+                    + '</div>'
+                    + '</div>';
+            });
+
+            el.innerHTML = html;
+
+            if (!selectedGame) {
+                if (ordered.length) selectGame(ordered[0].game_id, false);
+            }
+        }
+
+        // ── Drag handlers ─────────────────────────────────────────────
+        function _onDragStart(evt, id) {
+            _dragSrcId = id;
+            evt.dataTransfer.effectAllowed = 'move';
+            setTimeout(function() {
+                var el = document.getElementById('gi-' + id);
+                if (el) el.classList.add('dragging');
+            }, 0);
+        }
+
+        function _onDragOver(evt) {
+            evt.preventDefault();
+            evt.dataTransfer.dropEffect = 'move';
+            evt.currentTarget.classList.add('drag-over');
+        }
+
+        function _onDragLeave(evt) {
+            evt.currentTarget.classList.remove('drag-over');
+        }
+
+        function _onDrop(evt, targetId) {
+            evt.preventDefault();
+            evt.currentTarget.classList.remove('drag-over');
+            if (!_dragSrcId || _dragSrcId === targetId) return;
+
+            // Build current visible order from DOM
+            var items = Array.from(document.querySelectorAll('.game-item'));
+            var ids = items.map(function(el) { return el.id.replace('gi-', ''); });
+
+            var srcIdx = ids.indexOf(_dragSrcId);
+            var tgtIdx = ids.indexOf(targetId);
+            if (srcIdx < 0 || tgtIdx < 0) return;
+
+            ids.splice(srcIdx, 1);
+            ids.splice(tgtIdx, 0, _dragSrcId);
+            saveDragOrder(ids);
+            renderSidebar();
+        }
+
+        function _onDragEnd() {
+            _dragSrcId = null;
+            document.querySelectorAll('.game-item').forEach(function(el) {
+                el.classList.remove('dragging', 'drag-over');
+            });
+        }
+
+        function selectGame(id, render) {
+            selectedGame = id;
+            renderSidebar();
+            renderHeader();
+            populateBookSel();
+            renderChart();
+            renderStrip();
+            renderLineMatrix();
+        }
+
+        function fmtOdds(val) {
+            if (val === null || val === undefined || isNaN(val) || val === '') return '--';
+            const v = parseFloat(val);
+            return (v > 0 ? '+' : '') + v;
+        }
+
+        function fmtSpread(spr) {
+            if (!spr || spr.point === undefined || spr.point === null) return '--';
+            const pt = parseFloat(spr.point);
+            const pr = spr.price !== null && spr.price !== undefined ? parseFloat(spr.price) : null;
+            const ptStr = (pt > 0 ? '+' : '') + pt;
+            const prStr = pr !== null ? ` (${fmtOdds(pr)})` : '';
+            return ptStr + prStr;
+        }
+
+        function fmtTotal(tot) {
+            if (tot === null || tot === undefined || isNaN(tot) || tot === '') return '--';
+            return parseFloat(tot).toFixed(1);
+        }
+
+        function clvColor(clv) {
+            if (clv === null || clv === undefined || isNaN(clv)) return 'var(--muted)';
+            if (clv > 0) return '#10B981'; // Green
+            if (clv < 0) return '#EF4444'; // Red
+            return 'var(--text)';
+        }
+
+        function renderLineMatrix() {
+            var el = document.getElementById('lineMatrixGrid');
+            var section = document.getElementById('lineMatrixSection');
+            if (!el || !section) return;
+
+            var db = ltLinesDb[selectedGame];
+            var g = games[selectedGame];
+            if (!db || !g) {
+                section.style.display = 'none';
+                return;
+            }
+            section.style.display = 'flex';
+
+            var awayAbbr = lastName(g.away_team);
+            var homeAbbr = lastName(g.home_team);
+
+            var rowsHtml = '';
+
+            // 1. Opening Line Row
+            if (db.opening) {
+                rowsHtml += `
+                <div class="matrix-row opening">
+                    <div class="matrix-label">OPENING LINE</div>
+                    <div class="matrix-cell">
+                        <span class="matrix-cell-title">${awayAbbr} ML</span>
+                        <span class="matrix-cell-val">${fmtOdds(db.opening.away_ml)}</span>
+                    </div>
+                    <div class="matrix-cell">
+                        <span class="matrix-cell-title">${homeAbbr} ML</span>
+                        <span class="matrix-cell-val">${fmtOdds(db.opening.home_ml)}</span>
+                    </div>
+                    <div class="matrix-cell">
+                        <span class="matrix-cell-title">SPREAD / TOTAL</span>
+                        <span class="matrix-cell-val">${fmtSpread(db.opening.away_spr)} / O ${fmtTotal(db.opening.total_line)}</span>
+                    </div>
+                    <div class="matrix-cell" style="text-align:right; justify-content:center;">
+                        <span class="clv-badge neu">0.0% CLV</span>
+                    </div>
+                </div>`;
+            }
+
+            // 2. Closing Odds Row (glowing amber/gold)
+            if (db.closing) {
+                rowsHtml += `
+                <div class="matrix-row closing">
+                    <div class="matrix-label">CLOSING ODDS</div>
+                    <div class="matrix-cell">
+                        <span class="matrix-cell-title">${awayAbbr} ML</span>
+                        <span class="matrix-cell-val">${fmtOdds(db.closing.away_ml)}</span>
+                    </div>
+                    <div class="matrix-cell">
+                        <span class="matrix-cell-title">${homeAbbr} ML</span>
+                        <span class="matrix-cell-val">${fmtOdds(db.closing.home_ml)}</span>
+                    </div>
+                    <div class="matrix-cell">
+                        <span class="matrix-cell-title">SPREAD / TOTAL</span>
+                        <span class="matrix-cell-val">${fmtSpread(db.closing.away_spr)} / O ${fmtTotal(db.closing.total_line)}</span>
+                    </div>
+                    <div class="matrix-cell" style="text-align:right; justify-content:center;">
+                        <span class="clv-badge neu" style="color:#F59E0B; border-color:rgba(217,119,6,0.3);">LOCK</span>
+                    </div>
+                </div>`;
+            }
+
+            // 3. Live Line Row
+            if (db.live) {
+                var awayClv = calculateClv(db.live.away_ml, db.closing ? db.closing.away_ml : null);
+                var homeClv = calculateClv(db.live.home_ml, db.closing ? db.closing.home_ml : null);
+
+                var awayClvStyle = awayClv !== null ? `style="color:${clvColor(awayClv)}; font-weight:bold;"` : '';
+                var homeClvStyle = homeClv !== null ? `style="color:${clvColor(homeClv)}; font-weight:bold;"` : '';
+
+                // Best overall CLV for display in badge
+                var bestClv = awayClv;
+                if (homeClv !== null && (bestClv === null || Math.abs(homeClv) > Math.abs(awayClv))) {
+                    bestClv = homeClv;
+                }
+
+                var badgeClass = 'neu';
+                var badgeText = '0.0% CLV';
+                if (bestClv !== null) {
+                    if (bestClv > 0) {
+                        badgeClass = 'pos';
+                        badgeText = `▲ +${bestClv.toFixed(1)}% CLV`;
+                    } else if (bestClv < 0) {
+                        badgeClass = 'neg';
+                        badgeText = `▼ ${bestClv.toFixed(1)}% CLV`;
+                    }
+                }
+
+                rowsHtml += `
+                <div class="matrix-row live">
+                    <div class="matrix-label"><span class="matrix-dot"></span>LIVE LINE</div>
+                    <div class="matrix-cell">
+                        <span class="matrix-cell-title">${awayAbbr} ML</span>
+                        <span class="matrix-cell-val" ${awayClvStyle}>${fmtOdds(db.live.away_ml)}</span>
+                    </div>
+                    <div class="matrix-cell">
+                        <span class="matrix-cell-title">${homeAbbr} ML</span>
+                        <span class="matrix-cell-val" ${homeClvStyle}>${fmtOdds(db.live.home_ml)}</span>
+                    </div>
+                    <div class="matrix-cell">
+                        <span class="matrix-cell-title">SPREAD / TOTAL</span>
+                        <span class="matrix-cell-val">${fmtSpread(db.live.away_spr)} / O ${fmtTotal(db.live.total_line)}</span>
+                    </div>
+                    <div class="matrix-cell" style="text-align:right; justify-content:center;">
+                        <span class="clv-badge ${badgeClass}">${badgeText}</span>
+                    </div>
+                </div>`;
+            }
+
+            // 4. Graded Line Row
+            if (db.graded || (g.game_status === 'completed' && db.live)) {
+                var finalLine = db.graded || db.live;
+                rowsHtml += `
+                <div class="matrix-row graded">
+                    <div class="matrix-label">GRADED LINE</div>
+                    <div class="matrix-cell">
+                        <span class="matrix-cell-title">${awayAbbr} ML</span>
+                        <span class="matrix-cell-val" style="color:#10B981;">${fmtOdds(finalLine.away_ml)}</span>
+                    </div>
+                    <div class="matrix-cell">
+                        <span class="matrix-cell-title">${homeAbbr} ML</span>
+                        <span class="matrix-cell-val" style="color:#10B981;">${fmtOdds(finalLine.home_ml)}</span>
+                    </div>
+                    <div class="matrix-cell">
+                        <span class="matrix-cell-title">SPREAD / TOTAL</span>
+                        <span class="matrix-cell-val" style="color:#10B981;">${fmtSpread(finalLine.away_spr)} / O ${fmtTotal(finalLine.total_line)}</span>
+                    </div>
+                    <div class="matrix-cell" style="text-align:right; justify-content:center;">
+                        <span class="clv-badge pos" style="background:rgba(16,185,129,0.25); border-color:#10B981; color:#10B981;">&#10004; GRADED</span>
+                    </div>
+                </div>`;
+            }
+
+            el.innerHTML = rowsHtml;
+        }
+
+        function updateAll() { renderHeader(); renderChart(); renderLineMatrix(); }
+
+        function renderHeader() {
+            var g = games[selectedGame]; if (!g) return;
+            var live = g.game_status === 'live', done = g.game_status === 'completed';
+            var hs = parseInt(g.home_score || 0), as = parseInt(g.away_score || 0);
+            var hw = done && hs > as, aw = done && as > hs;
+            var isHalftime = g.espn_status === 'Halftime';
+            var stxt = done ? (g.espn_detail && g.espn_detail.toUpperCase().includes('OT') ? g.espn_detail.toUpperCase() : 'FINAL') : (isHalftime ? 'HALFTIME' : (live ? 'LIVE' : 'SCHEDULED'));
+            var scls = live ? 'live' : done ? 'final' : 'scheduled';
+            var chips = getChips(g);
+            // chips: [0]=AWAY SPR, [1]=HOME SPR, [2]=AWAY ML, [3]=HOME ML, [4]=OVER, [5]=UNDER
+
+            var awayLS = g.away_linescores || [];
+            var homeLS = g.home_linescores || [];
+            var numPeriods = Math.max(awayLS.length, homeLS.length);
+            var periods = numPeriods > 0 ? Array.from({length: numPeriods}, function(_, i) { return i; }) : [];
+            var isBaseball = g.espn_sport === 'baseball';
+            var isHockey = g.espn_sport === 'hockey';
+            var getQLabel = function(i) {
+                if (isBaseball) return (i + 1);                       // 1 2 3 … 9 10 …
+                if (isHockey) {
+                    if (i < 3) return (i + 1);                        // 1 2 3
+                    var ot = i - 2;
+                    return ot === 1 ? 'OT' : (ot + 'OT');
+                }
+                if (i < 4) return (i + 1);                            // 1 2 3 4
+                var ot = i - 3;                                        // 1-indexed OT number
+                return ot === 1 ? 'OT' : (ot + 'OT');                 // OT 2OT 3OT …
+            };
+
+            // Clock / period label
+            var periodLabel = '';
+            if (live && g.period) {
+                var pn = parseInt(g.period);
+                if (isHockey) {
+                    if (pn === 1) periodLabel = '1st';
+                    else if (pn === 2) periodLabel = '2nd';
+                    else if (pn === 3) periodLabel = '3rd';
+                    else periodLabel = 'OT' + (pn > 4 ? (pn - 3) : '');
+                } else if (isBaseball) {
+                    var suffix = 'th';
+                    if (pn === 1) suffix = 'st';
+                    else if (pn === 2) suffix = 'nd';
+                    else if (pn === 3) suffix = 'rd';
+                    periodLabel = pn + suffix;
+                } else {
+                    if (pn === 1) periodLabel = isHalftime ? 'HT' : '1st';
+                    else if (pn === 2) periodLabel = isHalftime ? 'HT' : '2nd';
+                    else if (pn === 3) periodLabel = '3rd';
+                    else if (pn === 4) periodLabel = '4th';
+                    else periodLabel = 'OT' + (pn > 5 ? (pn - 4) : '');
+                }
+            }
+            var clockStr = (live && !isHalftime && g.clock) ? (g.clock + ' &ndash; ' + periodLabel) : (isHalftime ? 'HALFTIME' : stxt);
+
+            // Odds chip value helper — inline compact
+            var chipVal = function(chip) {
+                return '<span style="font-size:11px; font-weight:700; color:' + (chip.cls === 'up' ? 'var(--up)' : chip.cls === 'dn' ? 'var(--dn)' : 'var(--dim)') + '">' + chip.val + '</span>';
+            };
+
+            // Build header HTML
+            var h = '';
+
+            // ── Top meta bar ─────────────────────────────────────────────────
+            h += '<div style="display:flex; align-items:center; gap:12px; padding:8px 16px 6px; border-bottom:1px solid var(--border);">';
+            h += '<span class="gh-status ' + scls + '">' + stxt + '</span>';
+            if (live && !isHalftime && g.clock) {
+                h += '<span class="gh-clock">' + g.clock + ' &ndash; ' + periodLabel + '</span>';
+            }
+            if (g.espn_detail && !live) {
+                h += '<span style="font-family:var(--font-mono); font-size:10px; color:var(--muted);">' + g.espn_detail + '</span>';
+            }
+            h += '<span style="flex:1"></span>';
+            h += '</div>';
+
+            // ── Unified boxscore table ────────────────────────────────────────
+            h += '<div style="overflow-x:auto; padding:0 8px 6px;">';
+            h += '<table style="border-collapse:collapse; width:100%; font-family:var(--font-mono); font-size:11px; white-space:nowrap;">';
+
+            // Column header row
+            h += '<thead><tr style="color:var(--muted); font-size:9px; font-weight:400;">';
+            h += '<th style="text-align:left; padding:4px 8px; min-width:180px;"></th>';  // team col
+            periods.forEach(function(i) {
+                h += '<th style="text-align:center; padding:4px 8px; min-width:32px;">' + getQLabel(i) + '</th>';
+            });
+            h += '<th style="text-align:center; padding:4px 10px; font-weight:700; color:var(--fg);">T</th>';
+            h += '<th style="text-align:center; padding:4px 10px; min-width:54px;">SPR</th>';
+            h += '<th style="text-align:center; padding:4px 10px; min-width:54px;">ML</th>';
+            h += '<th style="text-align:center; padding:4px 6px; min-width:44px;">O</th>';
+            h += '<th style="text-align:center; padding:4px 6px; min-width:44px;">U</th>';
+            h += '</tr></thead><tbody>';
+
+            // Row helper
+            var mkRow = function(isAway) {
+                var logo  = isAway ? (g.away_logo || getTeamLogoUrl(g.away_team, g.sport_key)) : (g.home_logo || getTeamLogoUrl(g.home_team, g.sport_key));
+                var team  = isAway ? g.away_team  : g.home_team;
+                var rec   = isAway ? (g.away_record || '') : (g.home_record || '');
+                var score = isAway ? g.away_score  : g.home_score;
+                var ls    = isAway ? awayLS : homeLS;
+                var win   = isAway ? aw : hw;
+                var spr   = isAway ? chips[0] : chips[1];
+                var ml    = isAway ? chips[2] : chips[3];
+                var ov    = chips[4];
+                var un    = chips[5];
+
+                var scoreColor = win ? 'var(--up)' : (live || done) ? 'var(--fg)' : 'var(--dim)';
+
+                var r = '<tr style="border-top:1px solid var(--border);">';
+                // Team cell: logo + abbr + record
+                r += '<td style="padding:6px 8px;">';
+                r += '<div style="display:flex; align-items:center; gap:8px;">';
+                if (logo) r += '<img src="' + logo + '" style="width:22px; height:22px; object-fit:contain; flex-shrink:0;" onerror="this.style.display=\'none\'">';
+                r += '<div>';
+                r += '<div style="font-weight:700; color:var(--fg); font-size:12px;">' + (team || '?') + '</div>';
+                if (rec) r += '<div style="font-size:9px; color:var(--muted); margin-top:1px;">' + rec + '</div>';
+                r += '</div></div></td>';
+
+                // Period score cells
+                periods.forEach(function(i) {
+                    r += '<td style="text-align:center; padding:6px 8px; color:#38bdf8; font-weight:800; font-size:12px;">' + (ls[i] !== undefined ? ls[i] : '-') + '</td>';
+                });
+
+                // Total score
+                r += '<td style="text-align:center; padding:6px 10px; font-weight:700; font-size:14px; color:' + scoreColor + ';">' + (score || '0') + '</td>';
+
+                // Odds chips (compact)
+                r += '<td style="text-align:center; padding:6px 10px;">' + chipVal(spr) + '<div style="font-size:8px; color:var(--muted); margin-top:1px;">' + (spr.val !== '--' ? 'SPR' : '') + '</div></td>';
+                r += '<td style="text-align:center; padding:6px 10px;">' + chipVal(ml)  + '<div style="font-size:8px; color:var(--muted); margin-top:1px;">' + (ml.val  !== '--' ? 'ML'  : '') + '</div></td>';
+                if (isAway) {
+                    r += '<td style="text-align:center; padding:6px 6px;">' + chipVal(ov) + '<div style="font-size:8px; color:var(--muted); margin-top:1px;">O</div></td>';
+                    r += '<td style="text-align:center; padding:6px 6px; opacity:.6;">-</td>';
+                } else {
+                    r += '<td style="text-align:center; padding:6px 6px; opacity:.6;">-</td>';
+                    r += '<td style="text-align:center; padding:6px 6px;">' + chipVal(un) + '<div style="font-size:8px; color:var(--muted); margin-top:1px;">U</div></td>';
+                }
+                r += '</tr>';
+                return r;
+            };
+
+            h += mkRow(true);   // Away
+            h += mkRow(false);  // Home
+            h += '</tbody></table></div>';
+
+            document.getElementById('gameHeader').innerHTML = h;
+        }
+
+
+        function getChips(g) {
+            return [
+                { label: 'AWAY SPR', mkt: 'spr', side: 'away' },
+                { label: 'HOME SPR', mkt: 'spr', side: 'home' },
+                { label: 'AWAY ML', mkt: 'ml', side: 'away' },
+                { label: 'HOME ML', mkt: 'ml', side: 'home' },
+                { label: 'TOT LINE', mkt: 'tot', side: 'none' },
+                { label: 'UNDER', mkt: 'und', side: 'none' },
+            ].map(function (m) {
+                var snaps = g.snapshots;
+                if (snaps.length < 2) return { label: m.label, val: '--', cls: 'neu' };
+
+                var getVal = function (snap) {
+                    var bdata = snap.books['kalshi'] || snap.books['betonlineag'] || snap.books['fanduel'] || snap.books['draftkings'] || Object.values(snap.books)[0];
+                    if (!bdata) return null;
+                    if (m.mkt === 'ml') return m.side === 'away' ? bdata.h2h_away : bdata.h2h_home;
+                    if (m.mkt === 'spr') return m.side === 'away' ? bdata.spread_away_point : bdata.spread_home_point;
+                    if (m.mkt === 'tot') return bdata.total_point;
+                    if (m.mkt === 'und') return bdata.total_under_point !== undefined ? bdata.total_under_point : bdata.total_point;
+                    return null;
+                };
+                var first = null, last = null;
+                for (var i = 0; i < snaps.length; i++) { var v = getVal(snaps[i]); if (v !== null && !isNaN(v)) { if (first === null) first = v; last = v; } }
+                if (first === null || last === null) return { label: m.label, val: '--', cls: 'neu' };
+                var diff = (last - first).toFixed(m.mkt === 'tot' || m.mkt === 'spr' || m.mkt === 'und' ? 1 : 0);
+                return { label: m.label, val: (diff > 0 ? '+' : '') + diff, cls: diff > 0 ? 'pos' : diff < 0 ? 'neg' : 'neu' };
+            });
+        }
+
+        function populateBookSel() {
+            var g = games[selectedGame]; if (!g) return;
+            var sel = document.getElementById('bookSel');
+            if (!sel) return;
+            var currentVal = sel.value || 'kalshi';
+            sel.innerHTML = BOOKS.map(function (b) { 
+                return '<option value="' + b.prefix + '"' + (b.prefix === currentVal ? ' selected' : '') + '>' + b.name + '</option>'; 
+            }).join('') + '<option value="all"' + (currentVal === 'all' ? ' selected' : '') + '>ALL BOOKS (avg)</option>';
+        }
+
+        function avg(arr) { return arr.length ? arr.reduce(function (a, b) { return a + b; }, 0) / arr.length : null; }
+
+        function renderChart() {
+            var g = games[selectedGame]; if (!g) return;
+            var box = document.getElementById('chartBox');
+            var msg = document.getElementById('chartMsg');
+            var book = document.getElementById('bookSel').value;
+            var market = document.getElementById('marketSel') ? document.getElementById('marketSel').value : 'ml';
+
+            if (g.snapshots.length < 1) { if (msg) msg.style.display = 'flex'; return; }
+            if (msg) msg.style.display = 'none';
+
+            if (!lwChart) {
+                box.innerHTML = '';
+                try {
+                    lwChart = LightweightCharts.createChart(box, {
+                        layout: { background: { type: 'solid', color: '#111922' }, textColor: '#4A6A8A' },
+                        grid: { vertLines: { color: '#1A2636' }, horzLines: { color: '#1A2636' } },
+                        rightPriceScale: { borderColor: '#1A2636' },
+                        leftPriceScale: { visible: true, borderColor: '#1A2636', scaleMargins: { top: 0.1, bottom: 0.1 } },
+                        timeScale: { borderColor: '#1A2636', timeVisible: true, secondsVisible: false },
+                        crosshair: { mode: 1 },
+                    });
+
+                    // Score Series on Left Axis
+                    lwAwayScore = lwChart.addSeries(LightweightCharts.LineSeries, { color: '#7B61FF', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, priceScaleId: 'left', crosshairMarkerRadius: 4 });
+                    lwHomeScore = lwChart.addSeries(LightweightCharts.LineSeries, { color: '#E53E3E', lineWidth: 2, priceScaleId: 'left', crosshairMarkerRadius: 4 });
+
+                    // Odds Series on Right Axis
+                    lwAwayMl    = lwChart.addSeries(LightweightCharts.LineSeries, { color: '#2D8EFF', lineWidth: 2, crosshairMarkerRadius: 4, priceScaleId: 'right' });
+                    lwHomeMl    = lwChart.addSeries(LightweightCharts.LineSeries, { color: '#F6AD55', lineWidth: 2, crosshairMarkerRadius: 4, priceScaleId: 'right' });
+                    lwAwaySpr   = lwChart.addSeries(LightweightCharts.LineSeries, { color: '#2D8EFF', lineWidth: 2, crosshairMarkerRadius: 4, priceScaleId: 'right' });
+                    lwHomeSpr   = lwChart.addSeries(LightweightCharts.LineSeries, { color: '#F6AD55', lineWidth: 2, crosshairMarkerRadius: 4, priceScaleId: 'right' });
+                    lwTotSeries = lwChart.addSeries(LightweightCharts.LineSeries, { color: '#8B5CF6', lineWidth: 2, crosshairMarkerRadius: 4, priceScaleId: 'right' });
+
+                    new ResizeObserver(() => lwChart.applyOptions({ width: box.clientWidth, height: box.clientHeight })).observe(box);
+                } catch (e) {
+                    alert('Chart init error: ' + e.message);
+                }
+            }
+
+            const aMlData = [], hMlData = [], aSprData = [], hSprData = [], totData = [], aScoreData = [], hScoreData = [];
+            const markers = { away: [], home: [] };
+            let lastAScore = null, lastHScore = null;
+
+            g.snapshots.forEach(snap => {
+                let amls = [], hmls = [], asprs = [], hsprs = [], tots = [];
+                BOOKS.forEach(b => {
+                    if (book !== 'all' && b.prefix !== book) return;
+                    const bdata = snap.books[b.key];
+                    if (!bdata) return;
+                    if (bdata.h2h_away !== undefined && bdata.h2h_away !== null) amls.push(bdata.h2h_away);
+                    if (bdata.h2h_home !== undefined && bdata.h2h_home !== null) hmls.push(bdata.h2h_home);
+                    if (bdata.spread_away_point !== undefined && bdata.spread_away_point !== null) asprs.push(bdata.spread_away_point);
+                    if (bdata.spread_home_point !== undefined && bdata.spread_home_point !== null) hsprs.push(bdata.spread_home_point);
+                    if (bdata.total_point !== undefined && bdata.total_point !== null) tots.push(bdata.total_point);
+                });
+
+                const time = snap.time;
+                const pushVal = (arr, vals) => { const a = avg(vals); if (a !== null) arr.push({ time, value: a }); };
+                pushVal(aMlData, amls);
+                pushVal(hMlData, hmls);
+                pushVal(aSprData, asprs);
+                pushVal(hSprData, hsprs);
+                pushVal(totData, tots);
+
+                if (snap.aScore !== undefined && snap.aScore !== '') {
+                    aScoreData.push({ time, value: parseInt(snap.aScore || '0') });
+                    if (lastAScore !== null && snap.aScore !== lastAScore) {
+                        markers.away.push({ time, position: 'aboveBar', color: '#7B61FF', shape: 'arrowDown', text: snap.aScore });
+                    }
+                    lastAScore = snap.aScore;
+                }
+                if (snap.hScore !== undefined && snap.hScore !== '') {
+                    hScoreData.push({ time, value: parseInt(snap.hScore || '0') });
+                    if (lastHScore !== null && snap.hScore !== lastHScore) {
+                        markers.home.push({ time, position: 'aboveBar', color: '#E53E3E', shape: 'arrowDown', text: snap.hScore });
+                    }
+                    lastHScore = snap.hScore;
+                }
+            });
+
+            const unique = (arr) => {
+                const map = new Map();
+                arr.forEach(item => map.set(item.time, item));
+                let res = Array.from(map.values()).sort((a, b) => a.time - b.time);
+                if (res.length === 1) {
+                    res.unshift({ time: res[0].time - 60, value: res[0].value });
+                }
+                return res;
+            };
+
+            if (!lwAwayMl) return;
+            lwAwayScore.setData(unique(aScoreData));
+            lwHomeScore.setData(unique(hScoreData));
+            lwAwayMl.setData(unique(aMlData));
+            lwHomeMl.setData(unique(hMlData));
+            lwAwaySpr.setData(unique(aSprData));
+            lwHomeSpr.setData(unique(hSprData));
+            lwTotSeries.setData(unique(totData));
+
+            // Set visibility based on market dropdown
+            lwAwayMl.applyOptions({ visible: market === 'ml' });
+            lwHomeMl.applyOptions({ visible: market === 'ml' });
+            lwAwaySpr.applyOptions({ visible: market === 'spr' });
+            lwHomeSpr.applyOptions({ visible: market === 'spr' });
+            lwTotSeries.applyOptions({ visible: market === 'tot' });
+
+            // Update Legends text
+            if (document.getElementById('legAwayOdds')) {
+                document.getElementById('legAwayOdds').innerHTML = `<div class="legend-line" style="background:#2D8EFF;"></div>` + (market === 'tot' ? 'TOTAL O/U' : (market === 'spr' ? 'AWAY SPR' : 'AWAY ML'));
+                document.getElementById('legAwayOdds').style.display = market === 'tot' ? 'none' : 'flex';
+            }
+            if (document.getElementById('legHomeOdds')) {
+                document.getElementById('legHomeOdds').innerHTML = `<div class="legend-line" style="background:${market === 'tot' ? '#8B5CF6' : '#F6AD55'};"></div>` + (market === 'tot' ? 'TOTAL' : (market === 'spr' ? 'HOME SPR' : 'HOME ML'));
+            }
+
+            if (lwAwayMl && typeof lwAwayMl.setMarkers === 'function') {
+                lwAwayMl.setMarkers(markers.away);
+            }
+            if (lwHomeMl && typeof lwHomeMl.setMarkers === 'function') {
+                lwHomeMl.setMarkers(markers.home);
+            }
+
+            lwChart.timeScale().fitContent();
+
+            // Render the dedicated score flow chart
+            renderScoreChart();
+        }
+
+        function renderScoreChart() {
+            var g = games[selectedGame]; if (!g) return;
+            var snaps = g.snapshots.filter(s => parseInt(s.aScore||'0') > 0 || parseInt(s.hScore||'0') > 0);
+            var section = document.getElementById('scoreFlowSection');
+            if (!snaps.length) { section.style.display = 'none'; return; }
+            section.style.display = 'flex';
+
+            var aScores = snaps.map(s => parseInt(s.aScore || '0'));
+            var hScores = snaps.map(s => parseInt(s.hScore || '0'));
+            var times   = snaps.map(s => s.time);
+
+            // Count lead changes
+            var leadChanges = 0;
+            var lastLeader = 0; // 0=tie, 1=away, 2=home
+            for (var i = 0; i < snaps.length; i++) {
+                var cur = aScores[i] > hScores[i] ? 1 : aScores[i] < hScores[i] ? 2 : 0;
+                if (cur !== 0 && cur !== lastLeader && lastLeader !== 0) leadChanges++;
+                if (cur !== 0) lastLeader = cur;
+            }
+            document.getElementById('leadChangesLabel').textContent = leadChanges + ' Lead Change' + (leadChanges !== 1 ? 's' : '');
+
+            var canvas = document.getElementById('scoreFlowCanvas');
+            var dpr = window.devicePixelRatio || 1;
+            var W = canvas.offsetWidth || canvas.parentElement.clientWidth;
+            var H = 140;
+            canvas.width  = W * dpr;
+            canvas.height = H * dpr;
+            canvas.style.width  = W + 'px';
+            canvas.style.height = H + 'px';
+            var ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+            ctx.clearRect(0, 0, W, H);
+
+            var PAD_L = 36, PAD_R = 12, PAD_T = 10, PAD_B = 24;
+            var cW = W - PAD_L - PAD_R;
+            var cH = H - PAD_T - PAD_B;
+
+            var maxScore = Math.max(Math.max.apply(null, aScores), Math.max.apply(null, hScores), 1);
+            var yMax = Math.ceil(maxScore / 25) * 25 || 25;
+
+            var toX = function(i) { return PAD_L + (i / (snaps.length - 1 || 1)) * cW; };
+            var toY = function(v) { return PAD_T + cH - (v / yMax) * cH; };
+
+            // Quarter dividers from linescore count
+            var numQ = Math.max((g.away_linescores || []).length, (g.home_linescores || []).length);
+            // Estimate quarter boundaries by splitting time range evenly
+            var tMin = times[0], tMax = times[times.length - 1], tRange = tMax - tMin || 1;
+            var qLabels = ['1st','2nd','3rd','4th','OT'];
+            for (var q = 1; q < numQ; q++) {
+                var qFrac = q / numQ;
+                var qX = PAD_L + qFrac * cW;
+                ctx.strokeStyle = 'rgba(74,106,138,0.25)';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath(); ctx.moveTo(qX, PAD_T); ctx.lineTo(qX, PAD_T + cH); ctx.stroke();
+            }
+            ctx.setLineDash([]);
+
+            // Y-axis grid + labels
+            ctx.font = '9px monospace';
+            ctx.fillStyle = '#4A6A8A';
+            ctx.textAlign = 'right';
+            for (var yv = 0; yv <= yMax; yv += 25) {
+                var yy = toY(yv);
+                ctx.fillText(yv, PAD_L - 4, yy + 3);
+                ctx.strokeStyle = 'rgba(74,106,138,0.12)';
+                ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(PAD_L, yy); ctx.lineTo(PAD_L + cW, yy); ctx.stroke();
+            }
+
+            // Draw line helper
+            function drawLine(scores, color, dashed) {
+                if (scores.length < 2) return;
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.setLineDash(dashed ? [4, 3] : []);
+                ctx.beginPath();
+                scores.forEach(function(v, i) {
+                    var x = toX(i), y = toY(v);
+                    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                });
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            drawLine(hScores, '#E53E3E', false);
+            drawLine(aScores, '#7B61FF', true);
+
+            // Quarter labels on X axis
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#4A6A8A';
+            var labelsEl = document.getElementById('scoreFlowLabels');
+            var labelHtml = '';
+            for (var qi = 0; qi < numQ; qi++) {
+                var midFrac = (qi + 0.5) / numQ;
+                labelHtml += '<span>' + (qLabels[qi] || ('Q'+(qi+1))) + '</span>';
+            }
+            labelsEl.innerHTML = labelHtml;
+
+            // Legend dots
+            var awayAbbr = g.away_team ? g.away_team.split(' ').pop() : 'AWAY';
+            var homeAbbr = g.home_team ? g.home_team.split(' ').pop() : 'HOME';
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#7B61FF';
+            ctx.fillRect(PAD_L, PAD_T - 1, 12, 2);
+            ctx.fillStyle = '#9A9AFF';
+            ctx.font = 'bold 9px monospace';
+            ctx.fillText(awayAbbr + ' ' + (aScores[aScores.length-1] || 0), PAD_L + 16, PAD_T + 3);
+
+            ctx.fillStyle = '#E53E3E';
+            ctx.fillRect(PAD_L + 80, PAD_T - 1, 12, 2);
+            ctx.fillStyle = '#FF8080';
+            ctx.fillText(homeAbbr + ' ' + (hScores[hScores.length-1] || 0), PAD_L + 96, PAD_T + 3);
+        }
+
+        function renderStrip() {
+            var g = games[selectedGame]; if (!g) return;
+            var el = document.getElementById('oddsStrip');
+            var snaps = g.snapshots;
+            if (!snaps.length) { el.innerHTML = '<div class="strip-head"><div class="strip-head-title">NO DATA</div></div>'; return; }
+
+            var latest = snaps[snaps.length - 1];
+            var bestAwayML = null, bestHomeML = null;
+            BOOKS.forEach(function (b) {
+                var bdata = latest.books[b.key];
+                if (bdata) {
+                    var am = bdata.h2h_away;
+                    var hm = bdata.h2h_home;
+                    if (am !== null && !isNaN(am) && (bestAwayML === null || am > bestAwayML)) bestAwayML = am;
+                    if (hm !== null && !isNaN(hm) && (bestHomeML === null || hm > bestHomeML)) bestHomeML = hm;
+                }
+            });
+
+            var teamA = lastWord(g.away_team), teamH = lastWord(g.home_team);
+
+            var html = '<div class="strip-head">'
+                + '<div class="strip-head-title">ODDS</div>'
+                + '<div class="strip-head-sub" style="color:var(--blue);">' + teamA + '</div>'
+                + '<div class="strip-head-sub" style="color:var(--amber);">' + teamH + '</div>'
+                + '</div>';
+
+            BOOKS.forEach(function (b) {
+                var bdata = latest.books[b.key];
+                var am = bdata ? bdata.h2h_away : NaN;
+                var hm = bdata ? bdata.h2h_home : NaN;
+                var aspr = bdata ? bdata.spread_away_point : '';
+                var hspr = bdata ? bdata.spread_home_point : '';
+                var tot = bdata ? bdata.total_point : '';
+                var fmt = function (v) { return v === null || isNaN(v) || v === '' ? '--' : (v > 0 ? '+' : '') + v; };
+                var aBest = !isNaN(am) && am === bestAwayML;
+                var hBest = !isNaN(hm) && hm === bestHomeML;
+
+                html += '<div class="book-col">'
+                    + '<div class="book-name">' + b.name + '</div>'
+                    + '<div class="book-team-row">'
+                    + '<span class="book-team-label">AWAY</span>'
+                    + '<span class="book-ml ' + (isNaN(am) ? '' : (am > 0 ? 'pos' : 'neg')) + (aBest ? ' best' : '') + '">' + fmt(am) + '</span>'
+                    + '<span class="book-spr">' + (aspr ? (aspr > 0 ? '+' : '') + aspr : '--') + '</span>'
+                    + '<span class="book-tot">' + (tot ? 'O/U ' + tot : '--') + '</span>'
+                    + '</div>'
+                    + '<div class="book-team-row">'
+                    + '<span class="book-team-label">HOME</span>'
+                    + '<span class="book-ml ' + (isNaN(hm) ? '' : (hm > 0 ? 'pos' : 'neg')) + (hBest ? ' best' : '') + '">' + fmt(hm) + '</span>'
+                    + '<span class="book-spr">' + (hspr ? (hspr > 0 ? '+' : '') + hspr : '--') + '</span>'
+                    + '<span class="book-tot">' + (tot ? 'O/U ' + tot : '--') + '</span>'
+                    + '</div>'
+                    + '</div>';
+            });
+
+            el.innerHTML = html;
+        }
+    </script>
+    <script src="nav.js?v=2"></script>
+</body>
+</html>

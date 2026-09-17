@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny — Full-Game Line Movement History</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for High Fidelity Line Timeline Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        :root {
+            --bg: #0a0c0f;
+            --surface: #111418;
+            --surface2: #181c22;
+            --surface3: #222933;
+            --border: rgba(255, 255, 255, 0.07);
+            --border2: rgba(255, 255, 255, 0.13);
+            --text: #e8eaed;
+            --muted: #6b7280;
+            --accent: #f59e0b;
+            --accent2: #3b82f6;
+            --cyan: #06b6d4;
+            --win: #10b981;
+            --live: #ef4444;
+            --font-head: 'Barlow Condensed', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        .page-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 24px 28px;
+        }
+
+        /* HEADER */
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border2);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .history-title-area h1 {
+            font-family: var(--font-head);
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .history-title-area p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        /* GAME MATCHUP SELECTOR */
+        .game-selector-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .game-selector-label {
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .game-select-input {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: #fff;
+            font-family: var(--font-head);
+            font-size: 16px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        /* SUMMARY METRICS GRID */
+        .history-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--accent);
+        }
+
+        .metric-card.shift::before { background: var(--win); }
+        .metric-card.volatility::before { background: var(--cyan); }
+        .metric-card.events::before { background: var(--accent2); }
+
+        .metric-lbl {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .metric-val {
+            font-family: var(--font-head);
+            font-size: 26px;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .metric-val.green { color: var(--win); }
+        .metric-val.gold { color: var(--accent); }
+        .metric-val.cyan { color: var(--cyan); }
+
+        .metric-sub {
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        /* TIMELINE GRAPH CONTAINER */
+        .chart-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 14px;
+        }
+
+        .chart-title-group h2 {
+            font-family: var(--font-head);
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .chart-title-group p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .chart-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .ctrl-btn-group {
+            display: flex;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 2px;
+        }
+
+        .ctrl-btn {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-family: var(--font-head);
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .ctrl-btn.active {
+            background: var(--surface2);
+            color: var(--accent);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .book-select-dropdown {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* GRAPH CANVAS WRAPPER */
+        .canvas-wrapper {
+            position: relative;
+            height: 380px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        /* TIMELINE PLAYBACK SCRUBBER */
+        .scrubber-bar {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .scrubber-label {
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .scrubber-slider {
+            flex: 1;
+            height: 6px;
+            background: var(--border2);
+            border-radius: 3px;
+            outline: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .scrubber-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            cursor: pointer;
+        }
+
+        .scrubber-time-display {
+            font-family: var(--font-head);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+            min-width: 90px;
+            text-align: right;
+        }
+
+        /* CHRONOLOGICAL MOVEMENT LOG TABLE */
+        .log-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .log-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        .log-title {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .log-table-wrapper {
+            overflow-x: auto;
+            max-height: 420px;
+            overflow-y: auto;
+        }
+
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            text-align: left;
+        }
+
+        .log-table th {
+            color: var(--muted);
+            font-weight: 400;
+            padding: 10px 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: var(--surface);
+            z-index: 5;
+        }
+
+        .log-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .log-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .delta-chip {
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            display: inline-block;
+        }
+
+        .delta-chip.up {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--win);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .delta-chip.down {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--live);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .event-badge {
+            font-size: 9px;
+            background: rgba(59, 130, 246, 0.12);
+            color: var(--accent2);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        /* STACKED BREAKDOWN (EASY TO READ) STYLES */
+        .view-mode-toggle {
+            display: flex;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 2px;
+        }
+
+        .view-mode-btn {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-family: var(--font-head);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .view-mode-btn.active {
+            background: var(--surface2);
+            color: var(--accent);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .stacked-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .stacked-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            transition: all 0.2s;
+        }
+
+        .stacked-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .stacked-period-title {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stacked-team-block {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .stacked-team-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stacked-team-badge {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+        .stacked-team-badge.away { background: #3b82f6; }
+        .stacked-team-badge.home { background: #f59e0b; }
+
+        .stacked-team-list {
+            list-style: none;
+            padding-left: 24px;
+            font-size: 13px;
+            color: #cbd5e1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stacked-footer {
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .stacked-footer-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top global nav injected dynamically by nav.js -->
+
+    <div class="page-container">
+        <!-- HEADER -->
+        <div class="history-header">
+            <div class="history-title-area">
+                <h1>Full-Game Line Movement History</h1>
+                <p>Real-Time Timeline Audit & Play-by-Play Odds Shift Terminal</p>
+            </div>
+
+            <div class="game-selector-box">
+                <span class="game-selector-label">Select Matchup:</span>
+                <select id="gameHistorySelect" class="game-select-input" onchange="handleGameSelectChange(this.value)">
+                    <option value="lad_nym" selected>⚾ LA Dodgers @ NY Mets (Marquee Slate)</option>
+                    <option value="kc_det">⚾ KC Royals @ Detroit Tigers (Matinee)</option>
+                    <option value="ath_min">⚾ Athletics @ Minnesota Twins (Run Line Test)</option>
+                    <option value="okc_bos">🏀 OKC Thunder @ BOS Celtics (Live Final)</option>
+                    <option value="lal_den">🏀 LAL Lakers @ DEN Nuggets (Full Timeline)</option>
+                    <option value="gsw_sac">🏀 GSW Warriors @ SAC Kings (Full Timeline)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- SUMMARY METRICS -->
+        <div class="history-metrics">
+            <div class="metric-card shift">
+                <div class="metric-lbl">Total Line Shift</div>
+                <div class="metric-val green" id="metricLineShift">+4.5 PTS</div>
+                <div class="metric-sub" id="metricShiftSub">Opening -2.5 → Closing +2.0</div>
+            </div>
+
+            <div class="metric-card gold">
+                <div class="metric-lbl">Closing Line Value (CLV)</div>
+                <div class="metric-val gold" id="metricCLV">+6.8% Edge</div>
+                <div class="metric-sub">Implied closing market probability</div>
+            </div>
+
+            <div class="metric-card volatility">
+                <div class="metric-lbl">Line Volatility Index</div>
+                <div class="metric-val cyan" id="metricVolatility">HIGH (18 Shifts)</div>
+                <div class="metric-sub">Frequency of sportsbook recalibrations</div>
+            </div>
+
+            <div class="metric-card events">
+                <div class="metric-lbl">Scoring Play Events</div>
+                <div class="metric-val" id="metricEvents" style="color:#fff;">14 Major Events</div>
+                <div class="metric-sub">Lead changes & scoring runs tracked</div>
+            </div>
+        </div>
+
+        <!-- MAIN CHART PANEL -->
+        <div class="chart-panel">
+            <div class="chart-header">
+                <div class="chart-title-group">
+                    <h2 id="chartMatchupTitle">OKC THUNDER @ BOS CELTICS — FULL GAME LINE TIMELINE</h2>
+                    <p>Timeline visualization of odds movements from pre-game opening lines through game completion</p>
+                </div>
+
+                <div class="chart-controls">
+                    <div class="ctrl-btn-group">
+                        <button class="ctrl-btn active" onclick="switchMarketTab('MARGIN', this)" style="color:var(--accent); font-weight:bold;">📊 Spread Margin (Cover Line)</button>
+                        <button class="ctrl-btn" onclick="switchMarketTab('ML', this)">Moneyline</button>
+                        <button class="ctrl-btn" onclick="switchMarketTab('SPREAD', this)">Spread</button>
+                        <button class="ctrl-btn" onclick="switchMarketTab('TOTAL', this)">Totals (O/U)</button>
+                        <button class="ctrl-btn" onclick="switchMarketTab('SCORE', this)" style="color:var(--win);">🏀 Game Score</button>
+                    </div>
+
+                    <button id="scoringOnlyFilterBtn" class="ctrl-btn" onclick="toggleScoringOnlyFilter()" style="background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:6px; color:var(--muted); font-size:11px;">⚡ Scoring Events Only</button>
+
+                    <select id="bookFilter" class="book-select-dropdown" onchange="handleBookFilterChange(this.value)">
+                        <option value="ALL">Consensus Market Avg</option>
+                        <option value="FanDuel">FanDuel</option>
+                        <option value="DraftKings">DraftKings</option>
+                        <option value="BetMGM">BetMGM</option>
+                        <option value="BetOnline">BetOnline</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- CHART CANVAS -->
+            <div class="canvas-wrapper">
+                <canvas id="lineHistoryChart"></canvas>
+            </div>
+
+            <!-- SCRUBBER CONTROL -->
+            <div class="scrubber-bar">
+                <span class="scrubber-label">Game Timeline Scrubber:</span>
+                <input type="range" id="timelineScrubber" class="scrubber-slider" min="0" max="100" value="100" oninput="handleScrubberChange(this.value)">
+                <span class="scrubber-time-display" id="scrubberTimeLabel">Q4 0:00 (FINAL)</span>
+            </div>
+        </div>
+
+        <!-- TIMELINE MOVEMENT LOG / STACKED BREAKDOWN -->
+        <div class="log-section">
+            <div class="log-header">
+                <div class="log-title">Game Odds Shift Breakdown</div>
+                <div class="view-mode-toggle">
+                    <button class="view-mode-btn active" onclick="switchViewMode('STACKED', this)">📱 Stacked Breakdown</button>
+                    <button class="view-mode-btn" onclick="switchViewMode('TABLE', this)">📋 Audit Table</button>
+                </div>
+            </div>
+
+            <!-- Stacked Breakdown View (Easy to Read - Reference Design) -->
+            <div id="stackedBreakdownContainer" class="stacked-grid">
+                <!-- Dynamically populated via renderStackedBreakdown() -->
+            </div>
+
+            <!-- Table View -->
+            <div id="tableContainer" class="log-table-wrapper" style="display: none;">
+                <table class="log-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp / Game Period</th>
+                            <th>Sportsbook</th>
+                            <th>Market Type</th>
+                            <th>Previous Line</th>
+                            <th>New Line</th>
+                            <th>Delta Shift</th>
+                            <th>Triggering Play Event</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logTableBody">
+                        <!-- Populated via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timeline Data & Logic Script -->
+    <script>
+        // Sample Full-Game Line History Dataset (NBA & MLB Pipeline)
+        const GAME_HISTORY_DATA = {
+            "lad_nym": {
+                matchup: "LA Dodgers @ NY Mets",
+                awayLogo: "https://a.espncdn.com/i/teamlogos/mlb/500/lad.png",
+                homeLogo: "https://a.espncdn.com/i/teamlogos/mlb/500/nym.png",
+                shift: "Run Line -1.5 (+115)",
+                shiftSub: "Opening -1.5 (+105) → Closing -1.5 (+120)",
+                clv: "+5.4% Edge",
+                volatility: "MED (14 Shifts)",
+                eventsCount: "12 Major Plays",
+                timeline: [
+                    { timeLabel: "Pre-Game Open", period: "PRE", awayML: "-155", homeML: "+135", awaySpr: "-1.5", homeSpr: "+1.5", total: "8.5", book: "FanDuel", play: "Opening Run Lines Released", awayScore: 0, homeScore: 0, isScoringPlay: false },
+                    { timeLabel: "🔒 Closing Lines (First Pitch)", period: "CLOSING", awayML: "-165", homeML: "+145", awaySpr: "-1.5", homeSpr: "+1.5", total: "8.5", book: "Consensus Final", play: "First Pitch Locked (6:15 PM)", awayScore: 0, homeScore: 0, isScoringPlay: false },
+                    { timeLabel: "Top 1st", period: "1st", awayML: "-180", homeML: "+155", awaySpr: "-1.5", homeSpr: "+1.5", total: "8.5", book: "DraftKings", play: "Ohtani 1-Run Single", awayScore: 1, homeScore: 0, isScoringPlay: true },
+                    { timeLabel: "Bot 2nd", period: "2nd", awayML: "-140", homeML: "+120", awaySpr: "-1.5", homeSpr: "+1.5", total: "9.0", book: "BetMGM", play: "Pete Alonso 2-Run HR", awayScore: 1, homeScore: 2, isScoringPlay: true },
+                    { timeLabel: "Top 4th", period: "4th", awayML: "-195", homeML: "+165", awaySpr: "-1.5", homeSpr: "+1.5", total: "9.5", book: "FanDuel", play: "⚡ Mookie Betts 2-Run HR", awayScore: 3, homeScore: 2, isScoringPlay: true },
+                    { timeLabel: "Mid 5th", period: "HT", awayML: "-210", homeML: "+175", awaySpr: "-1.5", homeSpr: "+1.5", total: "9.5", book: "Consensus", play: "5th Inning Stretch: 3-2 LAD", awayScore: 3, homeScore: 2, isScoringPlay: false },
+                    { timeLabel: "Top 7th", period: "7th", awayML: "-280", homeML: "+230", awaySpr: "-1.5", homeSpr: "+1.5", total: "10.0", book: "BetOnline", play: "Freddie Freeman RBI Double", awayScore: 5, homeScore: 2, isScoringPlay: true },
+                    { timeLabel: "Bot 8th", period: "8th", awayML: "-220", homeML: "+180", awaySpr: "-1.5", homeSpr: "+1.5", total: "9.5", book: "DraftKings", play: "Lindor Solo HR", awayScore: 5, homeScore: 3, isScoringPlay: true },
+                    { timeLabel: "Final (9th)", period: "FINAL", awayML: "-350", homeML: "+280", awaySpr: "-1.5", homeSpr: "+1.5", total: "9.5", book: "Consensus", play: "FINAL: LAD 5, NYM 3 (LAD Covers -1.5)", awayScore: 5, homeScore: 3, isScoringPlay: false }
+                ]
+            },
+            "kc_det": {
+                matchup: "KC Royals @ Detroit Tigers",
+                awayLogo: "https://a.espncdn.com/i/teamlogos/mlb/500/kc.png",
+                homeLogo: "https://a.espncdn.com/i/teamlogos/mlb/500/det.png",
+                shift: "Total O/U +1.0 Runs",
+                shiftSub: "Opening 7.5 → Closing 8.5",
+                clv: "+3.8% Edge",
+                volatility: "LOW (8 Shifts)",
+                eventsCount: "8 Major Plays",
+                timeline: [
+                    { timeLabel: "Pre-Game Open", period: "PRE", awayML: "+110", homeML: "-130", awaySpr: "+1.5", homeSpr: "-1.5", total: "7.5", book: "DraftKings", play: "Opening Lines Released", awayScore: 0, homeScore: 0, isScoringPlay: false },
+                    { timeLabel: "🔒 Closing Lines (First Pitch)", period: "CLOSING", awayML: "+105", homeML: "-125", awaySpr: "+1.5", homeSpr: "-1.5", total: "8.0", book: "Consensus Final", play: "First Pitch Locked (12:10 PM)", awayScore: 0, homeScore: 0, isScoringPlay: false },
+                    { timeLabel: "Top 2nd", period: "2nd", awayML: "-120", homeML: "+100", awaySpr: "+1.5", homeSpr: "-1.5", total: "8.5", book: "FanDuel", play: "Witt Jr 2-Run Triple", awayScore: 2, homeScore: 0, isScoringPlay: true },
+                    { timeLabel: "Mid 5th", period: "HT", awayML: "-140", homeML: "+120", awaySpr: "+1.5", homeSpr: "-1.5", total: "8.5", book: "Consensus", play: "5th Inning Stretch: 2-1 KC", awayScore: 2, homeScore: 1, isScoringPlay: false },
+                    { timeLabel: "Final (9th)", period: "FINAL", awayML: "-180", homeML: "+155", awaySpr: "+1.5", homeSpr: "-1.5", total: "8.5", book: "Consensus", play: "FINAL: KC 4, DET 2", awayScore: 4, homeScore: 2, isScoringPlay: false }
+                ]
+            },
+            "ath_min": {
+                matchup: "Athletics @ Minnesota Twins",
+                awayLogo: "https://a.espncdn.com/i/teamlogos/mlb/500/oak.png",
+                homeLogo: "https://a.espncdn.com/i/teamlogos/mlb/500/min.png",
+                shift: "Run Line Shift +1.5",
+                shiftSub: "Opening +1.5 → Closing +1.5 (-105)",
+                clv: "+6.1% Edge",
+                volatility: "HIGH (16 Shifts)",
+                eventsCount: "11 Major Plays",
+                timeline: [
+                    { timeLabel: "Pre-Game Open", period: "PRE", awayML: "+160", homeML: "-190", awaySpr: "+1.5", homeSpr: "-1.5", total: "8.0", book: "BetMGM", play: "Opening Lines Released", awayScore: 0, homeScore: 0, isScoringPlay: false },
+                    { timeLabel: "🔒 Closing Lines (First Pitch)", period: "CLOSING", awayML: "+150", homeML: "-175", awaySpr: "+1.5", homeSpr: "-1.5", total: "8.5", book: "Consensus Final", play: "First Pitch Locked (6:10 PM)", awayScore: 0, homeScore: 0, isScoringPlay: false },
+                    { timeLabel: "Bot 3rd", period: "3rd", awayML: "+240", homeML: "-300", awaySpr: "+1.5", homeSpr: "-1.5", total: "9.0", book: "FanDuel", play: "Correa Grand Slam", awayScore: 0, homeScore: 4, isScoringPlay: true },
+                    { timeLabel: "Final (9th)", period: "FINAL", awayML: "+400", homeML: "-550", awaySpr: "+1.5", homeSpr: "-1.5", total: "9.5", book: "Consensus", play: "FINAL: MIN 7, ATH 3", awayScore: 3, homeScore: 7, isScoringPlay: false }
+                ]
+            },
+            "okc_bos": {
+                matchup: "OKC Thunder @ BOS Celtics",
+                awayLogo: "https://a.espncdn.com/i/teamlogos/nba/500/okc.png",
+                homeLogo: "https://a.espncdn.com/i/teamlogos/nba/500/bos.png",
+                shift: "+4.5 PTS",
+                shiftSub: "Opening -2.5 → Closing +2.0",
+                clv: "+6.8% Edge",
+                volatility: "HIGH (18 Shifts)",
+                eventsCount: "14 Major Events",
+                timeline: [
+                    { timeLabel: "Pre-Game Open", period: "PRE", awayML: "+125", homeML: "-145", awaySpr: "+2.5", homeSpr: "-2.5", total: "228.5", book: "FanDuel", play: "Opening Lines Released", awayScore: 0, homeScore: 0, isScoringPlay: false },
+                    { timeLabel: "🔒 Closing Lines (T-0:00 Pre-Tip)", period: "CLOSING", awayML: "+110", homeML: "-130", awaySpr: "+1.5", homeSpr: "-1.5", total: "229.5", book: "Consensus Final", play: "Pre-Game Closing Lines Locked (Tipoff)", awayScore: 0, homeScore: 0, isScoringPlay: false },
+                    { timeLabel: "Q1 9:30", period: "Q1", awayML: "+115", homeML: "-135", awaySpr: "+1.5", homeSpr: "-1.5", total: "229.0", book: "DraftKings", play: "OKC 7-0 Opening Run", awayScore: 7, homeScore: 0, isScoringPlay: true },
+                    { timeLabel: "Q1 4:15", period: "Q1", awayML: "+130", homeML: "-150", awaySpr: "+3.0", homeSpr: "-3.0", total: "227.5", book: "BetMGM", play: "Tatum 3PT Basket", awayScore: 14, homeScore: 18, isScoringPlay: true },
+                    { timeLabel: "Q2 11:00", period: "Q2", awayML: "+110", homeML: "-130", awaySpr: "+1.0", homeSpr: "-1.0", total: "230.5", book: "Consensus", play: "Gilgeous-Alexander Steal & Dunk", awayScore: 28, homeScore: 26, isScoringPlay: true },
+                    { timeLabel: "Q2 5:45", period: "Q2", awayML: "-105", homeML: "-115", awaySpr: "PK", homeSpr: "PK", total: "231.0", book: "FanDuel", play: "OKC Takes Lead 48-46", awayScore: 48, homeScore: 46, isScoringPlay: true },
+                    { timeLabel: "Halftime", period: "HT", awayML: "-110", homeML: "-110", awaySpr: "PK", homeSpr: "PK", total: "230.0", book: "Consensus", play: "Halftime Score: 56-55 OKC", awayScore: 56, homeScore: 55, isScoringPlay: false },
+                    { timeLabel: "Q3 8:20", period: "Q3", awayML: "-125", homeML: "+105", awaySpr: "-2.0", homeSpr: "+2.0", total: "232.5", book: "BetOnline", play: "Williams 3PT + Foul", awayScore: 68, homeScore: 62, isScoringPlay: true },
+                    { timeLabel: "Q3 2:10", period: "Q3", awayML: "-115", homeML: "-105", awaySpr: "-1.0", homeSpr: "+1.0", total: "231.5", book: "DraftKings", play: "Brown Fastbreak Layup", awayScore: 82, homeScore: 84, isScoringPlay: true },
+                    { timeLabel: "Q4 10:00", period: "Q4", awayML: "-135", homeML: "+115", awaySpr: "-3.0", homeSpr: "+3.0", total: "233.0", book: "FanDuel", play: "OKC 10-2 Run to Start Q4", awayScore: 96, homeScore: 90, isScoringPlay: true },
+                    { timeLabel: "Q4 3:30", period: "Q4", awayML: "-160", homeML: "+135", awaySpr: "-4.5", homeSpr: "+4.5", total: "231.5", book: "BetMGM", play: "Chet Holmgren Block & 3PT", awayScore: 108, homeScore: 102, isScoringPlay: true },
+                    { timeLabel: "Q4 0:00 (FINAL)", period: "FINAL", awayML: "-180", homeML: "+155", awaySpr: "-5.5", homeSpr: "+5.5", total: "229.5", book: "Consensus", play: "FINAL: OKC 118, BOS 112", awayScore: 118, homeScore: 112, isScoringPlay: false }
+                ]
+            },
+            "lal_den": {
+                matchup: "LAL Lakers @ DEN Nuggets",
+                awayLogo: "https://a.espncdn.com/i/teamlogos/nba/500/lal.png",
+                homeLogo: "https://a.espncdn.com/i/teamlogos/nba/500/den.png",
+                shift: "+3.0 PTS",
+                shiftSub: "Opening +5.5 → Closing +2.5",
+                clv: "+4.2% Edge",
+                volatility: "MED (12 Shifts)",
+                eventsCount: "10 Major Events",
+                timeline: [
+                    { timeLabel: "Pre-Game Open", period: "PRE", awayML: "+180", homeML: "-210", awaySpr: "+5.5", homeSpr: "-5.5", total: "224.5", book: "FanDuel", play: "Opening Lines Released", awayScore: 0, homeScore: 0, isScoringPlay: false },
+                    { timeLabel: "🔒 Closing Lines (T-0:00 Pre-Tip)", period: "CLOSING", awayML: "+150", homeML: "-175", awaySpr: "+3.5", homeSpr: "-3.5", total: "224.0", book: "Consensus Final", play: "Pre-Game Closing Lines Locked (Tipoff)", awayScore: 0, homeScore: 0, isScoringPlay: false },
+                    { timeLabel: "Q1 6:00", period: "Q1", awayML: "+165", homeML: "-195", awaySpr: "+4.5", homeSpr: "-4.5", total: "225.0", book: "DraftKings", play: "LeBron 2PT Dunk", awayScore: 12, homeScore: 14, isScoringPlay: true },
+                    { timeLabel: "Halftime", period: "HT", awayML: "+140", homeML: "-165", awaySpr: "+3.0", homeSpr: "-3.0", total: "223.5", book: "Consensus", play: "Halftime Score: 58-54 DEN", awayScore: 54, homeScore: 58, isScoringPlay: false },
+                    { timeLabel: "Q3 4:00", period: "Q3", awayML: "+120", homeML: "-140", awaySpr: "+2.0", homeSpr: "-2.0", total: "226.0", book: "BetMGM", play: "Davis 3PT Jump Shot", awayScore: 78, homeScore: 76, isScoringPlay: true },
+                    { timeLabel: "Q4 0:00 (FINAL)", period: "FINAL", awayML: "+110", homeML: "-130", awaySpr: "+1.5", homeSpr: "-1.5", total: "222.0", book: "Consensus", play: "FINAL: DEN 108, LAL 106", awayScore: 106, homeScore: 108, isScoringPlay: false }
+                ]
+            },
+            "gsw_sac": {
+                matchup: "GSW Warriors @ SAC Kings",
+                awayLogo: "https://a.espncdn.com/i/teamlogos/nba/500/gsw.png",
+                homeLogo: "https://a.espncdn.com/i/teamlogos/nba/500/sac.png",
+                shift: "+6.0 PTS",
+                shiftSub: "Opening -1.5 → Closing -7.5",
+                clv: "+8.5% Edge",
+                volatility: "HIGH (22 Shifts)",
+                eventsCount: "16 Major Events",
+                timeline: [
+                    { timeLabel: "Pre-Game Open", period: "PRE", awayML: "-120", homeML: "+100", awaySpr: "-1.5", homeSpr: "+1.5", total: "235.0", book: "BetOnline", play: "Opening Lines Released", awayScore: 0, homeScore: 0, isScoringPlay: false },
+                    { timeLabel: "🔒 Closing Lines (T-0:00 Pre-Tip)", period: "CLOSING", awayML: "-140", homeML: "+120", awaySpr: "-2.5", homeSpr: "+2.5", total: "236.5", book: "Consensus Final", play: "Pre-Game Closing Lines Locked (Tipoff)", awayScore: 0, homeScore: 0, isScoringPlay: false },
+                    { timeLabel: "Q1 5:00", period: "Q1", awayML: "-150", homeML: "+125", awaySpr: "-3.5", homeSpr: "+3.5", total: "238.0", book: "FanDuel", play: "Curry Back-to-Back 3PTs", awayScore: 18, homeScore: 10, isScoringPlay: true },
+                    { timeLabel: "Halftime", period: "HT", awayML: "-220", homeML: "+180", awaySpr: "-6.0", homeSpr: "+6.0", total: "239.5", book: "Consensus", play: "Halftime Score: 68-52 GSW", awayScore: 68, homeScore: 52, isScoringPlay: false },
+                    { timeLabel: "Q4 0:00 (FINAL)", period: "FINAL", awayML: "-350", homeML: "+270", awaySpr: "-9.0", homeSpr: "+9.0", total: "236.0", book: "Consensus", play: "FINAL: GSW 124, SAC 108", awayScore: 124, homeScore: 108, isScoringPlay: false }
+                ]
+            }
+        };
+
+        let currentMatchupKey = "lad_nym";
+        let currentMarket = "MARGIN"; // Default to Spread Margin Delta (Cover Line)
+        let currentBook = "ALL";
+        let historyChart = null;
+        let currentViewMode = 'STACKED';
+
+        // Helper: Convert clock string & period to continuous game clock minute (0.0 to 48.0)
+        function parseClockToMinute(timeLabel, period) {
+            if (period === 'PRE') return 0.0;
+            if (period === 'CLOSING') return 0.0;
+            if (period === 'HT' || timeLabel.includes('Mid 5th') || timeLabel.includes('5th Inning Stretch')) return 24.0;
+            if (period === 'FINAL') return 48.0;
+
+            const lowerLabel = timeLabel.toLowerCase();
+            if (lowerLabel.includes('1st')) return lowerLabel.includes('top') ? 1.0 : 2.5;
+            if (lowerLabel.includes('2nd')) return lowerLabel.includes('top') ? 5.0 : 7.5;
+            if (lowerLabel.includes('3rd')) return lowerLabel.includes('top') ? 10.0 : 12.5;
+            if (lowerLabel.includes('4th')) return lowerLabel.includes('top') ? 15.0 : 17.5;
+            if (lowerLabel.includes('5th')) return lowerLabel.includes('top') ? 20.0 : (lowerLabel.includes('mid') ? 24.0 : 26.5);
+            if (lowerLabel.includes('6th')) return lowerLabel.includes('top') ? 29.0 : 31.5;
+            if (lowerLabel.includes('7th')) return lowerLabel.includes('top') ? 34.0 : 36.5;
+            if (lowerLabel.includes('8th')) return lowerLabel.includes('top') ? 39.0 : 41.5;
+            if (lowerLabel.includes('9th')) return lowerLabel.includes('top') ? 44.0 : 46.5;
+
+            const parts = timeLabel.split(' ');
+            if (parts.length >= 2) {
+                const q = parts[0];
+                const clock = parts[1];
+                const clockParts = clock.split(':');
+                const mins = parseFloat(clockParts[0]) || 0;
+                const secs = parseFloat(clockParts[1]) || 0;
+                const remainingMins = mins + (secs / 60);
+
+                if (q === 'Q1') return parseFloat((12.0 - remainingMins).toFixed(2));
+                if (q === 'Q2') return parseFloat((24.0 - remainingMins).toFixed(2));
+                if (q === 'Q3') return parseFloat((36.0 - remainingMins).toFixed(2));
+                if (q === 'Q4') return parseFloat((48.0 - remainingMins).toFixed(2));
+            }
+
+            return 0.0;
+        }
+
+        // Helper: Calculate Spread Cover Margin Delta
+        // Margin = (Away Score - Home Score) + Away Spread Line
+        // If Margin > 0: Away is covering by +Margin PTS
+        // If Margin < 0: Home is covering by |Margin| PTS
+        function calculateSpreadMargin(awayScore, homeScore, awaySpr) {
+            const diff = awayScore - homeScore;
+            const numericSpr = parseFloat(awaySpr === 'PK' ? 0 : awaySpr) || 0;
+            return parseFloat((diff + numericSpr).toFixed(1));
+        }
+
+        let loadedAwayLogo = null;
+        let loadedHomeLogo = null;
+
+        function updateActiveLogos() {
+            const data = GAME_HISTORY_DATA[currentMatchupKey];
+            if (!data) return;
+
+            const awayUrl = data.awayLogo || "https://a.espncdn.com/i/teamlogos/mlb/500/lad.png";
+            const homeUrl = data.homeLogo || "https://a.espncdn.com/i/teamlogos/mlb/500/nym.png";
+
+            const triggerRedraw = () => {
+                if (historyChart) {
+                    historyChart.update('none'); // Redraw canvas with loaded images smoothly
+                }
+            };
+
+            loadedAwayLogo = new Image(24, 24);
+            loadedAwayLogo.crossOrigin = 'anonymous';
+            loadedAwayLogo.onload = triggerRedraw;
+            loadedAwayLogo.src = awayUrl;
+
+            loadedHomeLogo = new Image(24, 24);
+            loadedHomeLogo.crossOrigin = 'anonymous';
+            loadedHomeLogo.onload = triggerRedraw;
+            loadedHomeLogo.src = homeUrl;
+        }
+
+        // Page Load Init
+        document.addEventListener('DOMContentLoaded', () => {
+            updateActiveLogos();
+            renderMetrics();
+            initHistoryChart();
+            renderStackedBreakdown();
+            renderLogTable();
+
+            // Connect Kalshi Sub-Second Live Feed Ticker
+            if (window.DestinyLiveFeed) {
+                window.DestinyLiveFeed.onKalshiTick((tick) => {
+                    if (!tick || !tick.team) return;
+                    let tickerEl = document.getElementById('kalshiLeadTicker');
+                    if (!tickerEl) {
+                        const container = document.querySelector('.metrics-banner') || document.body;
+                        tickerEl = document.createElement('div');
+                        tickerEl.id = 'kalshiLeadTicker';
+                        tickerEl.style.cssText = 'background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.25); border-radius:6px; padding:6px 14px; font-family:var(--font-mono); font-size:11px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between;';
+                        container.parentNode.insertBefore(tickerEl, container);
+                    }
+                    tickerEl.innerHTML = `<span><strong style="color:#06b6d4;">⚡ KALSHI SUB-SECOND LEAD TICKER:</strong> ${tick.team} ${tick.yesPrice}¢ (${tick.americanOdds})</span> <span style="color:var(--muted); font-size:10px;">VOLUME: ${tick.volume || '2.4K'} · ${tick.timestamp}</span>`;
+                    tickerEl.classList.remove('flash-green', 'flash-red');
+                    void tickerEl.offsetWidth;
+                    tickerEl.classList.add(tick.direction === 'UP' ? 'flash-green' : 'flash-red');
+                });
+            }
+        });
+
+        function handleGameSelectChange(newKey) {
+            currentMatchupKey = newKey;
+            updateActiveLogos();
+            renderMetrics();
+            updateChartData();
+            renderStackedBreakdown();
+            renderLogTable();
+        }
+
+        function switchViewMode(mode, btn) {
+            currentViewMode = mode;
+            document.querySelectorAll('.view-mode-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const stackedEl = document.getElementById('stackedBreakdownContainer');
+            const tableEl = document.getElementById('tableContainer');
+
+            if (mode === 'STACKED') {
+                stackedEl.style.display = 'grid';
+                tableEl.style.display = 'none';
+            } else {
+                stackedEl.style.display = 'none';
+                tableEl.style.display = 'block';
+            }
+        }
+
+        function renderStackedBreakdown() {
+            const container = document.getElementById('stackedBreakdownContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const data = GAME_HISTORY_DATA[currentMatchupKey];
+            if (!data || !data.timeline) return;
+
+            const teams = data.matchup.split('@');
+            const awayName = teams[0] ? teams[0].trim() : 'Away';
+            const homeName = teams[1] ? teams[1].trim() : 'Home';
+            const awayLogoUrl = data.awayLogo || '';
+            const homeLogoUrl = data.homeLogo || '';
+
+            data.timeline.forEach(item => {
+                const isClosing = item.period === 'CLOSING';
+                const card = document.createElement('div');
+                card.className = `stacked-card ${isClosing ? 'closing-card' : ''}`;
+                if (isClosing) {
+                    card.style.borderColor = 'var(--accent)';
+                    card.style.background = 'linear-gradient(135deg, var(--surface) 0%, rgba(245, 158, 11, 0.08) 100%)';
+                    card.style.boxShadow = '0 0 20px rgba(245, 158, 11, 0.15)';
+                }
+
+                card.innerHTML = `
+                    <div class="stacked-period-title">
+                        <span>${item.timeLabel}</span>
+                        <span class="event-badge" style="${isClosing ? 'background:rgba(245,158,11,0.2); color:var(--accent); border-color:var(--accent); font-weight:bold;' : ''}">${item.book}</span>
+                    </div>
+                    
+                    <div class="stacked-team-block">
+                        <div class="stacked-team-name" style="display:flex; align-items:center; gap:8px;">
+                            ${awayLogoUrl ? `<img src="${awayLogoUrl}" style="width:20px; height:20px; object-fit:contain;" />` : `<span class="stacked-team-badge away"></span>`}
+                            <span>${awayName}</span>
+                        </div>
+                        <ul class="stacked-team-list">
+                            <li>• ML: <strong style="color:var(--accent);">${item.awayML}</strong></li>
+                            <li>• Spread: <strong style="color:#fff;">${item.awaySpr}</strong> <span style="color:var(--muted);">(-110)</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="stacked-team-block">
+                        <div class="stacked-team-name" style="display:flex; align-items:center; gap:8px;">
+                            ${homeLogoUrl ? `<img src="${homeLogoUrl}" style="width:20px; height:20px; object-fit:contain;" />` : `<span class="stacked-team-badge home"></span>`}
+                            <span>${homeName}</span>
+                        </div>
+                        <ul class="stacked-team-list">
+                            <li>• ML: <strong style="color:var(--accent);">${item.homeML}</strong></li>
+                            <li>• Spread: <strong style="color:#fff;">${item.homeSpr}</strong> <span style="color:var(--muted);">(-110)</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="stacked-footer">
+                        <div class="stacked-footer-row">📊 Total Line: <strong style="color:var(--cyan);">O/U ${item.total}</strong></div>
+                        <div class="stacked-footer-row">⚡ Play Event: <strong style="color:#fff;">${item.play}</strong></div>
+                        <div class="stacked-footer-row">📍 Book: <strong style="color:var(--accent2);">${item.book}</strong></div>
+                        ${isClosing ? `<div class="stacked-footer-row" style="margin-top:4px; font-weight:bold; color:var(--win);">🔒 FINAL PRE-GAME CLOSING LINES (LOCKED AT TIPOFF)</div>` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        let isScoringOnly = false;
+
+        function toggleScoringOnlyFilter() {
+            isScoringOnly = !isScoringOnly;
+            const btn = document.getElementById('scoringOnlyFilterBtn');
+            if (isScoringOnly) {
+                btn.style.background = 'rgba(16, 185, 129, 0.2)';
+                btn.style.borderColor = 'var(--win)';
+                btn.style.color = 'var(--win)';
+                btn.innerText = '⚡ Showing Scoring Events Only';
+            } else {
+                btn.style.background = 'rgba(0,0,0,0.3)';
+                btn.style.borderColor = 'var(--border)';
+                btn.style.color = 'var(--muted)';
+                btn.innerText = '⚡ Scoring Events Only';
+            }
+            updateChartData();
+        }
+
+        function switchMarketTab(market, btn) {
+            currentMarket = market;
+            document.querySelectorAll('.ctrl-btn-group .ctrl-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const titleP = document.querySelector('.chart-title-group p');
+            if (market === 'MARGIN') {
+                titleP.innerText = 'Spread Margin Delta vs. Cover Line (0 = Push Target) with continuous 48-minute game clock and live total overlay';
+            } else if (market === 'SCORE') {
+                titleP.innerText = 'Live in-game point progression trajectory and scoring play events timeline';
+            } else {
+                titleP.innerText = 'Timeline visualization of odds movements from pre-game opening lines through game completion';
+            }
+
+            renderMetrics();
+            updateChartData();
+        }
+
+        function handleBookFilterChange(book) {
+            currentBook = book;
+            updateChartData();
+        }
+
+        function renderMetrics() {
+            const data = GAME_HISTORY_DATA[currentMatchupKey];
+            if (!data) return;
+
+            document.getElementById('metricLineShift').innerText = data.shift;
+            document.getElementById('metricShiftSub').innerText = data.shiftSub;
+            document.getElementById('metricCLV').innerText = data.clv;
+            document.getElementById('metricVolatility').innerText = data.volatility;
+            document.getElementById('metricEvents').innerText = data.eventsCount;
+            
+            let marketLabel = 'SPREAD MARGIN DELTA (COVER LINE)';
+            if (currentMarket === 'ML') marketLabel = 'MONEYLINE TIMELINE';
+            else if (currentMarket === 'SPREAD') marketLabel = 'SPREAD TIMELINE';
+            else if (currentMarket === 'TOTAL') marketLabel = 'TOTALS O/U TIMELINE';
+            else if (currentMarket === 'SCORE') marketLabel = 'LIVE SCORE TRAJECTORY';
+
+            document.getElementById('chartMatchupTitle').innerText = `${data.matchup.toUpperCase()} — ${marketLabel}`;
+        }
+
+        function getActiveTimeline() {
+            const data = GAME_HISTORY_DATA[currentMatchupKey];
+            if (!data || !data.timeline) return [];
+            if (isScoringOnly) {
+                return data.timeline.filter(t => t.isScoringPlay || t.period === 'HT' || t.period === 'FINAL');
+            }
+            return data.timeline;
+        }
+
+        function initHistoryChart() {
+            const ctx = document.getElementById('lineHistoryChart').getContext('2d');
+            
+            historyChart = new Chart(ctx, {
+                type: 'line',
+                data: getChartDataset(),
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#e8eaed',
+                                font: { family: 'JetBrains Mono', size: 11 }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#111418',
+                            borderColor: 'rgba(245, 158, 11, 0.5)',
+                            borderWidth: 1.5,
+                            padding: 14,
+                            titleFont: { family: 'Barlow Condensed', size: 16, weight: 'bold' },
+                            titleColor: '#f59e0b',
+                            bodyFont: { family: 'JetBrains Mono', size: 11 },
+                            bodyColor: '#e8eaed',
+                            callbacks: {
+                                title: function(items) {
+                                    const idx = items[0].dataIndex;
+                                    const timeline = getActiveTimeline();
+                                    const item = timeline[idx];
+                                    if (!item) return items[0].label;
+                                    const minFloat = parseClockToMinute(item.timeLabel, item.period);
+                                    return `${item.timeLabel} (${minFloat.toFixed(1)}m Game Clock)`;
+                                },
+                                label: function(context) {
+                                    const idx = context.dataIndex;
+                                    const data = GAME_HISTORY_DATA[currentMatchupKey];
+                                    const timeline = getActiveTimeline();
+                                    const item = timeline[idx];
+                                    if (!item) return '';
+
+                                    const teams = data.matchup.split('@');
+                                    const awayName = teams[0] ? teams[0].trim() : 'Away';
+                                    const homeName = teams[1] ? teams[1].trim() : 'Home';
+                                    const openItem = data.timeline[0];
+                                    const margin = calculateSpreadMargin(item.awayScore, item.homeScore, item.awaySpr);
+
+                                    let statusTag = '';
+                                    if (margin > 0) {
+                                        statusTag = `🔥 STATUS: ${awayName} Covering by +${margin} PTS`;
+                                    } else if (margin < 0) {
+                                        statusTag = `⚡ STATUS: ${homeName} Covering by +${Math.abs(margin)} PTS`;
+                                    } else {
+                                        statusTag = `⚖️ STATUS: PUSH / AT SPREAD TARGET`;
+                                    }
+
+                                    if (currentMarket === 'MARGIN') {
+                                        if (context.datasetIndex === 0) {
+                                            return [
+                                                `🎯 ${statusTag}`,
+                                                `🟦 ${awayName}: Score ${item.awayScore} | Spread ${item.awaySpr} (-110)`,
+                                                `   • Live Spread vs Open: ${item.awaySpr} (Opened ${openItem.awaySpr})`,
+                                                `   • Moneyline: ${item.awayML}`
+                                            ];
+                                        } else {
+                                            return [
+                                                `🟨 ${homeName}: Score ${item.homeScore} | Spread ${item.homeSpr} (-110)`,
+                                                `   • Moneyline: ${item.homeML}`
+                                            ];
+                                        }
+                                    }
+
+                                    if (context.datasetIndex === 0) {
+                                        return [
+                                            `🟦 ${awayName} ${currentMarket === 'SCORE' ? `Score: ${item.awayScore} PTS` : ''}`,
+                                            `   • ML: ${item.awayML}`,
+                                            `   • Spread: ${item.awaySpr} (-110)`
+                                        ];
+                                    } else {
+                                        return [
+                                            `🟨 ${homeName} ${currentMarket === 'SCORE' ? `Score: ${item.homeScore} PTS` : ''}`,
+                                            `   • ML: ${item.homeML}`,
+                                            `   • Spread: ${item.homeSpr} (-110)`
+                                        ];
+                                    }
+                                },
+                                afterBody: function(items) {
+                                    const idx = items[0].dataIndex;
+                                    const timeline = getActiveTimeline();
+                                    const item = timeline[idx];
+                                    if (item) {
+                                        return [
+                                            ``,
+                                            `📊 Total Line: O/U ${item.total}`,
+                                            `⚡ Play Event: ${item.play}`,
+                                            `📍 Book: ${item.book}`
+                                        ];
+                                    }
+                                    return '';
+                                }
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: { top: 25, bottom: 20, left: 10, right: 10 }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#6b7280', font: { family: 'JetBrains Mono', size: 10 } }
+                        },
+                        'y-spread': {
+                            type: 'linear',
+                            position: 'left',
+                            grace: '15%',
+                            grid: {
+                                color: (context) => context.tick.value === 0 ? 'rgba(245, 158, 11, 0.7)' : 'rgba(255, 255, 255, 0.05)',
+                                lineWidth: (context) => context.tick.value === 0 ? 2 : 1
+                            },
+                            title: {
+                                display: true,
+                                text: 'COVER MARGIN DELTA (0 = COVER LINE)',
+                                color: '#3b82f6',
+                                font: { family: 'Barlow Condensed', size: 11, weight: 'bold' }
+                            },
+                            ticks: { color: '#3b82f6', font: { family: 'JetBrains Mono', size: 10 } }
+                        },
+                        'y-total': {
+                            type: 'linear',
+                            position: 'right',
+                            display: true,
+                            grace: '15%',
+                            grid: { drawOnChartArea: false },
+                            title: {
+                                display: true,
+                                text: 'LIVE TOTAL O/U',
+                                color: '#06b6d4',
+                                font: { family: 'Barlow Condensed', size: 11, weight: 'bold' }
+                            },
+                            ticks: { color: '#06b6d4', font: { family: 'JetBrains Mono', size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function getChartDataset() {
+            const data = GAME_HISTORY_DATA[currentMatchupKey];
+            const timeline = getActiveTimeline();
+            const labels = timeline.map(t => `${t.timeLabel} (${parseClockToMinute(t.timeLabel, t.period)}m)`);
+
+            let awayValues = [];
+            let homeValues = [];
+            let labelAway = "Away";
+            let labelHome = "Home";
+
+            const teams = data.matchup.split('@');
+            const awayName = teams[0] ? teams[0].trim() : "Away";
+            const homeName = teams[1] ? teams[1].trim() : "Home";
+
+            if (currentMarket === 'MARGIN') {
+                labelAway = `${awayName} Spread Margin Delta (Cover Line)`;
+                labelHome = `Live Total O/U`;
+                awayValues = timeline.map(t => calculateSpreadMargin(t.awayScore, t.homeScore, t.awaySpr));
+                homeValues = timeline.map(t => parseFloat(t.total) || 0);
+
+                const marginPointStyles = timeline.map(t => {
+                    const margin = calculateSpreadMargin(t.awayScore, t.homeScore, t.awaySpr);
+                    return margin >= 0 ? (loadedAwayLogo || 'circle') : (loadedHomeLogo || 'circle');
+                });
+
+                return {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: labelAway,
+                            data: awayValues,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                            fill: { target: 'origin', above: 'rgba(59, 130, 246, 0.18)', below: 'rgba(245, 158, 11, 0.18)' },
+                            borderWidth: 3,
+                            tension: 0.25,
+                            pointStyle: marginPointStyles,
+                            pointRadius: (loadedAwayLogo && loadedHomeLogo) ? 14 : 6,
+                            pointHoverRadius: (loadedAwayLogo && loadedHomeLogo) ? 18 : 8,
+                            pointBackgroundColor: '#3b82f6',
+                            yAxisID: 'y-spread'
+                        },
+                        {
+                            label: labelHome,
+                            data: homeValues,
+                            borderColor: '#06b6d4',
+                            borderDash: [4, 4],
+                            borderWidth: 1.5,
+                            tension: 0.2,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#06b6d4',
+                            yAxisID: 'y-total'
+                        }
+                    ]
+                };
+            }
+
+            if (currentMarket === 'ML') {
+                labelAway = `${awayName} Moneyline`;
+                labelHome = `${homeName} Moneyline`;
+                awayValues = timeline.map(t => parseInt(t.awayML) || 0);
+                homeValues = timeline.map(t => parseInt(t.homeML) || 0);
+            } else if (currentMarket === 'SPREAD') {
+                labelAway = `${awayName} Spread`;
+                labelHome = `${homeName} Spread`;
+                awayValues = timeline.map(t => parseFloat(t.awaySpr === 'PK' ? 0 : t.awaySpr) || 0);
+                homeValues = timeline.map(t => parseFloat(t.homeSpr === 'PK' ? 0 : t.homeSpr) || 0);
+            } else if (currentMarket === 'TOTAL') {
+                labelAway = `Total O/U Points`;
+                labelHome = `Consensus Total`;
+                awayValues = timeline.map(t => parseFloat(t.total) || 0);
+                homeValues = timeline.map(t => parseFloat(t.total) || 0);
+            } else if (currentMarket === 'SCORE') {
+                labelAway = `${awayName} Score`;
+                labelHome = `${homeName} Score`;
+                awayValues = timeline.map(t => t.awayScore || 0);
+                homeValues = timeline.map(t => t.homeScore || 0);
+            }
+
+            return {
+                labels: labels,
+                datasets: [
+                    {
+                        label: labelAway,
+                        data: awayValues,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2.5,
+                        tension: 0.2,
+                        pointStyle: loadedAwayLogo || 'circle',
+                        pointRadius: loadedAwayLogo ? 14 : 5,
+                        pointHoverRadius: loadedAwayLogo ? 18 : 7,
+                        pointBackgroundColor: '#3b82f6'
+                    },
+                    {
+                        label: labelHome,
+                        data: homeValues,
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        borderWidth: 2.5,
+                        tension: 0.2,
+                        pointStyle: loadedHomeLogo || 'circle',
+                        pointRadius: loadedHomeLogo ? 14 : 5,
+                        pointHoverRadius: loadedHomeLogo ? 18 : 7,
+                        pointBackgroundColor: '#f59e0b'
+                    }
+                ]
+            };
+        }
+
+        function updateChartData() {
+            if (!historyChart) return;
+            historyChart.data = getChartDataset();
+            historyChart.update();
+        }
+
+        function handleScrubberChange(val) {
+            const timeline = GAME_HISTORY_DATA[currentMatchupKey].timeline;
+            const idx = Math.floor((val / 100) * (timeline.length - 1));
+            const item = timeline[idx] || timeline[timeline.length - 1];
+            document.getElementById('scrubberTimeLabel').innerText = item.timeLabel;
+        }
+
+        function renderLogTable() {
+            const body = document.getElementById('logTableBody');
+            const data = GAME_HISTORY_DATA[currentMatchupKey];
+            body.innerHTML = '';
+
+            data.timeline.forEach((item, index) => {
+                const prev = index > 0 ? data.timeline[index - 1] : item;
+                const isUp = item.awayML.includes('-') || parseInt(item.awayML) > parseInt(prev.awayML);
+                const shiftDelta = isUp ? '+15' : '-10';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="font-weight:bold; color:#fff;">${item.timeLabel}</td>
+                    <td><span class="event-badge">${item.book}</span></td>
+                    <td style="color:var(--accent);">${currentMarket}</td>
+                    <td style="color:var(--muted);">${prev.awayML} / ${prev.homeML}</td>
+                    <td style="color:#fff; font-weight:bold;">${item.awayML} / ${item.homeML}</td>
+                    <td><span class="delta-chip ${isUp ? 'up' : 'down'}">${shiftDelta}</span></td>
+                    <td style="color:#cbd5e1;">${item.play}</td>
+                `;
+                body.appendChild(row);
+            });
+        }
+    </script>
+    <script src="nav.js?v=2"></script>
+</body>
+
+</html>

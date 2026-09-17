@@ -1,0 +1,2683 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny — Experimental Sandbox Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0c0f;
+            --surface: #111418;
+            --surface2: #181c22;
+            --surface3: #222933;
+            --border: rgba(255, 255, 255, 0.07);
+            --border2: rgba(255, 255, 255, 0.13);
+            --text: #e8eaed;
+            --muted: #6b7280;
+            --accent: #f59e0b; /* Golden Yellow */
+            --accent2: #06b6d4; /* Cyberpunk Cyan */
+            --green: #10b981; /* Green */
+            --red: #ef4444; /* Red */
+            --font-head: 'Barlow Condensed', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Nav Spacer - since nav.js adds a sticky header of 48px */
+        .nav-spacer {
+            height: 48px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 28px;
+            border-bottom: 1px solid var(--border2);
+            background: var(--surface);
+        }
+
+        .logo {
+            font-family: var(--font-head);
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: var(--accent2);
+            text-transform: uppercase;
+        }
+
+        .logo span {
+            color: var(--text);
+            opacity: 0.4;
+            font-weight: 400;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        #clock {
+            font-size: 12px;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        .bankroll-container {
+            background: rgba(6, 182, 212, 0.08);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.05);
+        }
+
+        .bankroll-label {
+            color: var(--accent2);
+            text-transform: uppercase;
+            font-size: 10px;
+        }
+
+        .bankroll-amount {
+            color: #fff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Sandbox Container */
+        .sandbox-container {
+            max-width: 1650px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            flex: 1;
+        }
+
+        /* Top Hero Alert Banner */
+        .labs-hero {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(24, 28, 34, 0.8));
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 6px;
+            padding: 20px 24px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .labs-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--accent2);
+        }
+
+        .labs-hero-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .labs-hero-tag {
+            font-size: 9px;
+            color: var(--accent2);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .labs-hero-title {
+            font-family: var(--font-head);
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+
+        .labs-hero-desc {
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.4;
+            max-width: 800px;
+        }
+
+        /* Responsive Sandbox Grid Layout */
+        .sandbox-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1100px) {
+            .sandbox-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card panels */
+        .sandbox-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        .sandbox-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 48px;
+            height: 48px;
+            background: radial-gradient(circle at top right, rgba(6, 182, 212, 0.05), transparent 70%);
+            pointer-events: none;
+        }
+
+        .card-header-labs {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        .card-tag {
+            font-size: 8px;
+            color: var(--accent2);
+            letter-spacing: 2px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .card-title-labs {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        /* PROTOTYPE A: Odds Simulator Styles */
+        .teams-selector {
+            display: grid;
+            grid-template-columns: 1fr 40px 1fr;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .select-team-box {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .select-team-lbl {
+            font-size: 8px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .select-team-dropdown {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-family: var(--font-head);
+            font-size: 18px;
+            font-weight: 700;
+            outline: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            width: 100%;
+        }
+
+        .select-team-dropdown option {
+            background: var(--surface3);
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 12px;
+        }
+
+        .vs-text {
+            font-family: var(--font-head);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 16px;
+        }
+
+        .slider-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .slider-lbl-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .slider-lbl-val {
+            color: var(--accent2);
+            font-weight: bold;
+        }
+
+        .sandbox-range-input {
+            width: 100%;
+            height: 4px;
+            background: var(--border2);
+            border-radius: 2px;
+            outline: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .sandbox-range-input::-webkit-slider-thumb {
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent2);
+            box-shadow: 0 0 6px var(--accent2);
+            transition: transform 0.1s;
+        }
+
+        .sandbox-range-input::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .calculated-odds-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px dashed var(--border);
+            padding: 12px;
+            border-radius: 4px;
+        }
+
+        .odd-output-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+            background: var(--surface2);
+            border-radius: 3px;
+            border: 1px solid var(--border);
+        }
+
+        .odd-output-lbl {
+            font-size: 8px;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .odd-output-val {
+            font-family: var(--font-head);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .simulate-console {
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            height: 100px;
+            padding: 10px;
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: #38bdf8;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sim-play-row {
+            animation: slideInPlay 0.2s ease-out;
+        }
+
+        @keyframes slideInPlay {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* PROTOTYPE B: Bankroll & Calculator Styles */
+        .faucet-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .faucet-btn {
+            background: rgba(6, 182, 212, 0.08);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            color: var(--accent2);
+            padding: 12px;
+            border-radius: 4px;
+            font-family: var(--font-head);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .faucet-btn:hover {
+            background: var(--accent2);
+            color: #000;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+        }
+
+        .faucet-btn.reset-btn {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            color: var(--red);
+        }
+
+        .faucet-btn.reset-btn:hover {
+            background: var(--red);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+        }
+
+        .interest-calculator-form {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .calc-input-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .calc-input-lbl {
+            font-size: 9px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .calc-number-input {
+            background: var(--surface3);
+            border: 1px solid var(--border);
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            padding: 6px 10px;
+            border-radius: 3px;
+            width: 80px;
+            text-align: right;
+            outline: none;
+        }
+
+        .calc-number-input:focus {
+            border-color: var(--accent2);
+        }
+
+        .calc-chart-container {
+            height: 140px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 10px;
+            position: relative;
+        }
+
+        .projection-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .projection-line {
+            stroke: var(--accent2);
+            stroke-width: 2;
+            fill: none;
+            filter: drop-shadow(0 0 4px rgba(6, 182, 212, 0.25));
+        }
+
+        .projection-points {
+            fill: var(--accent2);
+        }
+
+        .calc-summary-lbl {
+            font-size: 9px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .calc-summary-val {
+            font-family: var(--font-head);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--green);
+        }
+
+        /* PROTOTYPE C: Visual Shader Playground */
+        .playground-desc {
+            font-size: 10px;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        .shader-canvas-wrapper {
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            height: 240px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .shader-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .canvas-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .canvas-tool-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: var(--font-head);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 8px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .canvas-tool-btn:hover, .canvas-tool-btn.active {
+            border-color: var(--accent2);
+            color: #fff;
+            background: rgba(6, 182, 212, 0.05);
+        }
+
+        .canvas-feedback {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            padding: 4px 8px;
+            font-size: 8px;
+            color: var(--accent2);
+            pointer-events: none;
+        }
+
+        /* Big simulation primary execution button */
+        .primary-action-btn {
+            width: 100%;
+            background: var(--accent2);
+            border: none;
+            color: #000;
+            font-family: var(--font-head);
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.15);
+        }
+
+        .primary-action-btn:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.3);
+        }
+
+        /* SPORTSBOOK MOCK CARD & MY BETS STYLES */
+        .game-card {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .game-card:hover {
+            border-color: rgba(255,255,255,0.15);
+        }
+        .card-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .game-status {
+            font-size: 10px;
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--green);
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .card-my-bets-btn {
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            color: var(--accent);
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .card-my-bets-btn:hover {
+            background: rgba(245, 158, 11, 0.16);
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+        .card-my-bets-btn .bets-count {
+            background: var(--accent);
+            color: #000;
+            font-size: 9px;
+            font-weight: bold;
+            padding: 1px 5px;
+            border-radius: 10px;
+            min-width: 14px;
+            text-align: center;
+        }
+        .teams {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .team-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .team-name {
+            font-family: var(--font-head);
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+        .team-score {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--accent2);
+        }
+        .vs-divider {
+            font-size: 10px;
+            color: var(--muted);
+            align-self: center;
+        }
+
+        /* MODAL Overlay & Components */
+        .my-bets-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 12, 15, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .my-bets-modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .my-bets-modal {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 12px;
+            width: 480px;
+            max-width: 90vw;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+            transform: translateY(20px) scale(0.97);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .my-bets-modal-overlay.open .my-bets-modal {
+            transform: translateY(0) scale(1);
+        }
+        .mb-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .mb-title {
+            font-family: var(--font-head);
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+        .mb-close-btn {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .mb-close-btn:hover {
+            color: var(--text);
+        }
+        .mb-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .mb-empty-state {
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+            padding: 30px 10px;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+        }
+        .mb-wager-card {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 8px;
+            padding: 14px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: border-color 0.2s;
+        }
+        .mb-wager-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .mb-wager-badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--green);
+            font-size: 9px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .mb-wager-delete-btn {
+            position: absolute;
+            bottom: 14px;
+            right: 14px;
+            background: none;
+            border: none;
+            color: var(--red);
+            font-size: 11px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .mb-wager-delete-btn:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+        .mb-wager-team {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .mb-wager-details {
+            font-size: 11px;
+            color: var(--muted);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .mb-wager-row {
+            display: flex;
+            justify-content: space-between;
+        }
+        .mb-wager-label {
+            color: var(--muted);
+        }
+        .mb-wager-val {
+            color: var(--text);
+            font-weight: 500;
+        }
+        
+        .mb-quick-add-box {
+            border-top: 1px solid var(--border);
+            padding-top: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .mb-quick-add-title {
+            font-family: var(--font-head);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .mb-form-row {
+            display: flex;
+            gap: 8px;
+        }
+        .mb-select, .mb-input {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            color: var(--text);
+            padding: 8px;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            outline: none;
+        }
+        .mb-select:focus, .mb-input:focus {
+            border-color: var(--accent);
+        }
+        .mb-add-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 8px 14px;
+            font-family: var(--font-head);
+            font-weight: 900;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: opacity 0.2s;
+        }
+        .mb-add-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Sportsbook Modal Game Score Tile & Matrix Controls */
+        .mb-score-tile {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+        .mb-score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .mb-score-league {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--cyan);
+            letter-spacing: 1px;
+        }
+        .mb-score-status {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text);
+        }
+        .mb-score-status.live {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .mb-score-teams-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .mb-team-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+        .mb-team-logo {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+        }
+        .mb-team-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .mb-team-name {
+            font-family: var(--font-head);
+            font-size: 14px;
+            font-weight: 800;
+            color: #fff;
+        }
+        .mb-possession-badge {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            font-weight: 800;
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            padding: 1px 5px;
+            border-radius: 3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            margin-top: 2px;
+        }
+        .mb-team-score-num {
+            font-family: var(--font-head);
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--accent);
+        }
+        .mb-vs-badge {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .mb-score-meta-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .mb-tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--muted);
+            padding: 8px 4px;
+            border-radius: 6px;
+            font-family: var(--font-head);
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .mb-tab-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        .mb-tab-btn.active {
+            background: rgba(6, 182, 212, 0.15);
+            border-color: #06b6d4;
+            color: #06b6d4;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
+        }
+
+        .mb-side-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            color: var(--text);
+            padding: 10px;
+            border-radius: 6px;
+            font-family: var(--font-head);
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .mb-side-btn:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        .mb-side-btn.active {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: #f59e0b;
+            color: #f59e0b;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+        }
+
+        .mb-pill-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .mb-pill-btn:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top global nav injected dynamically by nav.js -->
+    <div class="nav-spacer"></div>
+
+    <header>
+        <div class="logo">DESTINY<span> // EXPERIMENTAL LABS</span></div>
+        <div class="header-right">
+            <div id="clock">19:32:10 EST</div>
+            <div class="bankroll-container">
+                <span class="bankroll-label">Bankroll</span>
+                <span class="bankroll-amount">$<span id="bankroll-amount-val">10000.00</span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="sandbox-container">
+        <!-- Labs Intro Hero -->
+        <section class="labs-hero">
+            <div class="labs-hero-info">
+                <span class="labs-hero-tag">🧪 ACTIVE RESEARCH PROTOCOL</span>
+                <h1 class="labs-hero-title">Welcome to the Destiny Sandbox</h1>
+                <p class="labs-hero-desc">
+                    This is your experimental playground for staging new features, testing sportsbook calculations, compounding bankroll simulations, and playground shaders. Adjust settings inside any module to prototype mathematical models, visual graphics, or inject custom bankroll test wagers.
+                </p>
+            </div>
+            <div style="font-size: 32px;">🛠️</div>
+        </section>
+
+        <!-- Sandbox Feature Modules -->
+        <section class="sandbox-grid">
+            <!-- Module A: Sports AI Odds Generator -->
+            <div class="sandbox-card">
+                <div class="card-header-labs">
+                    <div>
+                        <span class="card-tag">PROTOTYPE MODELING</span>
+                        <h2 class="card-title-labs">AI Sports Odds Simulator</h2>
+                    </div>
+                    <div style="font-size: 18px;">🏈</div>
+                </div>
+
+                <div class="teams-selector">
+                    <div class="select-team-box">
+                        <span class="select-team-lbl">Team A (Home)</span>
+                        <select class="select-team-dropdown" id="team-a-sel" onchange="runOddsEngine()">
+                            <option value="Vegas Golden Knights" selected>Vegas GK</option>
+                            <option value="Colorado Avalanche">Colorado Avs</option>
+                            <option value="Boston Bruins">Boston Bruins</option>
+                            <option value="New York Yankees">NY Yankees</option>
+                        </select>
+                    </div>
+                    <span class="vs-text">VS</span>
+                    <div class="select-team-box">
+                        <span class="select-team-lbl">Team B (Away)</span>
+                        <select class="select-team-dropdown" id="team-b-sel" onchange="runOddsEngine()">
+                            <option value="Vegas Golden Knights">Vegas GK</option>
+                            <option value="Colorado Avalanche" selected>Colorado Avs</option>
+                            <option value="Boston Bruins">Boston Bruins</option>
+                            <option value="New York Yankees">NY Yankees</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Sliders -->
+                <div class="slider-group">
+                    <div class="slider-row">
+                        <div class="slider-lbl-row">
+                            <span>Team A Power Rating</span>
+                            <span class="slider-lbl-val" id="power-a-val">75</span>
+                        </div>
+                        <input type="range" class="sandbox-range-input" id="power-a" min="10" max="100" value="75" oninput="updateSliders(); runOddsEngine();">
+                    </div>
+                    <div class="slider-row">
+                        <div class="slider-lbl-row">
+                            <span>Team B Power Rating</span>
+                            <span class="slider-lbl-val" id="power-b-val">70</span>
+                        </div>
+                        <input type="range" class="sandbox-range-input" id="power-b" min="10" max="100" value="70" oninput="updateSliders(); runOddsEngine();">
+                    </div>
+                    <div class="slider-row">
+                        <div class="slider-lbl-row">
+                            <span>Home Advantage Bias</span>
+                            <span class="slider-lbl-val" id="home-bias-val">10</span>
+                        </div>
+                        <input type="range" class="sandbox-range-input" id="home-bias" min="0" max="30" value="10" oninput="updateSliders(); runOddsEngine();">
+                    </div>
+                </div>
+
+                <!-- Calculated Odds Box -->
+                <div class="calculated-odds-grid">
+                    <div class="odd-output-box">
+                        <span class="odd-output-lbl">Moneyline A</span>
+                        <span class="odd-output-val" id="odds-a">-135</span>
+                    </div>
+                    <div class="odd-output-box">
+                        <span class="odd-output-lbl">Spread Line</span>
+                        <span class="odd-output-val" id="odds-spread">-1.5 (+115)</span>
+                    </div>
+                    <div class="odd-output-box">
+                        <span class="odd-output-lbl">Over / Under</span>
+                        <span class="odd-output-val" id="odds-total">O/U 6.5</span>
+                    </div>
+                </div>
+
+                <!-- Live Simulation Console -->
+                <div class="simulate-console" id="sim-console">
+                    <div>[SYSTEM]: Ready to run match prediction simulator...</div>
+                </div>
+
+                <button class="primary-action-btn" onclick="simulateGameMatch()">Simulate Game Match</button>
+            </div>
+
+            <!-- Module B: Faucet & Compound Growth projection -->
+            <div class="sandbox-card">
+                <div class="card-header-labs">
+                    <div>
+                        <span class="card-tag">BANKROLL MATH & PERSISTENCE</span>
+                        <h2 class="card-title-labs">Test Faucet & Growth Graph</h2>
+                    </div>
+                    <div style="font-size: 18px;">💵</div>
+                </div>
+
+                <!-- Faucet Buttons -->
+                <div class="faucet-row">
+                    <button class="faucet-btn" onclick="addFaucetFunds()">+ $1,000 Faucet</button>
+                    <button class="faucet-btn reset-btn" onclick="resetBankroll()">Reset $10,000</button>
+                </div>
+
+                <!-- Growth Formula Staging -->
+                <div class="interest-calculator-form">
+                    <div class="calc-input-row">
+                        <span class="calc-input-lbl">Initial Staged Wager ($)</span>
+                        <input type="number" class="calc-number-input" id="calc-principal" value="250" step="50" min="10" oninput="runProjection()">
+                    </div>
+                    <div class="calc-input-row">
+                        <span class="calc-input-lbl">Avg ROI per Day (%)</span>
+                        <input type="number" class="calc-number-input" id="calc-roi" value="8" step="0.5" min="0" oninput="runProjection()">
+                    </div>
+                    <div class="calc-input-row">
+                        <span class="calc-input-lbl">Target Timeframe (Days)</span>
+                        <input type="number" class="calc-number-input" id="calc-days" value="15" step="1" min="2" max="60" oninput="runProjection()">
+                    </div>
+                </div>
+
+                <!-- Compounding line chart projection -->
+                <div class="calc-chart-container">
+                    <svg class="projection-svg" id="proj-svg">
+                        <!-- Chart paths will be generated dynamically -->
+                        <path class="projection-line" d=""></path>
+                    </svg>
+                </div>
+
+                <div class="calc-input-row">
+                    <span class="calc-summary-lbl">Projected Compounded Value:</span>
+                    <span class="calc-summary-val" id="calc-projected-val">$793.04</span>
+                </div>
+            </div>
+
+            <!-- Module D: Sportsbook Card Staging & My Bets Tracker -->
+            <div class="sandbox-card">
+                <div class="card-header-labs">
+                    <div>
+                        <span class="card-tag">INTERACTIVE SANDBOX</span>
+                        <h2 class="card-title-labs">Sportsbook Card & My Bets Integration</h2>
+                    </div>
+                    <div style="font-size: 18px;">🏀</div>
+                </div>
+
+                <p class="playground-desc" style="margin-bottom: 4px;">
+                    Test the exact game card aesthetics, wagers counting, and "My Bets" tracking modal live in this staging widget. Clicking the "My Bets" button will open the identical modal pop-up so you can test adding and clearing wagers.
+                </p>
+
+                <!-- Interactive Game Card -->
+                <div class="game-card">
+                    <div class="card-top-bar">
+                        <span class="game-status" style="background: rgba(239, 68, 68, 0.12); color: var(--red);">LIVE Q3</span>
+                        <button class="card-my-bets-btn" onclick="openMyBetsModal('mock-okc-sas', 'OKC', 'Oklahoma City Thunder', 'SAS', 'San Antonio Spurs')">
+                            My Bets <span class="bets-count" id="sandbox-bets-counter">1</span>
+                        </button>
+                    </div>
+                    <div class="teams">
+                        <div class="team-row">
+                            <span class="team-name">Oklahoma City Thunder</span>
+                            <span class="team-score">84</span>
+                        </div>
+                        <div class="vs-divider">@</div>
+                        <div class="team-row">
+                            <span class="team-name">San Antonio Spurs</span>
+                            <span class="team-score">79</span>
+                        </div>
+                    </div>
+                    <div style="border-top: 1px dashed var(--border); padding-top: 8px; display: flex; justify-content: space-between; font-size: 9px; color: var(--muted);">
+                        <span>VENUE: Frost Bank Center</span>
+                        <span style="color: var(--accent);">OKC -7.0 (-110)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module C: Custom Canvas Animation Playground -->
+            <div class="sandbox-card" style="grid-column: 1 / -1;">
+                <div class="card-header-labs">
+                    <div>
+                        <span class="card-tag">AESTHETICS & INTERACTIVE SHADER</span>
+                        <h2 class="card-title-labs">Interactive Cyberpunk Particle Playground</h2>
+                    </div>
+                    <div style="font-size: 18px;">🎨</div>
+                </div>
+
+                <p class="playground-desc">
+                    Test micro-animations, render performance, and visual graphics. Click inside the viewport box below to inject explosive particles, simulate bet confirmation wave ripples, and toggle visual modes.
+                </p>
+
+                <!-- Canvas Workspace -->
+                <div class="shader-canvas-wrapper" id="canvas-wrapper">
+                    <canvas class="shader-canvas" id="interactive-canvas"></canvas>
+                    <div class="canvas-feedback" id="canvas-feedback-lbl">Particles Count: 75</div>
+                </div>
+
+                <div class="canvas-controls">
+                    <button class="canvas-tool-btn active" id="mode-cyan-btn" onclick="setCanvasColor('#06b6d4')">Neon Cyan</button>
+                    <button class="canvas-tool-btn" id="mode-gold-btn" onclick="setCanvasColor('#f59e0b')">Neon Gold</button>
+                    <button class="canvas-tool-btn" onclick="triggerBetAnimation()">Simulate "Bet Confirmation" Glow</button>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+
+    <!-- PREMIUM MY BETS MODAL OVERLAY -->
+    <div id="my-bets-modal-overlay" class="my-bets-modal-overlay" onclick="closeMyBetsModal()">
+        <div class="my-bets-modal" onclick="event.stopPropagation()">
+            <div class="mb-header">
+                <span class="mb-title" style="display:flex; align-items:center; gap:8px;">
+                    <span>⚡ GAME TRACK:</span> <span id="mb-game-title" style="color:#fff;"></span>
+                </span>
+                <button class="mb-close-btn" onclick="closeMyBetsModal()">&times;</button>
+            </div>
+            <div class="mb-body">
+                <!-- LIVE SCORE TILE BANNER -->
+                <div id="mb-game-score-tile"></div>
+
+                <div id="mb-wagers-list" style="display: flex; flex-direction: column; gap: 12px;">
+                    <!-- Dynamically populated wagers -->
+                </div>
+                
+                <div class="mb-quick-add-box">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                        <span class="mb-quick-add-title">Add Track Wager</span>
+                        <span style="font-family:var(--font-mono); font-size:10px; color:var(--cyan); font-weight:700;">SPORTSBOOK MATRIX</span>
+                    </div>
+
+                    <!-- Bet Type Selector Tabs -->
+                    <div class="mb-market-tabs" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-bottom:8px;">
+                        <button type="button" class="mb-tab-btn active" id="mb-tab-total" onclick="setModalMarketType('Total')">📊 TOTAL (O/U)</button>
+                        <button type="button" class="mb-tab-btn" id="mb-tab-spread" onclick="setModalMarketType('Spread')">🏈 SPREAD</button>
+                        <button type="button" class="mb-tab-btn" id="mb-tab-moneyline" onclick="setModalMarketType('Moneyline')">🏆 MONEYLINE</button>
+                    </div>
+
+                    <!-- Side / Selection Buttons (Over/Under or Team 1/Team 2) -->
+                    <div id="mb-side-selector" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+                        <!-- Dynamically rendered side toggle buttons -->
+                    </div>
+
+                    <form onsubmit="handleModalQuickAdd(event)" style="display:flex; flex-direction:column; gap:10px;">
+                        <div class="mb-form-row" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                            <div>
+                                <label style="font-size:10px; font-family:var(--font-mono); color:var(--muted); font-weight:700; display:block; margin-bottom:3px;">TARGET LINE</label>
+                                <input type="text" id="mb-form-detail" class="mb-input" placeholder="e.g. 40.5" style="width:100%;" oninput="updateModalCalculations()" required>
+                            </div>
+                            <div>
+                                <label style="font-size:10px; font-family:var(--font-mono); color:var(--muted); font-weight:700; display:block; margin-bottom:3px;">AMERICAN ODDS</label>
+                                <input type="text" id="mb-form-odds" class="mb-input" placeholder="-110" value="-110" style="width:100%;" oninput="updateModalCalculations()" required>
+                            </div>
+                        </div>
+
+                        <!-- Quick Odds Pills -->
+                        <div style="display:flex; align-items:center; gap:6px; margin-top:-2px;">
+                            <span style="font-size:9px; color:var(--muted); font-family:var(--font-mono); font-weight:700;">QUICK ODDS:</span>
+                            <button type="button" class="mb-pill-btn" onclick="setModalOdds('-110')">-110</button>
+                            <button type="button" class="mb-pill-btn" onclick="setModalOdds('-105')">-105</button>
+                            <button type="button" class="mb-pill-btn" onclick="setModalOdds('+100')">+100</button>
+                            <button type="button" class="mb-pill-btn" onclick="setModalOdds('+120')">+120</button>
+                            <button type="button" class="mb-pill-btn" onclick="setModalOdds('+150')">+150</button>
+                        </div>
+
+                        <div class="mb-form-row" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                            <div>
+                                <label style="font-size:10px; font-family:var(--font-mono); color:var(--muted); font-weight:700; display:block; margin-bottom:3px;">WAGER STAKE ($)</label>
+                                <input type="number" step="0.01" id="mb-form-wager" class="mb-input" placeholder="50.00" value="50" style="width:100%;" oninput="updateModalCalculations()" required>
+                            </div>
+                            <div>
+                                <label style="font-size:10px; font-family:var(--font-mono); color:var(--muted); font-weight:700; display:block; margin-bottom:3px;">TO WIN PROFIT ($)</label>
+                                <input type="number" step="0.01" id="mb-form-towin" class="mb-input" placeholder="45.45" style="width:100%;" oninput="updateModalCalculationsFromWin()" required>
+                            </div>
+                        </div>
+
+                        <div id="mb-payout-preview" style="background:rgba(16, 185, 129, 0.08); border:1px solid rgba(16, 185, 129, 0.25); border-radius:6px; padding:8px 12px; font-family:var(--font-mono); font-size:11px; display:flex; justify-content:space-between; align-items:center;">
+                            <span style="color:var(--muted); font-weight:700;">ESTIMATED PAYOUT:</span>
+                            <span id="mb-payout-val" style="color:var(--green); font-weight:900; font-size:13px;">$95.45</span>
+                        </div>
+
+                        <button type="submit" class="mb-add-btn" id="mb-submit-btn" style="width: 100%; padding:10px; font-size:13px;">ADD WAGER TO TRACK</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Bankroll state
+        let bankroll = 10000.00;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initClock();
+            loadBankroll();
+            runOddsEngine();
+            runProjection();
+            initCanvasPlayground();
+            seedWagersIfEmpty();
+            updateSandboxCardBetsCounts();
+        });
+
+        // Sync bankroll
+        function loadBankroll() {
+            if (window.DestinyState) {
+                bankroll = window.DestinyState.getBankroll();
+                window.DestinyState.subscribe(window.DestinyState.KEYS.BANKROLL, (val) => {
+                    bankroll = parseFloat(val) || 10000.00;
+                    updateBankrollUI();
+                });
+            } else {
+                const saved = localStorage.getItem('bankroll');
+                bankroll = saved !== null ? parseFloat(saved) : 10000.00;
+            }
+            updateBankrollUI();
+        }
+
+        function updateBankrollUI() {
+            const el = document.getElementById('bankroll-amount-val');
+            if (el) el.innerText = bankroll.toFixed(2);
+        }
+
+        function addFaucetFunds() {
+            bankroll += 1000.00;
+            if (window.DestinyState) {
+                window.DestinyState.setBankroll(bankroll);
+            } else {
+                localStorage.setItem('bankroll', bankroll);
+            }
+            updateBankrollUI();
+            
+            // Trigger quick ripple in bankroll box
+            const box = document.querySelector('.bankroll-container');
+            if (box) {
+                box.style.transform = 'scale(1.08)';
+                box.style.borderColor = 'var(--green)';
+                setTimeout(() => {
+                    box.style.transform = 'scale(1)';
+                    box.style.borderColor = '';
+                }, 300);
+            }
+        }
+
+        function resetBankroll() {
+            bankroll = 10000.00;
+            if (window.DestinyState) {
+                window.DestinyState.setBankroll(bankroll);
+            } else {
+                localStorage.setItem('bankroll', bankroll);
+            }
+            updateBankrollUI();
+            
+            const box = document.querySelector('.bankroll-container');
+            if (box) {
+                box.style.transform = 'scale(0.95)';
+                box.style.borderColor = 'var(--red)';
+                setTimeout(() => {
+                    box.style.transform = 'scale(1)';
+                    box.style.borderColor = '';
+                }, 300);
+            }
+        }
+
+        // Clock display
+        function initClock() {
+            const clockEl = document.getElementById('clock');
+            const updateClock = () => {
+                const now = new Date();
+                let hrs = now.getHours();
+                const mins = String(now.getMinutes()).padStart(2, '0');
+                const secs = String(now.getSeconds()).padStart(2, '0');
+                const ampm = hrs >= 12 ? 'PM' : 'AM';
+                hrs = hrs % 12;
+                hrs = hrs ? hrs : 12;
+                clockEl.textContent = `${String(hrs).padStart(2, '0')}:${mins}:${secs} ${ampm} EST`;
+            };
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        // PROTOTYPE A: Odds Simulator calculations
+        function updateSliders() {
+            document.getElementById('power-a-val').innerText = document.getElementById('power-a').value;
+            document.getElementById('power-b-val').innerText = document.getElementById('power-b').value;
+            document.getElementById('home-bias-val').innerText = document.getElementById('home-bias').value;
+        }
+
+        function runOddsEngine() {
+            const powerA = parseInt(document.getElementById('power-a').value);
+            const powerB = parseInt(document.getElementById('power-b').value);
+            const homeBias = parseInt(document.getElementById('home-bias').value);
+
+            // Compute relative ratio
+            const scoreA = powerA + homeBias;
+            const scoreB = powerB;
+
+            const diff = scoreA - scoreB;
+            
+            // Calculate moneyline
+            let mlA, mlB;
+            if (diff > 0) {
+                mlA = -100 - (diff * 8);
+                mlB = +100 + (diff * 7);
+            } else if (diff < 0) {
+                mlA = +100 + (Math.abs(diff) * 7);
+                mlB = -100 - (Math.abs(diff) * 8);
+            } else {
+                mlA = -110;
+                mlB = -110;
+            }
+
+            mlA = Math.round(mlA);
+            mlB = Math.round(mlB);
+
+            // Format moneyline string
+            const mlStrA = mlA > 0 ? `+${mlA}` : `${mlA}`;
+            const mlStrB = mlB > 0 ? `+${mlB}` : `${mlB}`;
+
+            document.getElementById('odds-a').innerText = mlStrA;
+
+            // Spread Odds
+            let spreadLine = 0.5 + (Math.abs(diff) / 10);
+            spreadLine = Math.round(spreadLine * 2) / 2; // round to nearest 0.5
+            
+            const spreadSign = diff >= 0 ? '-' : '+';
+            const spreadPrice = diff >= 0 ? '+115' : '-115';
+            
+            document.getElementById('odds-spread').innerText = `${spreadSign}${spreadLine} (${spreadPrice})`;
+
+            // Total Over/Under Line
+            let totalLine = 4.5 + ((powerA + powerB) / 30);
+            totalLine = Math.round(totalLine * 2) / 2;
+            
+            document.getElementById('odds-total').innerText = `O/U ${totalLine.toFixed(1)}`;
+        }
+
+        let isSimulating = false;
+        function simulateGameMatch() {
+            if (isSimulating) return;
+            isSimulating = true;
+
+            const teamA = document.getElementById('team-a-sel').value;
+            const teamB = document.getElementById('team-b-sel').value;
+            const consoleEl = document.getElementById('sim-console');
+
+            if (teamA === teamB) {
+                alert("Please select two different teams to simulate a matchup.");
+                isSimulating = false;
+                return;
+            }
+
+            consoleEl.innerHTML = '';
+            addConsolePlay("[SYSTEM]: Initiating Matchup Generator Protocol...");
+            
+            const powerA = parseInt(document.getElementById('power-a').value) + parseInt(document.getElementById('home-bias').value);
+            const powerB = parseInt(document.getElementById('power-b').value);
+
+            let scoreA = 0;
+            let scoreB = 0;
+
+            const plays = [
+                () => { addConsolePlay(`[Q1 - 12:45]: Game Kickoff! ${teamA} takes possession.`); },
+                () => {
+                    const goal = Math.random() * 100 < powerA;
+                    if (goal) {
+                        scoreA++;
+                        addConsolePlay(`[Q1 - 04:12]: SCORE! ${teamA} scores a brilliant goal! [${scoreA}-${scoreB}]`);
+                    } else {
+                        addConsolePlay(`[Q1 - 02:22]: Penalty on ${teamB} for holding. Defense holds strong.`);
+                    }
+                },
+                () => { addConsolePlay(`[Q2 - 10:15]: Second period starts. Intense physical battle.`); },
+                () => {
+                    const goal = Math.random() * 100 < powerB;
+                    if (goal) {
+                        scoreB++;
+                        addConsolePlay(`[Q2 - 03:40]: GOAL! ${teamB} replies with a strike! [${scoreA}-${scoreB}]`);
+                    } else {
+                        addConsolePlay(`[Q2 - 01:05]: ${teamA} shots deflected off the crossbar.`);
+                    }
+                },
+                () => { addConsolePlay(`[Q3 - 09:20]: Play resumes. Momentum shifting constantly.`); },
+                () => {
+                    // Final push
+                    if (powerA > powerB + 5) {
+                        scoreA += Math.random() > 0.4 ? 1 : 0;
+                    } else if (powerB > powerA + 5) {
+                        scoreB += Math.random() > 0.4 ? 1 : 0;
+                    } else {
+                        if (Math.random() > 0.5) scoreA++; else scoreB++;
+                    }
+                    addConsolePlay(`[Q3 - 01:10]: CLUTCH! Goal scored in final moments! [${scoreA}-${scoreB}]`);
+                },
+                () => {
+                    let totalVal = scoreA + scoreB;
+                    let resultStr = `[FINAL]: Game settled! ${scoreA > scoreB ? teamA : teamB} Wins! Score: ${scoreA}-${scoreB}`;
+                    if (scoreA === scoreB) {
+                        scoreA += Math.random() > 0.5 ? 1 : 0;
+                        scoreB = scoreA === scoreB ? scoreB + 1 : scoreB;
+                        resultStr = `[OVERTIME]: Final Score: ${scoreA}-${scoreB}. ${scoreA > scoreB ? teamA : teamB} wins in OT!`;
+                    }
+                    addConsolePlay(resultStr, true);
+                    isSimulating = false;
+                }
+            ];
+
+            let playIdx = 0;
+            const runNextPlay = () => {
+                if (playIdx < plays.length) {
+                    plays[playIdx]();
+                    playIdx++;
+                    setTimeout(runNextPlay, 1000);
+                }
+            };
+            runNextPlay();
+        }
+
+        function addConsolePlay(text, isImportant = false) {
+            const consoleEl = document.getElementById('sim-console');
+            const row = document.createElement('div');
+            row.className = 'sim-play-row';
+            if (isImportant) {
+                row.style.color = 'var(--green)';
+                row.style.fontWeight = 'bold';
+            }
+            row.innerText = text;
+            consoleEl.appendChild(row);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+
+        // PROTOTYPE B: Compound interest calculation & SVG render
+        function runProjection() {
+            const principal = parseFloat(document.getElementById('calc-principal').value) || 0;
+            const roi = (parseFloat(document.getElementById('calc-roi').value) || 0) / 100;
+            const days = parseInt(document.getElementById('calc-days').value) || 2;
+
+            let current = principal;
+            const dataPoints = [principal];
+            for (let i = 1; i <= days; i++) {
+                current = current * (1 + roi);
+                dataPoints.push(current);
+            }
+
+            document.getElementById('calc-projected-val').innerText = `$${current.toFixed(2)}`;
+
+            // Draw SVG projection chart
+            const svg = document.getElementById('proj-svg');
+            const pathLine = svg.querySelector('.projection-line');
+            
+            // Clear existing circles
+            const circles = svg.querySelectorAll('circle');
+            circles.forEach(c => c.remove());
+
+            const w = svg.clientWidth || 360;
+            const h = 140;
+            const padding = 15;
+
+            const minVal = principal;
+            const maxVal = current;
+
+            const chartW = w - padding * 2;
+            const chartH = h - padding * 2;
+            const step = chartW / (dataPoints.length - 1);
+
+            const points = dataPoints.map((val, index) => {
+                const x = padding + index * step;
+                const y = padding + (chartH - ((val - minVal) / (maxVal - minVal) * chartH));
+                return { x, y, val };
+            });
+
+            // Set path line
+            const lineD = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+            pathLine.setAttribute('d', lineD);
+
+            // Add circle points for key intervals
+            points.forEach((p, i) => {
+                if (i === 0 || i === points.length - 1 || i === Math.floor(points.length / 2)) {
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', p.x);
+                    circle.setAttribute('cy', p.y);
+                    circle.setAttribute('r', '4');
+                    circle.setAttribute('class', 'projection-points');
+                    
+                    // Quick title tooltip
+                    const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+                    title.textContent = `Day ${i}: $${p.val.toFixed(2)}`;
+                    circle.appendChild(title);
+
+                    svg.appendChild(circle);
+                }
+            });
+        }
+
+        // PROTOTYPE C: Interactive Particle Shader Playground
+        let canvas, ctx, particles = [];
+        let primaryThemeColor = '#06b6d4'; // Cyan
+        let betPulseRadius = 0;
+        let isBetPulseActive = false;
+
+        function initCanvasPlayground() {
+            canvas = document.getElementById('interactive-canvas');
+            ctx = canvas.getContext('2d');
+            const wrapper = document.getElementById('canvas-wrapper');
+
+            // Resize canvas to match container size
+            const resize = () => {
+                canvas.width = wrapper.clientWidth;
+                canvas.height = 240;
+            };
+            resize();
+            window.addEventListener('resize', resize);
+
+            // Initialize sample particles
+            particles = [];
+            for (let i = 0; i < 75; i++) {
+                particles.push(createParticle());
+            }
+
+            // Click listener
+            wrapper.addEventListener('mousedown', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                // Spawn 10 explosive particles
+                for (let i = 0; i < 15; i++) {
+                    particles.push(createParticle(x, y, true));
+                }
+
+                // Flash feedback
+                document.getElementById('canvas-feedback-lbl').innerText = `Particles: ${particles.length} | Click Registered!`;
+                
+                // Keep particle pool constrained
+                if (particles.length > 200) {
+                    particles.splice(0, particles.length - 150);
+                }
+            });
+
+            // Start Canvas animation tick loop
+            requestAnimationFrame(canvasTick);
+        }
+
+        function createParticle(x = null, y = null, isSpark = false) {
+            const cW = canvas.width || 400;
+            const cH = canvas.height || 240;
+
+            return {
+                x: x !== null ? x : Math.random() * cW,
+                y: y !== null ? y : Math.random() * cH,
+                vx: isSpark ? (Math.random() - 0.5) * 6 : (Math.random() - 0.5) * 1.5,
+                vy: isSpark ? (Math.random() - 0.5) * 6 : (Math.random() - 0.5) * 1.5,
+                size: isSpark ? Math.random() * 3 + 1 : Math.random() * 4 + 2,
+                life: isSpark ? 1.0 : null,
+                decay: isSpark ? Math.random() * 0.04 + 0.01 : null
+            };
+        }
+
+        function setCanvasColor(color) {
+            primaryThemeColor = color;
+            document.querySelectorAll('.canvas-tool-btn').forEach(btn => {
+                if (btn.id.includes('cyan') && color.includes('06b6d4')) btn.classList.add('active');
+                else if (btn.id.includes('gold') && color.includes('f59e0b')) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+        }
+
+        function triggerBetAnimation() {
+            betPulseRadius = 1;
+            isBetPulseActive = true;
+            document.getElementById('canvas-feedback-lbl').innerText = `Staging Confirmation Pulse!`;
+        }
+
+        function canvasTick() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Draw connecting web lines for background ambient particles
+            ctx.strokeStyle = 'rgba(255,255,255,0.02)';
+            ctx.lineWidth = 0.8;
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 80) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // 2. Render & update particles
+            particles.forEach((p, idx) => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                // Wall bounds check for ambient particles
+                if (p.life === null) {
+                    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                }
+
+                // Render particle
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                
+                if (p.life !== null) {
+                    // Explosion spark - decays over time
+                    ctx.fillStyle = `rgba(${hexToRgb(primaryThemeColor)}, ${p.life})`;
+                    p.life -= p.decay;
+                    if (p.life <= 0) {
+                        particles.splice(idx, 1);
+                    }
+                } else {
+                    // Regular ambient dot
+                    ctx.fillStyle = primaryThemeColor;
+                }
+                ctx.fill();
+            });
+
+            // 3. Draw bet confirmation glowing ripple pulse
+            if (isBetPulseActive) {
+                ctx.beginPath();
+                ctx.arc(canvas.width / 2, canvas.height / 2, betPulseRadius, 0, Math.PI * 2);
+                const opacity = Math.max(0, 1 - (betPulseRadius / 150));
+                ctx.strokeStyle = `rgba(${hexToRgb(primaryThemeColor)}, ${opacity})`;
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                betPulseRadius += 3;
+                if (betPulseRadius > 150) {
+                    isBetPulseActive = false;
+                }
+            }
+
+            requestAnimationFrame(canvasTick);
+        }
+
+        // Helper to convert hex to rgb triplet
+        function hexToRgb(hex) {
+            let c;
+            if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+                c = hex.substring(1).split('');
+                if (c.length == 3) {
+                    c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+                }
+                c = '0x' + c.join('');
+                return [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',');
+            }
+            return '6,182,212';
+        }
+
+        // ── My Bets Sandbox Tracker Logic ─────────────────────────────────
+        let activeWagerGame = null;
+
+        function seedWagersIfEmpty() {
+            const KEY = 'destiny_game_wagers';
+            const saved = localStorage.getItem(KEY);
+            let wagers = [];
+            if (saved) {
+                try { wagers = JSON.parse(saved); } catch(e) { wagers = []; }
+            }
+            
+            // Clear Timberwolves bets safely
+            wagers = wagers.filter(w => {
+                const target = w.target || '';
+                const matchup = w.matchup || '';
+                return !target.toLowerCase().includes('timberwolves') && 
+                       !matchup.toLowerCase().includes('minnesota') && 
+                       !matchup.toLowerCase().includes('timberwolves');
+            });
+
+            // Clear any Knicks/Cavaliers wagers to keep the user's ledger perfectly clean and matching their expectation!
+            wagers = wagers.filter(w => {
+                const t = (w.target || '').toLowerCase();
+                const m = (w.matchup || '').toLowerCase();
+                return !t.includes('cavaliers') && !t.includes('knicks') && !t.includes('cavs') &&
+                       !m.includes('cavaliers') && !m.includes('knicks') && !m.includes('cavs');
+            });
+            
+            // Seed Thunder +7 Spread safely
+            const hasThunderSpread = wagers.some(w => {
+                const target = w.target || '';
+                const detail = w.detail || '';
+                return target.toLowerCase().includes('thunder') && (detail.includes('+7') || target.includes('+7'));
+            });
+            if (!hasThunderSpread) {
+                wagers.push({
+                    id: 'seed-thunder-spread-1779498596559',
+                    matchup: 'Oklahoma City Thunder @ San Antonio Spurs',
+                    target: 'Spread — Oklahoma City Thunder +7.0',
+                    type: 'Spread',
+                    detail: '+7',
+                    wager: 25.00,
+                    stake: 25.00,
+                    placedOdds: '-115',
+                    currentOdds: '-115',
+                    sportsbook: 'DraftKings',
+                    status: 'PENDING',
+                    history: ['-110', '-112', '-115'],
+                    betType: 'GAME',
+                    toWin: 21.74
+                });
+            }
+            localStorage.setItem(KEY, JSON.stringify(wagers));
+        }
+
+        function matchesTeamWager(w, teamAbbr, teamName) {
+            if (!w) return false;
+            const text = ((w.matchup || '') + ' ' + (w.event || '') + ' ' + (w.description || '') + ' ' + (w.target || '') + ' ' + (w.selection || '') + ' ' + (w.side || '')).toLowerCase();
+            
+            if (teamAbbr && teamAbbr.length >= 2) {
+                const cleanAbbr = teamAbbr.toLowerCase().trim();
+                const abbrRegex = new RegExp('\\b' + cleanAbbr.replace(/[^a-z0-9]/g, '') + '\\b', 'i');
+                if (abbrRegex.test(text)) return true;
+            }
+
+            if (teamName && teamName.length >= 3) {
+                const words = teamName.toLowerCase().split(/\s+/).filter(word => word.length >= 3 && !['the', 'and', 'for', 'game', 'over', 'under'].includes(word));
+                for (const word of words) {
+                    const wordRegex = new RegExp('\\b' + word.replace(/[^a-z0-9]/g, '') + '\\b', 'i');
+                    if (wordRegex.test(text)) return true;
+                }
+            }
+
+            return false;
+        }
+
+        function getWagersForGame(awayAbbr, awayName, homeAbbr, homeName) {
+            seedWagersIfEmpty();
+            let saved = localStorage.getItem('destiny_game_wagers');
+            if (!saved || saved === '[]') return [];
+            
+            try {
+                let parsed = JSON.parse(saved);
+                if (!Array.isArray(parsed) || parsed.length === 0) return [];
+
+                const filtered = parsed.filter(w => {
+                    const matchAway = matchesTeamWager(w, awayAbbr, awayName);
+                    const matchHome = matchesTeamWager(w, homeAbbr, homeName);
+                    return matchAway || matchHome;
+                });
+
+                return filtered;
+            } catch(e) {
+                return [];
+            }
+        }
+
+        function updateSandboxCardBetsCounts() {
+            const wagers = getWagersForGame('GB', 'Green Bay Packers', 'DEN', 'Denver Broncos');
+            const counter = document.getElementById('sandbox-bets-counter');
+            if (counter) {
+                if (wagers.length > 0) {
+                    counter.innerText = wagers.length;
+                    counter.style.display = 'inline-block';
+                } else {
+                    counter.style.display = 'none';
+                }
+            }
+        }
+
+        let currentModalMarket = 'Total';
+        let currentModalSide = 'Under';
+
+        function switchModalMatchup(val) {
+            if (val === 'GB_DEN') {
+                openMyBetsModal('nfl-gb-den-featured', 'GB', 'Green Bay Packers', 'DEN', 'Denver Broncos');
+            } else if (val === 'CIN_ARI') {
+                openMyBetsModal('nfl-cin-ari-1', 'CIN', 'Cincinnati Bengals', 'ARI', 'Arizona Cardinals');
+            }
+        }
+
+        function openMyBetsModal(gameId, awayAbbr, awayName, homeAbbr, homeName) {
+            seedWagersIfEmpty();
+            
+            let aAbbr = awayAbbr;
+            let aName = awayName;
+            let hAbbr = homeAbbr;
+            let hName = homeName;
+
+            if (!awayAbbr || gameId === 'nfl-gb-den-featured') {
+                aAbbr = 'GB';
+                aName = 'Green Bay Packers';
+                hAbbr = 'DEN';
+                hName = 'Denver Broncos';
+            }
+
+            activeWagerGame = { gameId: gameId || 'nfl-gb-den-featured', awayAbbr: aAbbr, awayName: aName, homeAbbr: hAbbr, homeName: hName };
+            
+            const overlay = document.getElementById('my-bets-modal-overlay');
+            const titleEl = document.getElementById('mb-game-title');
+            
+            if (titleEl) titleEl.innerText = `${aAbbr} @ ${hAbbr}`;
+            
+            renderGameScoreTileInModal(null, aAbbr, aName, hAbbr, hName);
+            setModalMarketType('Total');
+            renderWagersInModal();
+            if (overlay) {
+                overlay.style.display = 'flex';
+                overlay.style.opacity = '1';
+                overlay.style.pointerEvents = 'auto';
+                overlay.style.zIndex = '99999';
+                overlay.classList.add('open');
+            }
+        }
+
+        function closeMyBetsModal() {
+            const overlay = document.getElementById('my-bets-modal-overlay');
+            if (overlay) overlay.classList.remove('open');
+            activeWagerGame = null;
+        }
+
+        function renderGameScoreTileInModal(data, awayAbbr, awayName, homeAbbr, homeName) {
+            const tileEl = document.getElementById('mb-game-score-tile');
+            if (!tileEl) return;
+            
+            const awaySc = (data && data.awayScore !== undefined && data.awayScore !== null) ? data.awayScore : '--';
+            const homeSc = (data && data.homeScore !== undefined && data.homeScore !== null) ? data.homeScore : '--';
+            const awayLg = data?.awayLogo || (awayAbbr === 'GB' ? 'https://a.espncdn.com/i/teamlogos/nfl/500/gb.png' : 'https://a.espncdn.com/i/teamlogos/nba/500/okc.png');
+            const homeLg = data?.homeLogo || (homeAbbr === 'DEN' ? 'https://a.espncdn.com/i/teamlogos/nfl/500/den.png' : 'https://a.espncdn.com/i/teamlogos/nba/500/sas.png');
+            const todayStr = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+            
+            const awaySpread = data?.spreadObj?.awayLine ? (data.spreadObj.awayLine > 0 ? '+' + data.spreadObj.awayLine : data.spreadObj.awayLine) : 'N/A';
+            const homeSpread = data?.spreadObj?.homeLine ? (data.spreadObj.homeLine > 0 ? '+' + data.spreadObj.homeLine : data.spreadObj.homeLine) : 'N/A';
+            const liveLine = data?.totalObj?.overUnder || data?.totalObj?.line || 'N/A';
+            const awayML = data?.kalshiML?.awayOdds ? (data.kalshiML.awayOdds > 0 ? '+' + data.kalshiML.awayOdds : data.kalshiML.awayOdds) : 'N/A';
+            const homeML = data?.kalshiML?.homeOdds ? (data.kalshiML.homeOdds > 0 ? '+' + data.kalshiML.homeOdds : data.kalshiML.homeOdds) : 'N/A';
+            const awayTeamTotal = (liveLine !== 'N/A') ? (parseFloat(liveLine) * 0.55).toFixed(1) : 'N/A';
+            const homeTeamTotal = (liveLine !== 'N/A') ? (parseFloat(liveLine) * 0.45).toFixed(1) : 'N/A';
+
+            tileEl.innerHTML = `
+                <div class="mb-matchup-selector-bar" style="display:flex; align-items:center; justify-content:space-between; background:rgba(6, 182, 212, 0.12); border:1px solid rgba(6, 182, 212, 0.4); padding:6px 12px; border-radius:6px; margin-bottom:10px; font-family:var(--font-mono); font-size:11px;">
+                    <span style="color:#06B6D4; font-weight:900; letter-spacing:0.5px;">🏈 SELECT TRACKED MATCHUP:</span>
+                    <select onchange="switchModalMatchup(this.value)" style="background:#111827; color:#fff; border:1px solid #06B6D4; padding:4px 10px; border-radius:4px; font-family:var(--font-mono); font-size:11px; font-weight:800; cursor:pointer;">
+                        <option value="GB_DEN" ${awayAbbr === 'GB' ? 'selected' : ''}>🟢 GB @ DEN (Green Bay Packers @ Denver Broncos — 7 WAGERS)</option>
+                        <option value="CIN_ARI" ${awayAbbr === 'CIN' ? 'selected' : ''}>🏈 CIN @ ARI (Cincinnati Bengals @ Arizona Cardinals)</option>
+                    </select>
+                </div>
+
+                <div class="mb-score-tile" style="margin-bottom:14px; gap:8px;">
+                    <div class="mb-score-header">
+                        <span class="mb-score-league">🏆 NBA LIVE HQ</span>
+                        <span class="mb-score-status live">🔴 LIVE · Q4 02:45</span>
+                    </div>
+
+                    <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(6, 182, 212, 0.08); border:1px solid rgba(6, 182, 212, 0.2); padding:5px 10px; border-radius:6px; font-family:var(--font-mono); font-size:10px;">
+                        <span style="color:var(--muted); font-weight:700;">📅 MATCHUP EVENT DATE:</span>
+                        <span style="color:#06B6D4; font-weight:800;">${todayStr} · 8:00 PM EST</span>
+                    </div>
+
+                    <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(245, 158, 11, 0.08); border:1px solid rgba(245, 158, 11, 0.25); padding:5px 10px; border-radius:6px; font-family:var(--font-mono); font-size:10px;">
+                        <span style="color:var(--muted); font-weight:700;">🎯 PREGAME CONSENSUS ODDS:</span>
+                        <span style="color:#F59E0B; font-weight:800;">Spread: OKC -6.5 (-110) · O/U 216.5 (ML: OKC -260 / SAS +210)</span>
+                    </div>
+
+                    <div class="mb-score-teams-row" style="margin-top:4px;">
+                        <div class="mb-team-box">
+                            <img src="${awayLg}" class="mb-team-logo" alt="${awayAbbr}">
+                            <div class="mb-team-info">
+                                <span class="mb-team-name">${awayName || awayAbbr}</span>
+                                <span style="font-family:var(--font-mono); font-size:10px; color:var(--muted);">57-25</span>
+                                <span class="mb-possession-badge">🏀 POSSESSION</span>
+                            </div>
+                        </div>
+                        <span class="mb-team-score-num">${awaySc}</span>
+                        <span class="mb-vs-badge">@</span>
+                        <span class="mb-team-score-num">${homeSc}</span>
+                        <div class="mb-team-box" style="justify-content:flex-end; text-align:right;">
+                            <div class="mb-team-info" style="align-items:flex-end;">
+                                <span class="mb-team-name">${homeName || homeAbbr}</span>
+                                <span style="font-family:var(--font-mono); font-size:10px; color:var(--muted);">22-60</span>
+                            </div>
+                            <img src="${homeLg}" class="mb-team-logo" alt="${homeAbbr}">
+                        </div>
+                    </div>
+                    <div class="mb-score-meta-bar">
+                        <span>COMBINED SCORE: <strong style="color:#f59e0b;">${awaySc + homeSc} PTS</strong></span>
+                        <span>LIVE O/U LINE: <strong style="color:var(--cyan);">216.5</strong></span>
+                        <span>LIVE SPREAD: <strong style="color:var(--green);">OKC -6.5</strong></span>
+                    </div>
+
+                    <!-- 5-COLUMN LIVE SPORTSBOOK ODDS MATRIX TABLE -->
+                    <div class="sb-odds-matrix-card" style="background:#111827; border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:10px; margin-top:8px; font-family:var(--font-mono); box-shadow:0 4px 12px rgba(0,0,0,0.5);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:4px;">
+                            <span style="font-size:10px; font-weight:900; color:#fff; display:flex; align-items:center; gap:6px;">
+                                <span>⚡ LIVE SPORTSBOOK MARKET MATRIX</span>
+                            </span>
+                            <span style="font-size:9px; color:var(--cyan); font-weight:800;">CLICK ANY PILL TO TRACK</span>
+                        </div>
+
+                        <div style="overflow-x:auto;">
+                            <table style="width:100%; border-collapse:separate; border-spacing:4px 4px; text-align:center; font-size:10px;">
+                                <thead>
+                                    <tr style="color:var(--muted); font-size:9px; font-weight:700; text-transform:uppercase;">
+                                        <th style="text-align:left; padding-left:4px;">Team</th>
+                                        <th>Spread</th>
+                                        <th>Moneyline</th>
+                                        <th>Total</th>
+                                        <th>Team Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Away Team Row -->
+                                    <tr>
+                                        <td style="text-align:left; font-weight:900; color:#fff; font-size:11px; padding:4px;">
+                                            <div style="display:flex; align-items:center; gap:6px;">
+                                                <img src="${awayLg}" style="width:18px;height:18px;object-fit:contain;">
+                                                <span>${awayAbbr}</span>
+                                                <span style="background:rgba(255,255,255,0.1); padding:1px 5px; border-radius:4px; font-size:10px; color:#fff;">${awaySc}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="sb-odds-pill" onclick="autoFillMatrixBet('Spread', '${awayAbbr}', '${awaySpread}', '-110')">
+                                                <span class="sb-line-val">${awaySpread}</span>
+                                                <span class="sb-odds-val">${awaySpread !== 'N/A' ? '-110' : 'N/A'}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="sb-odds-pill" onclick="autoFillMatrixBet('Moneyline', '${awayAbbr}', 'ML', '${awayML}')">
+                                                <span class="sb-odds-val" style="font-size:11px; margin-top:2px;">${awayML}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="sb-odds-pill" onclick="autoFillMatrixBet('Total', 'Over', '${liveLine}', '-110')">
+                                                <span class="sb-line-val">${liveLine !== 'N/A' ? 'O ' + liveLine : 'O N/A'}</span>
+                                                <span class="sb-odds-val">${liveLine !== 'N/A' ? '-110' : 'N/A'}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="sb-odds-pill" onclick="autoFillMatrixBet('Total', 'Over', '${awayTeamTotal}', '-110')">
+                                                <span class="sb-line-val">${awayTeamTotal !== 'N/A' ? 'O ' + awayTeamTotal : 'O N/A'}</span>
+                                                <span class="sb-odds-val">${awayTeamTotal !== 'N/A' ? '-110' : 'N/A'}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Home Team Row -->
+                                    <tr>
+                                        <td style="text-align:left; font-weight:900; color:#fff; font-size:11px; padding:4px;">
+                                            <div style="display:flex; align-items:center; gap:6px;">
+                                                <img src="${homeLg}" style="width:18px;height:18px;object-fit:contain;">
+                                                <span>${homeAbbr}</span>
+                                                <span style="background:rgba(255,255,255,0.1); padding:1px 5px; border-radius:4px; font-size:10px; color:#fff;">${homeSc}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="sb-odds-pill" onclick="autoFillMatrixBet('Spread', '${homeAbbr}', '${homeSpread}', '-110')">
+                                                <span class="sb-line-val">${homeSpread}</span>
+                                                <span class="sb-odds-val">${homeSpread !== 'N/A' ? '-110' : 'N/A'}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="sb-odds-pill" onclick="autoFillMatrixBet('Moneyline', '${homeAbbr}', 'ML', '${homeML}')">
+                                                <span class="sb-odds-val" style="font-size:11px; margin-top:2px;">${homeML}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="sb-odds-pill" onclick="autoFillMatrixBet('Total', 'Under', '${liveLine}', '-110')">
+                                                <span class="sb-line-val">${liveLine !== 'N/A' ? 'U ' + liveLine : 'U N/A'}</span>
+                                                <span class="sb-odds-val">${liveLine !== 'N/A' ? '-110' : 'N/A'}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="sb-odds-pill highlighted-red" onclick="autoFillMatrixBet('Total', 'Under', '${homeTeamTotal}', '-110')">
+                                                <span class="sb-line-val">${homeTeamTotal !== 'N/A' ? 'U ' + homeTeamTotal : 'U N/A'}</span>
+                                                <span class="sb-odds-val">${homeTeamTotal !== 'N/A' ? '-110' : 'N/A'}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function autoFillMatrixBet(market, side, lineVal, oddsVal) {
+            setModalMarketType(market);
+            setModalSide(side);
+            const detailInput = document.getElementById('mb-form-detail');
+            const oddsInput = document.getElementById('mb-form-odds');
+            if (detailInput) detailInput.value = lineVal;
+            if (oddsInput) oddsInput.value = oddsVal;
+            updateModalCalculations();
+        }
+
+        function setModalMarketType(market) {
+            currentModalMarket = market;
+            
+            document.querySelectorAll('.mb-tab-btn').forEach(btn => btn.classList.remove('active'));
+            const activeTab = document.getElementById(`mb-tab-${market.toLowerCase()}`);
+            if (activeTab) activeTab.classList.add('active');
+            
+            const sideContainer = document.getElementById('mb-side-selector');
+            if (!sideContainer || !activeWagerGame) return;
+            
+            const awayAbbr = activeWagerGame.awayAbbr;
+            const homeAbbr = activeWagerGame.homeAbbr;
+            
+            if (market === 'Total') {
+                currentModalSide = 'Under';
+                document.getElementById('mb-form-detail').value = '216.5';
+                
+                sideContainer.innerHTML = `
+                    <button type="button" class="mb-side-btn" id="mb-side-over" onclick="setModalSide('Over')">
+                        <span>🔼</span> <span>OVER 216.5</span>
+                    </button>
+                    <button type="button" class="mb-side-btn active" id="mb-side-under" onclick="setModalSide('Under')">
+                        <span>🔽</span> <span>UNDER 216.5</span>
+                    </button>
+                `;
+            } else if (market === 'Spread') {
+                currentModalSide = awayAbbr;
+                document.getElementById('mb-form-detail').value = '-6.5';
+                
+                sideContainer.innerHTML = `
+                    <button type="button" class="mb-side-btn active" id="mb-side-away" onclick="setModalSide('${awayAbbr}')">
+                        <span>🟢</span> <span>${awayAbbr} (-6.5)</span>
+                    </button>
+                    <button type="button" class="mb-side-btn" id="mb-side-home" onclick="setModalSide('${homeAbbr}')">
+                        <span>🔵</span> <span>${homeAbbr} (+6.5)</span>
+                    </button>
+                `;
+            } else if (market === 'Moneyline') {
+                currentModalSide = awayAbbr;
+                document.getElementById('mb-form-detail').value = 'ML';
+                
+                sideContainer.innerHTML = `
+                    <button type="button" class="mb-side-btn active" id="mb-side-away" onclick="setModalSide('${awayAbbr}')">
+                        <span>🟢</span> <span>${awayAbbr} ML</span>
+                    </button>
+                    <button type="button" class="mb-side-btn" id="mb-side-home" onclick="setModalSide('${homeAbbr}')">
+                        <span>🔵</span> <span>${homeAbbr} ML</span>
+                    </button>
+                `;
+            }
+            
+            updateModalCalculations();
+        }
+
+        function setModalSide(side) {
+            currentModalSide = side;
+            document.querySelectorAll('.mb-side-btn').forEach(btn => btn.classList.remove('active'));
+            
+            if (currentModalMarket === 'Total') {
+                const targetBtn = document.getElementById(`mb-side-${side.toLowerCase()}`);
+                if (targetBtn) targetBtn.classList.add('active');
+            } else {
+                if (side === activeWagerGame.awayAbbr) {
+                    document.getElementById('mb-side-away')?.classList.add('active');
+                } else {
+                    document.getElementById('mb-side-home')?.classList.add('active');
+                }
+            }
+            
+            updateModalCalculations();
+        }
+
+        function setModalOdds(oddsStr) {
+            const oddsInput = document.getElementById('mb-form-odds');
+            if (oddsInput) oddsInput.value = oddsStr;
+            updateModalCalculations();
+        }
+
+        function updateModalCalculations() {
+            const wagerEl = document.getElementById('mb-form-wager');
+            const oddsEl = document.getElementById('mb-form-odds');
+            const toWinEl = document.getElementById('mb-form-towin');
+            const payoutEl = document.getElementById('mb-payout-val');
+            const submitBtn = document.getElementById('mb-submit-btn');
+            const detailEl = document.getElementById('mb-form-detail');
+            
+            if (!wagerEl || !oddsEl || !toWinEl) return;
+            
+            const wager = parseFloat(wagerEl.value) || 0;
+            const odds = parseInt(oddsEl.value) || -110;
+            const lineVal = detailEl ? detailEl.value.trim() : '';
+            
+            let toWin = 0;
+            if (odds > 0) {
+                toWin = wager * (odds / 100);
+            } else {
+                toWin = wager * (100 / Math.abs(odds));
+            }
+            
+            toWinEl.value = toWin.toFixed(2);
+            const payout = wager + toWin;
+            if (payoutEl) payoutEl.textContent = `$${payout.toFixed(2)}`;
+            
+            if (submitBtn) {
+                const sideStr = (currentModalSide || '').toUpperCase();
+                const lineStr = lineVal ? (lineVal.startsWith('+') || lineVal.startsWith('-') || lineVal.toUpperCase() === 'ML' ? lineVal : ' ' + lineVal) : '';
+                const oddsStrFormatted = odds > 0 ? '+' + odds : odds;
+                submitBtn.innerHTML = `⚡ TRACK WAGER: ${sideStr}${lineStr} @ ${oddsStrFormatted} ($${wager.toFixed(2)} → $${payout.toFixed(2)})`;
+            }
+        }
+
+        function updateModalCalculationsFromWin() {
+            const wagerEl = document.getElementById('mb-form-wager');
+            const toWinEl = document.getElementById('mb-form-towin');
+            const payoutEl = document.getElementById('mb-payout-val');
+            
+            if (!wagerEl || !toWinEl) return;
+            
+            const wager = parseFloat(wagerEl.value) || 0;
+            const toWin = parseFloat(toWinEl.value) || 0;
+            const payout = wager + toWin;
+            if (payoutEl) payoutEl.textContent = `$${payout.toFixed(2)}`;
+        }
+
+
+
+        function renderBetPerformanceGraph(w, gameData) {
+            const targetStr = (w.target || w.detail || w.type || '').toUpperCase();
+            const placedLine = parseFloat(w.line || targetStr.replace(/[^0-9\.]/g, '')) || 40.5;
+            const isUnder = targetStr.includes('UNDER') || w.side === 'Under';
+            
+            if (w.status === 'CASHED') {
+                return `
+                <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); padding:10px 12px; border-radius:8px; margin:8px 0; font-family:var(--font-mono);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:10px;">
+                        <span style="color:#10b981; font-weight:700;">📊 BET TRAJECTORY GAUGE (${isUnder ? 'UNDER ' + placedLine : 'OVER ' + placedLine})</span>
+                        <span style="color:#10b981; font-weight:800;">🟢 CASHED OUT</span>
+                    </div>
+                    <div style="font-size:11px; color:#fff; font-weight:800; margin-top:4px;">Position cashed out for guaranteed profit of +$${parseFloat(w.toWin || 0).toFixed(2)}.</div>
+                </div>
+                `;
+            }
+
+            const awaySc = gameData ? parseInt(gameData.awayScore || 0) : 23;
+            const homeSc = gameData ? parseInt(gameData.homeScore || 0) : 10;
+            
+            let currentPts = (awaySc + homeSc) > 0 ? (awaySc + homeSc) : 33;
+            if (targetStr.includes('PACKERS')) {
+                currentPts = awaySc > 0 ? awaySc : 23;
+            } else if (targetStr.includes('BRONCOS')) {
+                currentPts = homeSc > 0 ? homeSc : 10;
+            }
+            
+            const pctUsed = Math.min(100, Math.max(0, (currentPts / placedLine) * 100));
+            const remainingPts = (placedLine - currentPts).toFixed(1);
+            
+            const period = gameData?.event?.status?.period || 3;
+            const totalPeriods = (gameData?.lg?.sport === 'baseball') ? 9 : 4;
+            const progressRatio = Math.max(0.25, Math.min(1.0, period / totalPeriods));
+            
+            const projectedPts = currentPts > 0 ? (currentPts / progressRatio).toFixed(1) : (placedLine).toFixed(1);
+            const isDangerPace = isUnder ? (parseFloat(projectedPts) > placedLine) : (parseFloat(projectedPts) < placedLine);
+            const barColor = isDangerPace ? 'linear-gradient(90deg, #f59e0b, #ef4444)' : 'linear-gradient(90deg, #06b6d4, #10b981)';
+
+            return `
+            <div style="background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.08); padding:10px 12px; border-radius:8px; margin:8px 0; font-family:var(--font-mono);">
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:10px; margin-bottom:4px;">
+                    <span style="color:var(--muted); font-weight:700;">📊 BET TRAJECTORY GAUGE (${isUnder ? 'UNDER ' + placedLine : 'OVER ' + placedLine})</span>
+                    <span style="color:${isDangerPace ? '#ef4444' : '#10b981'}; font-weight:800;">
+                        ${isUnder ? (isDangerPace ? '🚨 HIGH PACE RISK' : '🟢 SAFE PACE') : (isDangerPace ? '🟡 NEED SCORING' : '🟢 ON TRACK')}
+                    </span>
+                </div>
+
+                <!-- Visual Progress Meter Bar -->
+                <div style="height:10px; background:rgba(255,255,255,0.1); border-radius:5px; position:relative; margin:6px 0; overflow:hidden;">
+                    <div style="width:${pctUsed.toFixed(1)}%; height:100%; background:${barColor}; border-radius:5px; transition:width 0.5s ease;"></div>
+                </div>
+
+                <!-- Visual Metrics Breakdown -->
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; font-size:9px; color:var(--muted); margin-top:6px; text-align:center;">
+                    <div style="background:rgba(255,255,255,0.03); padding:4px; border-radius:4px;">
+                        <div>SCORED SO FAR</div>
+                        <div style="color:#fff; font-size:11px; font-weight:800;">${currentPts} PTS</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03); padding:4px; border-radius:4px;">
+                        <div>${isUnder ? 'REMAINING BUDGET' : 'NEEDED TO HIT'}</div>
+                        <div style="color:${parseFloat(remainingPts) < 5 && isUnder ? '#ef4444' : '#06b6d4'}; font-size:11px; font-weight:800;">${remainingPts} PTS</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03); padding:4px; border-radius:4px;">
+                        <div>PROJECTED PACE TOTAL</div>
+                        <div style="color:${isDangerPace ? '#ef4444' : '#f59e0b'}; font-size:11px; font-weight:800;">~${projectedPts} PTS</div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderHedgeAdvisor(w, gameData) {
+            const liveTotalLine = gameData?.totalObj?.overUnder || gameData?.totalObj?.line || '48.5';
+            const targetStr = (w.target || w.detail || w.type || '').toUpperCase();
+            const isUnder = targetStr.includes('UNDER') || w.side === 'Under';
+            const isTotal = w.type === 'Total' || w.type === 'Team Total' || targetStr.includes('TOTAL') || targetStr.includes('OVER') || targetStr.includes('UNDER');
+            const placedLine = parseFloat(w.line || targetStr.replace(/[^0-9\.]/g, '')) || 40.5;
+            const stake = parseFloat(w.wager || w.stake || 50);
+            
+            const awaySc = gameData ? parseInt(gameData.awayScore || 0) : 23;
+            const homeSc = gameData ? parseInt(gameData.homeScore || 0) : 10;
+            
+            let currentPts = (awaySc + homeSc) > 0 ? (awaySc + homeSc) : 33;
+            if (targetStr.includes('PACKERS')) {
+                currentPts = awaySc > 0 ? awaySc : 23;
+            } else if (targetStr.includes('BRONCOS')) {
+                currentPts = homeSc > 0 ? homeSc : 10;
+            }
+
+            const period = gameData?.event?.status?.period || 3;
+            const totalPeriods = (gameData?.lg?.sport === 'baseball') ? 9 : 4;
+            const progressRatio = Math.max(0.25, Math.min(1.0, period / totalPeriods));
+            const projectedPts = currentPts > 0 ? parseFloat((currentPts / progressRatio).toFixed(1)) : placedLine;
+            
+            let singleActionTitle = '';
+            let singleActionDesc = '';
+            let singleActionSide = '';
+            let singleActionLine = '';
+            let btnColor = '';
+            let btnBorder = '';
+            
+            if (w.status === 'CASHED') {
+                singleActionTitle = `🟢 POSITION CASHED OUT (PROFIT LOCKED IN)`;
+                singleActionDesc = `This wager was cashed out for guaranteed profit. No further hedge actions required.`;
+                singleActionSide = w.side || 'Over';
+                singleActionLine = placedLine;
+                btnColor = 'rgba(16, 185, 129, 0.15)';
+                btnBorder = 'rgba(16, 185, 129, 0.4)';
+            } else if (isTotal) {
+                if (isUnder) {
+                    if (projectedPts > placedLine) {
+                        singleActionTitle = `🛡 RECOMMENDED HEDGE: TAKE OVER ${liveTotalLine} ($${stake.toFixed(0)})`;
+                        singleActionDesc = `Scoring pace (~${projectedPts} PTS) threatens your Under ${placedLine} position. Taking Live OVER ${liveTotalLine} ($${stake.toFixed(0)}) caps your maximum loss at -$4.55 instead of losing $${stake.toFixed(0)}.`;
+                        singleActionSide = 'Over';
+                        singleActionLine = liveTotalLine;
+                        btnColor = 'rgba(16, 185, 129, 0.15)';
+                        btnBorder = 'rgba(16, 185, 129, 0.4)';
+                    } else {
+                        singleActionTitle = `🟢 RECOMMENDED ACTION: HOLD UNDER ${placedLine}`;
+                        singleActionDesc = `Scoring pace (~${projectedPts} PTS) is safely below your Under ${placedLine} threshold. Maintain current position.`;
+                        singleActionSide = 'Under';
+                        singleActionLine = placedLine;
+                        btnColor = 'rgba(6, 182, 212, 0.15)';
+                        btnBorder = 'rgba(6, 182, 212, 0.4)';
+                    }
+                } else {
+                    if (projectedPts < placedLine) {
+                        singleActionTitle = `🛡 RECOMMENDED HEDGE: TAKE UNDER ${liveTotalLine} ($${stake.toFixed(0)})`;
+                        singleActionDesc = `Slow scoring pace (~${projectedPts} PTS) trails your Over ${placedLine} line. Taking Live UNDER ${liveTotalLine} ($${stake.toFixed(0)}) caps your maximum loss.`;
+                        singleActionSide = 'Under';
+                        singleActionLine = liveTotalLine;
+                        btnColor = 'rgba(16, 185, 129, 0.15)';
+                        btnBorder = 'rgba(16, 185, 129, 0.4)';
+                    } else {
+                        singleActionTitle = `🟢 RECOMMENDED ACTION: HOLD OVER ${placedLine}`;
+                        singleActionDesc = `Scoring pace (~${projectedPts} PTS) is on track to cover your Over ${placedLine} threshold. Maintain current position.`;
+                        singleActionSide = 'Over';
+                        singleActionLine = placedLine;
+                        btnColor = 'rgba(6, 182, 212, 0.15)';
+                        btnBorder = 'rgba(6, 182, 212, 0.4)';
+                    }
+                }
+            } else {
+                singleActionTitle = `🟢 RECOMMENDED ACTION: HOLD ${w.target || w.detail}`;
+                singleActionDesc = `Position is being monitored live against Kalshi consensus market pricing.`;
+                singleActionSide = w.side || 'Away';
+                singleActionLine = w.line || '';
+                btnColor = 'rgba(6, 182, 212, 0.15)';
+                btnBorder = 'rgba(6, 182, 212, 0.4)';
+            }
+
+            return `
+            <div style="background:linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(6, 182, 212, 0.08)); border:1px solid rgba(245, 158, 11, 0.3); border-radius:8px; padding:10px 12px; margin-top:8px; font-family:var(--font-mono);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <span style="color:#f59e0b; font-size:11px; font-weight:900; letter-spacing:0.5px;">💡 AI LIVE PnL STRATEGY RECOMMENDATION</span>
+                    <span style="color:#06b6d4; font-size:10px; font-weight:800;">LIVE MARKET: O/U ${liveTotalLine}</span>
+                </div>
+                
+                <p style="font-size:10px; color:var(--text); line-height:1.4; margin:4px 0 8px 0;">
+                    ${singleActionDesc}
+                </p>
+
+                <button type="button" class="mb-pill-btn" style="width:100%; padding:8px 12px; background:${btnColor}; border:1px solid ${btnBorder}; font-size:11px; font-weight:900; text-align:center; color:#fff; display:flex; justify-content:center; align-items:center; gap:8px;" onclick="autoFillHedge('${singleActionSide}', '${singleActionLine}', '${stake.toFixed(0)}')">
+                    <span>⚡</span> <span>${singleActionTitle}</span>
+                </button>
+            </div>
+            `;
+        }
+
+        function autoFillHedge(side, lineVal, wagerVal) {
+            setModalMarketType('Total');
+            setModalSide(side);
+            const detailInput = document.getElementById('mb-form-detail');
+            const wagerInput = document.getElementById('mb-form-wager');
+            if (detailInput) detailInput.value = lineVal;
+            if (wagerInput) wagerInput.value = wagerVal;
+            updateModalCalculations();
+        }
+
+        function renderCombinedPortfolioGraph(wagers, gameData) {
+            if (!wagers || !Array.isArray(wagers) || wagers.length === 0) return '';
+            
+            const totalsWagers = wagers.filter(w => {
+                const targetStr = String(w.target || w.detail || '').toUpperCase();
+                return w.type === 'Total' || w.type === 'Team Total' || targetStr.includes('OVER') || targetStr.includes('UNDER');
+            });
+
+            if (totalsWagers.length === 0) return '';
+
+            const calcPnL = (finalPts) => {
+                let net = 0;
+                totalsWagers.forEach(w => {
+                    const targetStr = String(w.target || w.detail || '').toUpperCase();
+                    const lineNum = parseFloat(w.line || String(targetStr).replace(/[^0-9\.]/g, '')) || 40.5;
+                    const isUnder = targetStr.includes('UNDER') || w.side === 'Under';
+                    const stake = parseFloat(w.wager || w.stake || 50);
+                    const toWin = parseFloat(w.toWin || stake * 0.909);
+                    
+                    if (w.status === 'CASHED') {
+                        net += toWin;
+                        return;
+                    }
+
+                    let evalScore = finalPts;
+                    if (targetStr.includes('PACKERS')) {
+                        evalScore = finalPts * (32.5 / 52.0);
+                    } else if (targetStr.includes('BRONCOS')) {
+                        evalScore = finalPts * (19.5 / 52.0);
+                    }
+
+                    if (isUnder) {
+                        if (evalScore < lineNum) net += toWin;
+                        else if (evalScore > lineNum) net -= stake;
+                    } else {
+                        if (evalScore > lineNum) net += toWin;
+                        else if (evalScore < lineNum) net -= stake;
+                    }
+                });
+                return net;
+            };
+
+            const pnl38 = calcPnL(38); // 34.5-40.5 zone
+            const pnl45 = calcPnL(45); // 40.5-48.5 zone
+            const pnl52 = calcPnL(52); // Over 48.5 zone
+
+            const formatPnl = (val) => {
+                const sign = val >= 0 ? '+' : '';
+                const color = val > 0 ? '#10b981' : (val >= -10 ? '#f59e0b' : '#ef4444');
+                return `<span style="color:${color}; font-weight:800;">${sign}$${val.toFixed(2)}</span>`;
+            };
+
+            return `
+            <div style="background:linear-gradient(135deg, rgba(17, 25, 35, 0.95), rgba(24, 34, 44, 0.95)); border:1px solid rgba(6, 182, 212, 0.3); border-radius:8px; padding:12px 14px; margin-bottom:12px; font-family:var(--font-mono); box-shadow:0 4px 12px rgba(0,0,0,0.4);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="color:#06B6D4; font-size:11px; font-weight:900; letter-spacing:0.5px;">📈 COMBINED PORTFOLIO PnL TRAJECTORY GRAPH (${totalsWagers.length} WAGERS)</span>
+                    <span style="color:var(--accent2); font-size:10px; font-weight:800;">MATCHUP PORTFOLIO</span>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin:8px 0; text-align:center;">
+                    <div style="background:rgba(16, 185, 129, 0.12); border:1px solid rgba(16, 185, 129, 0.3); padding:8px 6px; border-radius:6px;">
+                        <div style="font-size:9px; color:var(--muted); font-weight:700;">34.5 - 40.5 LINE INTERVAL</div>
+                        <div style="font-size:12px; margin-top:2px;">${formatPnl(pnl38)}</div>
+                        <div style="font-size:8px; color:#10b981; margin-top:2px;">All Bets Win</div>
+                    </div>
+
+                    <div style="background:rgba(245, 158, 11, 0.12); border:1px solid rgba(245, 158, 11, 0.3); padding:8px 6px; border-radius:6px;">
+                        <div style="font-size:9px; color:var(--muted); font-weight:700;">40.5 - 48.5 LINE INTERVAL</div>
+                        <div style="font-size:12px; margin-top:2px;">${formatPnl(pnl45)}</div>
+                        <div style="font-size:8px; color:#f59e0b; margin-top:2px;">Covered / Break-Even</div>
+                    </div>
+
+                    <div style="background:rgba(239, 68, 68, 0.12); border:1px solid rgba(239, 68, 68, 0.3); padding:8px 6px; border-radius:6px;">
+                        <div style="font-size:9px; color:var(--muted); font-weight:700;">OVER 48.5 LINE INTERVAL</div>
+                        <div style="font-size:12px; margin-top:2px;">${formatPnl(pnl52)}</div>
+                        <div style="font-size:8px; color:#ef4444; margin-top:2px;">High Pace Loss</div>
+                    </div>
+                </div>
+
+                <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06); padding:6px 10px; border-radius:4px; font-size:9px; color:var(--muted); display:flex; justify-content:space-between; align-items:center;">
+                    <span>PnL Curve (.5 Hooks):</span>
+                    <span>34.5-40.5 (${formatPnl(pnl38)}) ➔ 40.5-48.5 (${formatPnl(pnl45)}) ➔ OVER 48.5 (${formatPnl(pnl52)})</span>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderWagersInModal() {
+            if (!activeWagerGame) return;
+            const listEl = document.getElementById('mb-wagers-list');
+            const wagers = getWagersForGame(activeWagerGame.awayAbbr, activeWagerGame.awayName, activeWagerGame.homeAbbr, activeWagerGame.homeName);
+            
+            if (wagers.length === 0) {
+                listEl.innerHTML = '<div class="mb-empty-state">No wagers registered for this matchup. Add one below to track it live!</div>';
+                return;
+            }
+            
+            const combinedPortfolioGraphHtml = renderCombinedPortfolioGraph(wagers, null);
+            listEl.innerHTML = combinedPortfolioGraphHtml + wagers.map(w => {
+                const wagerAmt = parseFloat(w.wager || w.stake || 0).toFixed(2);
+                const toWinAmt = parseFloat(w.toWin || 0).toFixed(2);
+                const payoutAmt = (parseFloat(wagerAmt) + parseFloat(toWinAmt)).toFixed(2);
+                const placedOddsStr = w.placedOdds || w.odds || '-110';
+                const targetDisplay = String(w.target || w.matchup || 'Tracked Wager');
+                const isCashed = w.status === 'CASHED';
+
+                const graphHtml = renderBetPerformanceGraph(w, null);
+                const hedgeHtml = renderHedgeAdvisor(w, null);
+
+                const badgeHtml = isCashed
+                    ? `<span class="mb-wager-badge" style="background:rgba(16, 185, 129, 0.2); color:#10b981; border:1px solid rgba(16, 185, 129, 0.4);">CASHED 🟢</span>`
+                    : `<span class="mb-wager-badge">ACTIVE TRACK</span>`;
+
+                return `
+                <div class="mb-wager-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                        <span class="mb-wager-team" style="font-size:15px; font-weight:900; color:var(--cyan);">${targetDisplay}</span>
+                        ${badgeHtml}
+                    </div>
+                    
+                    <div class="mb-wager-details">
+                        <div class="mb-wager-row">
+                            <span class="mb-wager-label">Bet Selection:</span>
+                            <span class="mb-wager-val">${w.type || 'Total'} (${w.detail || targetDisplay})</span>
+                        </div>
+                        <div class="mb-wager-row">
+                            <span class="mb-wager-label">Placed Line & Odds:</span>
+                            <span class="mb-wager-val" style="color:#fff; font-weight:bold;">${w.detail || targetDisplay} @ <span style="color:#f59e0b;">${placedOddsStr}</span></span>
+                        </div>
+                        <div class="mb-wager-row">
+                            <span class="mb-wager-label">Stake / Win / Payout:</span>
+                            <span class="mb-wager-val">$${wagerAmt} wager → <span style="color:var(--green); font-weight:bold;">$${toWinAmt} win</span> ($${payoutAmt} payout)</span>
+                        </div>
+                    </div>
+
+                    ${graphHtml}
+                    ${hedgeHtml}
+                    
+                    <div style="display:flex; justify-content:flex-end; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px; margin-top:4px;">
+                        <button class="mb-wager-delete-btn" style="position:static;" onclick="deleteWagerFromModal('${w.id}')">🗑 Delete Track</button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function handleModalQuickAdd(e) {
+            e.preventDefault();
+            if (!activeWagerGame) return;
+            
+            const lineVal = document.getElementById('mb-form-detail').value.trim() || '40.5';
+            const oddsVal = document.getElementById('mb-form-odds').value.trim() || '-110';
+            const wager = parseFloat(document.getElementById('mb-form-wager').value) || 0;
+            const toWin = parseFloat(document.getElementById('mb-form-towin').value) || 0;
+            
+            if (wager <= 0 || toWin <= 0) {
+                alert('Please enter valid wager and to-win amounts.');
+                return;
+            }
+            
+            let targetTitle = '';
+            if (currentModalMarket === 'Total') {
+                targetTitle = `${currentModalSide.toUpperCase()} ${lineVal}`;
+            } else if (currentModalMarket === 'Spread') {
+                const lineFormatted = (lineVal.startsWith('+') || lineVal.startsWith('-')) ? lineVal : '+' + lineVal;
+                targetTitle = `${currentModalSide} ${lineFormatted}`;
+            } else {
+                targetTitle = `${currentModalSide} ML`;
+            }
+            
+            const KEY = 'destiny_game_wagers';
+            let wagers = [];
+            try { wagers = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(err) { wagers = []; }
+            
+            wagers.push({
+                id: 'track-' + Date.now(),
+                matchup: `${activeWagerGame.awayAbbr} @ ${activeWagerGame.homeAbbr}`,
+                target: targetTitle,
+                type: currentModalMarket,
+                detail: `${currentModalSide} ${lineVal}`,
+                placedOdds: oddsVal,
+                line: lineVal,
+                side: currentModalSide,
+                wager: wager,
+                toWin: toWin
+            });
+            
+            localStorage.setItem(KEY, JSON.stringify(wagers));
+            
+            renderWagersInModal();
+            updateSandboxCardBetsCounts();
+        }
+
+        function deleteWagerFromModal(id) {
+            const KEY = 'destiny_game_wagers';
+            let wagers = [];
+            try { wagers = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(err) { wagers = []; }
+            wagers = wagers.filter(w => w.id !== id);
+            localStorage.setItem(KEY, JSON.stringify(wagers));
+            
+            renderWagersInModal();
+            updateSandboxCardBetsCounts();
+        }
+
+    </script>
+    <script src="nav.js?v=2"></script>
+</body>
+
+</html>
