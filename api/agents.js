@@ -164,6 +164,38 @@ const DEFAULT_AGENTS = [
     description: "Evaluates raw provider pulls against 8 strict validation gates, canonical team resolution, SHA-256 deduplication, and book coverage auditing."
   },
   {
+    id: "firewall_agent",
+    name: "Odds Sanity Firewall 🧱",
+    avatar: "🧱",
+    status: "Live",
+    role: "Outlier, Vig & Staleness Suppression Engine",
+    specialty: "Range Limits, Vig Checks & Staleness Filters",
+    markets_tracked: ["Outlier Totals/Spreads", "Palpable Error Vig (<85%)", "15+ Cycle Staleness"],
+    last_run: new Date().toISOString(),
+    records_processed: 2076,
+    latency_ms: 12,
+    uptime_pct: 100.0,
+    mcp_endpoint: "mcp://agents.destiny.net/v1/firewall-agent",
+    mcp_type: "JSON-RPC 2.0 / Sanity Firewall",
+    description: "Filters fat-fingered lines, corrupted odds feeds with total implied probability <85%, and frozen stale lines across 15+ cycles."
+  },
+  {
+    id: "lifecycle_router",
+    name: "Game Lifecycle Router 🔄",
+    avatar: "🔄",
+    status: "Live",
+    role: "3-Queue Stage Partitioning & Dispatcher",
+    specialty: "Pregame, Live, and Final Event Routing",
+    markets_tracked: ["PREGAME Queue", "LIVE Queue", "FINAL Queue"],
+    last_run: new Date().toISOString(),
+    records_processed: 2076,
+    latency_ms: 8,
+    uptime_pct: 100.0,
+    mcp_endpoint: "mcp://agents.destiny.net/v1/lifecycle-router",
+    mcp_type: "JSON-RPC 2.0 / Dispatch Router",
+    description: "Partitions verified lines into PREGAME (Weather/Props/Middles), LIVE (Steam/Hedge Bot), and FINAL (Settlement Engine) execution queues."
+  },
+  {
     id: "arb_steam_hunter",
     name: "Line Discrepancy, Arbitrage & Steam Hunter ⚡",
     avatar: "⚡",
@@ -206,6 +238,8 @@ export default async function handler(req, res) {
     let arbData = null;
     let propsData = null;
     let liveStreamData = null;
+    let firewallData = null;
+    let lifecycleData = null;
 
     // Try reading backend/agent_telemetry.json
     try {
@@ -228,6 +262,26 @@ export default async function handler(req, res) {
       }
     } catch (e) {
       console.warn("Could not read live_market_stream.json:", e.message);
+    }
+
+    // Try reading backend/firewall_snapshot.json
+    try {
+      const fwPath = path.join(process.cwd(), 'backend', 'firewall_snapshot.json');
+      if (fs.existsSync(fwPath)) {
+        firewallData = JSON.parse(fs.readFileSync(fwPath, 'utf8'));
+      }
+    } catch (e) {
+      console.warn("Could not read firewall_snapshot.json:", e.message);
+    }
+
+    // Try reading backend/lifecycle_snapshot.json
+    try {
+      const lcPath = path.join(process.cwd(), 'backend', 'lifecycle_snapshot.json');
+      if (fs.existsSync(lcPath)) {
+        lifecycleData = JSON.parse(fs.readFileSync(lcPath, 'utf8'));
+      }
+    } catch (e) {
+      console.warn("Could not read lifecycle_snapshot.json:", e.message);
     }
 
     // Try reading backend/latest_snapshot.json
@@ -309,6 +363,8 @@ export default async function handler(req, res) {
       timestamp: new Date().toISOString(),
       agent_count: agents.length,
       health_report: qualityData || null,
+      firewall_summary: firewallData || null,
+      lifecycle_summary: lifecycleData || null,
       arb_summary: arbData || null,
       props_matrix_summary: propsData || null,
       live_stream_summary: liveStreamData ? {

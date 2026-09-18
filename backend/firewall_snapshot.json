@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-09-18T05:48:17.329176+00:00",
+  "status": "ACTIVE",
+  "total_input": 31,
+  "total_passed": 31,
+  "total_rejected": 0,
+  "range_failures": 0,
+  "palpable_errors": 0,
+  "staleness_drops": 0,
+  "extreme_ml_flags": 0,
+  "rejections": []
+}

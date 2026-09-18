@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-09-18T05:48:17.330353+00:00",
+  "status": "ROUTED",
+  "total_records": 15,
+  "pregame_count": 15,
+  "live_count": 0,
+  "final_count": 0,
+  "routing_targets": {
+    "PREGAME": [
+      "Weather Edge Agent",
+      "Props Matrix Hunter",
+      "Pregame Middle Finder"
+    ],
+    "LIVE": [
+      "Steam Velocity Hunter",
+      "Real-Time Hedge Bot"
+    ],
+    "FINAL": [
+      "PnL Settlement Engine",
+      "Historical Snapshot Archive"
+    ]
+  }
+}

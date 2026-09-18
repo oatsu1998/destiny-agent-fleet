@@ -1,0 +1,117 @@
+{
+  "cycle_count": 1,
+  "lines_history": {
+    "MLB_20260918_MLB_LAD@MLB_LAD|game|Consensus": {
+      "last_val": 0.0,
+      "unchanged_cycles": 1
+    },
+    "MLB_20260918_AWAY@HOME|game|Consensus": {
+      "last_val": 0.0,
+      "unchanged_cycles": 2
+    },
+    "MLB_20260918_MLB_HOU@MLB_HOU|game|Consensus": {
+      "last_val": 0.0,
+      "unchanged_cycles": 1
+    },
+    "MLB_20260918_MLB_ATL@MLB_ATL|game|Consensus": {
+      "last_val": 0.0,
+      "unchanged_cycles": 1
+    },
+    "NBA_20260918_AWAY@HOME|game|Consensus": {
+      "last_val": 0.0,
+      "unchanged_cycles": 1
+    },
+    "NBA_20260918_NBA_PHI@NBA_PHI|game|Consensus": {
+      "last_val": 0.0,
+      "unchanged_cycles": 1
+    },
+    "NBA_20260918_NBA_BOS@NBA_BOS|game|Consensus": {
+      "last_val": 0.0,
+      "unchanged_cycles": 1
+    },
+    "NHL_20260918_AWAY@HOME|game|Consensus": {
+      "last_val": 0.0,
+      "unchanged_cycles": 2
+    },
+    "NCAAF_20260918_AWAY@HOME|game|Consensus": {
+      "last_val": 0.0,
+      "unchanged_cycles": 1
+    },
+    "NFL_20260918_AWAY@HOME|game|Consensus": {
+      "last_val": "+100",
+      "unchanged_cycles": 1
+    },
+    "NFL_20260918_NFL_DAL@NFL_DAL|game|Consensus": {
+      "last_val": 0.0,
+      "unchanged_cycles": 1
+    },
+    "NFL_20260918_NFL_GB@NFL_GB|game|Consensus": {
+      "last_val": 0.0,
+      "unchanged_cycles": 1
+    },
+    "NFL_20260918_NFL_CHI@NFL_CHI|game|Consensus": {
+      "last_val": 0.0,
+      "unchanged_cycles": 1
+    },
+    "401816975|game|ESPN Consensus": {
+      "last_val": -110,
+      "unchanged_cycles": 1
+    },
+    "401816974|game|ESPN Consensus": {
+      "last_val": -110,
+      "unchanged_cycles": 1
+    },
+    "401816973|game|ESPN Consensus": {
+      "last_val": -110,
+      "unchanged_cycles": 1
+    },
+    "401816980|game|ESPN Consensus": {
+      "last_val": -110,
+      "unchanged_cycles": 1
+    },
+    "401816976|game|ESPN Consensus": {
+      "last_val": -110,
+      "unchanged_cycles": 1
+    },
+    "401816979|game|ESPN Consensus": {
+      "last_val": -110,
+      "unchanged_cycles": 1
+    },
+    "401816978|game|ESPN Consensus": {
+      "last_val": -110,
+      "unchanged_cycles": 1
+    },
+    "401816977|game|ESPN Consensus": {
+      "last_val": -110,
+      "unchanged_cycles": 1
+    },
+    "401816981|game|ESPN Consensus": {
+      "last_val": -110,
+      "unchanged_cycles": 1
+    },
+    "401902644|game|ESPN Consensus": {
+      "last_val": -110,
+      "unchanged_cycles": 1
+    },
+    "GENERAL_20260918_AWAY@HOME|game|Consensus": {
+      "last_val": "+100",
+      "unchanged_cycles": 1
+    },
+    "GENERAL_20260918_AWAY@HOME|total|Consensus": {
+      "last_val": "+100",
+      "unchanged_cycles": 1
+    },
+    "GENERAL_20260918_AWAY@HOME|prop|Consensus": {
+      "last_val": "+100",
+      "unchanged_cycles": 1
+    },
+    "NFL_20260918_AWAY@HOME|total|Consensus": {
+      "last_val": "+100",
+      "unchanged_cycles": 1
+    },
+    "NFL_20260918_AWAY@HOME|prop|Consensus": {
+      "last_val": "+100",
+      "unchanged_cycles": 1
+    }
+  }
+}

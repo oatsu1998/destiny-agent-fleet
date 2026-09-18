@@ -31,6 +31,8 @@ from arb_agent import ArbitrageSteamAgent
 from props_hunter_agent import PropsHunterAgent
 from fetchers.espn_fetcher import fetch_all_sports_odds
 from fetchers.kalshi_fetcher import fetch_sports_markets
+from firewall_agent import OddsSanityFirewall
+from lifecycle_router import GameLifecycleRouter
 
 # Configure Logging
 logging.basicConfig(
@@ -146,19 +148,36 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
         except Exception as write_err:
             logger.warning(f"Could not save live market stream to {path_target}: {write_err}")
 
-    # Run Data Quality & Feed Guardian 8-Gate Audit
+    # -------------------------------------------------------------------------
+    # Tier 1: Structure Audit Gate (8-Gate Schema & Entity Audit)
+    # -------------------------------------------------------------------------
     try:
         quality_agent = DataQualityAgent()
         audited_records, health_report = quality_agent.audit(raw_markets, sport="MULTI_SPORT")
-        records_to_normalize = audited_records if audited_records else raw_markets
+        records_to_firewall = audited_records if audited_records else raw_markets
         health_status = health_report.get("status", "HEALTHY")
     except Exception as q_err:
         logger.warning(f"Could not complete DataQualityAgent audit: {q_err}")
-        records_to_normalize = raw_markets
+        records_to_firewall = raw_markets
         health_status = "DEGRADED"
 
+    # -------------------------------------------------------------------------
+    # Tier 2: Market Sanity Firewall Gate (Outlier, Vig & Staleness Suppression)
+    # -------------------------------------------------------------------------
+    try:
+        firewall = OddsSanityFirewall()
+        sanitized_records, firewall_report = firewall.validate(records_to_firewall)
+        firewall_passed_count = firewall_report.get("total_passed", len(records_to_firewall))
+        firewall_dropped_count = firewall_report.get("total_rejected", 0)
+    except Exception as f_err:
+        logger.warning(f"Could not complete OddsSanityFirewall validation: {f_err}")
+        sanitized_records = records_to_firewall
+        firewall_passed_count = len(records_to_firewall)
+        firewall_dropped_count = 0
+
+    # Normalization of Firewall-Sanitized Records
     normalized_records = []
-    for raw in records_to_normalize:
+    for raw in sanitized_records:
         norm = normalize_market(raw)
         if norm:
             normalized_records.append(norm)
@@ -166,10 +185,30 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
     elapsed = time.time() - start_time
     logger.info(f"Normalized {len(normalized_records)} valid lines/props in {elapsed:.2f} seconds.")
 
+    # -------------------------------------------------------------------------
+    # Tier 3: Game Lifecycle Router & Queue Dispatcher
+    # -------------------------------------------------------------------------
+    try:
+        lifecycle_router = GameLifecycleRouter()
+        routed_queues = lifecycle_router.route(normalized_records)
+        pregame_records = routed_queues.get("PREGAME", [])
+        live_records = routed_queues.get("LIVE", [])
+        final_records = routed_queues.get("FINAL", [])
+        lifecycle_summary = routed_queues.get("summary", {})
+    except Exception as l_err:
+        logger.warning(f"Could not complete GameLifecycleRouter routing: {l_err}")
+        pregame_records = normalized_records
+        live_records = []
+        final_records = []
+        lifecycle_summary = {}
+
     snapshot = create_snapshot(normalized_records, elapsed)
     db_manager.push_snapshot(snapshot)
 
-    # Run Weather Edge Microclimate Forecast Analysis
+    # -------------------------------------------------------------------------
+    # Lifecycle Queue Execution Dispatch
+    # -------------------------------------------------------------------------
+    # 1. PREGAME Dispatch: Run Weather Edge & Props Matrix Hunter
     try:
         weather_snap = generate_all_stadium_weather()
         venues_count = weather_snap.get("total_venues_scanned", 8)
@@ -177,23 +216,22 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
         logger.warning(f"Could not complete weather ingestion cycle: {w_err}")
         venues_count = 8
 
-    # Run Line Discrepancy, Arbitrage & Steam Movement Discovery Scan
-    try:
-        arb_agent = ArbitrageSteamAgent()
-        arb_summary = arb_agent.scan(records_to_normalize)
-        total_arb_findings = arb_summary.get("total_arbs_found", 0) + arb_summary.get("total_middles_found", 0) + arb_summary.get("total_steam_moves", 0)
-    except Exception as a_err:
-        logger.warning(f"Could not complete Arbitrage & Steam scan: {a_err}")
-        total_arb_findings = 0
-
-    # Run Player Props Matrix & Cross-Book Line Hunter Scan
     try:
         props_hunter = PropsHunterAgent()
-        props_summary = props_hunter.scan(records_to_normalize)
+        props_summary = props_hunter.scan(pregame_records if pregame_records else normalized_records)
         total_props_findings = props_summary.get("matrix_count", 0)
     except Exception as p_err:
         logger.warning(f"Could not complete Props Hunter scan: {p_err}")
         total_props_findings = 0
+
+    # 2. LIVE & PREGAME Dispatch: Run Line Discrepancy, Arbitrage & Steam Movement Discovery Scan
+    try:
+        arb_agent = ArbitrageSteamAgent()
+        arb_summary = arb_agent.scan(normalized_records)
+        total_arb_findings = arb_summary.get("total_arbs_found", 0) + arb_summary.get("total_middles_found", 0) + arb_summary.get("total_steam_moves", 0)
+    except Exception as a_err:
+        logger.warning(f"Could not complete Arbitrage & Steam scan: {a_err}")
+        total_arb_findings = 0
 
     # Update Fleet Telemetry
     db_manager.update_agent_telemetry(
@@ -222,6 +260,20 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
         agent_name="Data Quality & Feed Guardian Agent 🛡️",
         status="Live" if health_status == "HEALTHY" else "Active",
         records_processed=len(audited_records) if 'audited_records' in locals() else len(normalized_records),
+        latency_ms=round(elapsed * 1000, 2)
+    )
+    db_manager.update_agent_telemetry(
+        agent_id="firewall_agent",
+        agent_name="Odds Sanity Firewall 🧱",
+        status="Live",
+        records_processed=firewall_passed_count,
+        latency_ms=round(elapsed * 1000, 2)
+    )
+    db_manager.update_agent_telemetry(
+        agent_id="lifecycle_router",
+        agent_name="Game Lifecycle Router 🔄",
+        status="Live",
+        records_processed=len(normalized_records),
         latency_ms=round(elapsed * 1000, 2)
     )
     db_manager.update_agent_telemetry(

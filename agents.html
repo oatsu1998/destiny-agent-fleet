@@ -1122,6 +1122,15 @@
                     <span style="color: #ef4444; font-weight: 700;">⚡ Steam: <span id="arb-total-steam-val">1 Steam Move</span></span>
                 </div>
             </div>
+            <!-- Stage Filter Controls for Arbitrage Panel -->
+            <div class="props-controls-bar" style="margin-top: 10px; margin-bottom: 12px; padding: 6px 12px; background: rgba(15, 23, 42, 0.4);">
+                <div class="fleet-filter-group" id="arb-stage-filter-group">
+                    <button class="filter-pill active" onclick="setArbStageFilter('ALL', this)">ALL STAGES</button>
+                    <button class="filter-pill" onclick="setArbStageFilter('PREGAME', this)">PREGAME ⏳</button>
+                    <button class="filter-pill" onclick="setArbStageFilter('LIVE', this)">LIVE 🔴</button>
+                    <button class="filter-pill" onclick="setArbStageFilter('FINAL', this)">FINAL 🏁</button>
+                </div>
+            </div>
             <div id="arb-findings-grid" class="arb-grid">
                 <!-- Dynamically populated by renderArbSummary() -->
             </div>
@@ -1142,10 +1151,16 @@
             </div>
 
             <!-- Search & Stat Filter Controls -->
-            <div class="props-controls-bar">
+            <div class="props-controls-bar" style="flex-wrap: wrap; gap: 10px;">
                 <div class="props-search-box">
                     <span>🔍</span>
                     <input type="text" id="props-player-search" placeholder="Search player name (e.g. Amon-Ra, Gibbs, Allen, Doncic)..." oninput="filterPropsMatrix()">
+                </div>
+                <div class="fleet-filter-group" id="props-stage-filter-group">
+                    <button class="filter-pill active" onclick="setPropsStageFilter('ALL', this)">ALL STAGES</button>
+                    <button class="filter-pill" onclick="setPropsStageFilter('PREGAME', this)">PREGAME ⏳</button>
+                    <button class="filter-pill" onclick="setPropsStageFilter('LIVE', this)">LIVE 🔴</button>
+                    <button class="filter-pill" onclick="setPropsStageFilter('FINAL', this)">FINAL 🏁</button>
                 </div>
                 <div class="fleet-filter-group" id="props-stat-filter-group">
                     <button class="filter-pill active" onclick="setPropsStatFilter('ALL', this)">ALL STATS</button>
@@ -1893,7 +1908,18 @@
             `;
         }
 
+        let currentArbStageFilter = 'ALL';
+        let cachedArbData = null;
+
+        function setArbStageFilter(stageKey, btnEl) {
+            currentArbStageFilter = stageKey;
+            document.querySelectorAll('#arb-stage-filter-group .filter-pill').forEach(b => b.classList.remove('active'));
+            btnEl.classList.add('active');
+            renderArbSummary(cachedArbData);
+        }
+
         function renderArbSummary(arbSummary) {
+            cachedArbData = arbSummary;
             const container = document.getElementById('arb-findings-grid');
             const totalArbsEl = document.getElementById('arb-total-arbs-val');
             const totalMiddlesEl = document.getElementById('arb-total-middles-val');
@@ -1907,6 +1933,7 @@
                 arbitrage_alerts: [
                     {
                         label: "Home vs Away",
+                        stage: "PREGAME",
                         roi_percent: 10.08,
                         guaranteed_profit_usd: 100.81,
                         side_a: { book: "Kalshi", american_odds: 160, recommended_stake: 423.39 },
@@ -1916,12 +1943,14 @@
                 middle_alerts: [
                     {
                         summary: "🎯 Market Middle (6.0 pts): Kalshi line (+3.5) vs DraftKings line (-2.5)",
+                        stage: "PREGAME",
                         window_points: 6.0
                     }
                 ],
                 steam_alerts: [
                     {
                         summary: "⚡ STEAM MOVE: Line shifted -3.0 -> -4.5 (Δ 1.5 pts / 25¢) at BetOnline",
+                        stage: "LIVE",
                         bookmaker: "BetOnline"
                     }
                 ]
@@ -1935,77 +1964,94 @@
 
             // Pure Arbs
             (summary.arbitrage_alerts || []).forEach(arb => {
-                if (arb.roi_percent > 0) {
-                    cardsHtml += `
-                        <div class="arb-card pure-arb">
-                            <div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                    <span style="color: #10b981; font-weight: 800; font-size: 11px;">💎 GUARANTEED ARBITRAGE</span>
-                                    <span style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #10b981; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">+${arb.roi_percent}% ROI</span>
+                const arbStage = arb.stage || arb.lifecycle_stage || 'PREGAME';
+                if (currentArbStageFilter === 'ALL' || arbStage === currentArbStageFilter) {
+                    if (arb.roi_percent > 0) {
+                        cardsHtml += `
+                            <div class="arb-card pure-arb">
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                        <span style="color: #10b981; font-weight: 800; font-size: 11px;">💎 GUARANTEED ARBITRAGE</span>
+                                        <span style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #10b981; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">+${arb.roi_percent}% ROI</span>
+                                    </div>
+                                    <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 6px;">${arb.label || 'Event Market'}</div>
+                                    <div style="font-size: 11px; color: #cbd5e1; line-height: 1.4;">
+                                        <div>• ${arb.side_a.book}: <strong>${arb.side_a.american_odds > 0 ? '+' : ''}${arb.side_a.american_odds}</strong> (Stake: $${arb.side_a.recommended_stake})</div>
+                                        <div>• ${arb.side_b.book}: <strong>${arb.side_b.american_odds > 0 ? '+' : ''}${arb.side_b.american_odds}</strong> (Stake: $${arb.side_b.recommended_stake})</div>
+                                    </div>
                                 </div>
-                                <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 6px;">${arb.label || 'Event Market'}</div>
-                                <div style="font-size: 11px; color: #cbd5e1; line-height: 1.4;">
-                                    <div>• ${arb.side_a.book}: <strong>${arb.side_a.american_odds > 0 ? '+' : ''}${arb.side_a.american_odds}</strong> (Stake: $${arb.side_a.recommended_stake})</div>
-                                    <div>• ${arb.side_b.book}: <strong>${arb.side_b.american_odds > 0 ? '+' : ''}${arb.side_b.american_odds}</strong> (Stake: $${arb.side_b.recommended_stake})</div>
+                                <div style="margin-top: 10px; font-size: 11px; color: #10b981; font-weight: 800;">
+                                    💵 Profit on $1k: +$${arb.guaranteed_profit_usd}
                                 </div>
                             </div>
-                            <div style="margin-top: 10px; font-size: 11px; color: #10b981; font-weight: 800;">
-                                💵 Profit on $1k: +$${arb.guaranteed_profit_usd}
+                        `;
+                    }
+                }
+            });
+
+            // Middles
+            (summary.middle_alerts || []).forEach(mid => {
+                const midStage = mid.stage || mid.lifecycle_stage || 'PREGAME';
+                if (currentArbStageFilter === 'ALL' || midStage === currentArbStageFilter) {
+                    cardsHtml += `
+                        <div class="arb-card middle">
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span style="color: #f59e0b; font-weight: 800; font-size: 11px;">🎯 MARKET MIDDLE WINDOW</span>
+                                    <span style="background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; color: #f59e0b; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">${mid.window_points} pts</span>
+                                </div>
+                                <div style="font-size: 11px; color: #fde68a; line-height: 1.4;">
+                                    ${mid.summary}
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px; font-size: 10px; color: #94a3b8;">
+                                Overlapping win/push window across books
                             </div>
                         </div>
                     `;
                 }
             });
 
-            // Middles
-            (summary.middle_alerts || []).forEach(mid => {
-                cardsHtml += `
-                    <div class="arb-card middle">
-                        <div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <span style="color: #f59e0b; font-weight: 800; font-size: 11px;">🎯 MARKET MIDDLE WINDOW</span>
-                                <span style="background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; color: #f59e0b; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">${mid.window_points} pts</span>
-                            </div>
-                            <div style="font-size: 11px; color: #fde68a; line-height: 1.4;">
-                                ${mid.summary}
-                            </div>
-                        </div>
-                        <div style="margin-top: 10px; font-size: 10px; color: #94a3b8;">
-                            Overlapping win/push window across books
-                        </div>
-                    </div>
-                `;
-            });
-
             // Steam Moves
             (summary.steam_alerts || []).forEach(stm => {
-                cardsHtml += `
-                    <div class="arb-card steam">
-                        <div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <span style="color: #ef4444; font-weight: 800; font-size: 11px;">⚡ RAPID STEAM MOVEMENT</span>
-                                <span style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #ef4444; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">${stm.bookmaker}</span>
+                const stmStage = stm.stage || stm.lifecycle_stage || 'LIVE';
+                if (currentArbStageFilter === 'ALL' || stmStage === currentArbStageFilter) {
+                    cardsHtml += `
+                        <div class="arb-card steam">
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span style="color: #ef4444; font-weight: 800; font-size: 11px;">⚡ RAPID STEAM MOVEMENT</span>
+                                    <span style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #ef4444; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">${stm.bookmaker}</span>
+                                </div>
+                                <div style="font-size: 11px; color: #fca5a5; line-height: 1.4;">
+                                    ${stm.summary}
+                                </div>
                             </div>
-                            <div style="font-size: 11px; color: #fca5a5; line-height: 1.4;">
-                                ${stm.summary}
+                            <div style="margin-top: 10px; font-size: 10px; color: #ef4444; font-weight: 700;">
+                                Sharp Money Shift Detected (&le; 10m)
                             </div>
                         </div>
-                        <div style="margin-top: 10px; font-size: 10px; color: #ef4444; font-weight: 700;">
-                            Sharp Money Shift Detected (&le; 10m)
-                        </div>
-                    </div>
-                `;
+                    `;
+                }
             });
 
             if (!cardsHtml) {
-                cardsHtml = `<div style="grid-column: 1 / -1; color: #94a3b8; font-size: 12px;">No active arbitrage or steam alerts detected in current cycle.</div>`;
+                cardsHtml = `<div style="grid-column: 1 / -1; color: #94a3b8; font-size: 12px;">No active alerts matching selected stage filter (${currentArbStageFilter}).</div>`;
             }
 
             container.innerHTML = cardsHtml;
         }
 
+        let currentPropsStageFilter = 'ALL';
         let currentPropsStatFilter = 'ALL';
         let cachedPropsData = null;
+
+        function setPropsStageFilter(stageKey, btnEl) {
+            currentPropsStageFilter = stageKey;
+            document.querySelectorAll('#props-stage-filter-group .filter-pill').forEach(b => b.classList.remove('active'));
+            btnEl.classList.add('active');
+            filterPropsMatrix();
+        }
 
         function setPropsStatFilter(statKey, btnEl) {
             currentPropsStatFilter = statKey;
@@ -2108,9 +2154,11 @@
 
             const keys = Object.keys(matrix).filter(k => {
                 const item = matrix[k];
+                const itemStage = item.stage || item.lifecycle_stage || 'PREGAME';
                 const matchPlayer = !searchQuery || item.player.toLowerCase().includes(searchQuery) || item.team.toLowerCase().includes(searchQuery);
                 const matchStat = currentPropsStatFilter === 'ALL' || item.prop_type === currentPropsStatFilter;
-                return matchPlayer && matchStat;
+                const matchStage = currentPropsStageFilter === 'ALL' || itemStage === currentPropsStageFilter;
+                return matchPlayer && matchStat && matchStage;
             });
 
             if (keys.length === 0) {
