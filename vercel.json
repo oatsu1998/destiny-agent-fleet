@@ -1,5 +1,7 @@
 {
-  "version": 2,
+  "framework": null,
+  "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
     { "source": "/agents", "destination": "/agents.html" },
     { "source": "/api/(.*)", "destination": "/api/$1" }
