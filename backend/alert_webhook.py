@@ -3,124 +3,165 @@ backend/alert_webhook.py
 
 Destiny Agent Fleet — Real-Time Alerting Engine
 
-Sends VIP alerts to Telegram (and optionally Discord) whenever an upstream
-agent (arb_steam_hunter, props_matrix_hunter, etc.) finds something worth
-a human's attention. Never crashes the pipeline — if a webhook is missing
-or a send fails, it logs to console and moves on.
+Called by arb_agent.py (and other agents) as:
+    from alert_webhook import AlertWebhookManager
+    webhook_mgr = AlertWebhookManager()
+    alerts_sent = webhook_mgr.evaluate_and_send(result_summary)
+
+Applies VIP thresholds on top of what each agent already found, dedupes
+with a 15-minute cooldown fingerprint, and sends to Telegram (and Discord,
+once a webhook URL is added). Never raises — logs and continues so the
+pipeline never crashes because of alerting.
 """
 
-import asyncio
 import hashlib
+import json
 import time
-from dataclasses import dataclass
-from enum import Enum
-from typing import Optional
-
-import httpx
+import urllib.request
+import urllib.error
+from typing import Any, Dict, List, Optional
 
 
 # ---------------------------------------------------------------------------
-# CONFIG — your Telegram bot is already wired in below.
+# CONFIG
 # ---------------------------------------------------------------------------
 
 TELEGRAM_BOT_TOKEN = "8940771064:AAHz6XRKxJrhaciM7yYlHKpGl9xRqGKMPN0"
 TELEGRAM_CHAT_ID = "6168326177"
 
-# Optional — leave as None/empty until you set up a Discord webhook.
-# Agent falls back to console-only (dry-run) logging if this is missing.
+# Optional — set this once you create a Discord webhook. Leave None until then.
 DISCORD_WEBHOOK_URL: Optional[str] = None
 
-# Anti-spam cooldown window (seconds) per unique event fingerprint.
 COOLDOWN_SECONDS = 900  # 15 minutes
 
+# VIP thresholds (from spec) — filters applied ON TOP of whatever each
+# agent's own detection already found, since agents may use looser
+# internal thresholds for their own snapshot/logging purposes.
+MIN_ARB_ROI_PERCENT = 2.0
+MIN_MIDDLE_WINDOW_POINTS = 2.5
+MIN_STEAM_LINE_DELTA = 1.5
+MIN_STEAM_ODDS_DELTA = 25
+MIN_LADDER_MARGIN_CENTS = 30
 
-# ---------------------------------------------------------------------------
-# ALERT TYPES
-# ---------------------------------------------------------------------------
-
-class AlertType(str, Enum):
-    PURE_ARB = "pure_arb"
-    MARKET_MIDDLE = "market_middle"
-    STEAM_MOVE = "steam_move"
-    LADDER_EDGE = "ladder_edge"
-
-
-# Discord embed colors (hex ints) + emoji fallback for Telegram
-ALERT_STYLE = {
-    AlertType.PURE_ARB: {"color": 0x2ECC71, "emoji": "🟢", "label": "Pure arbitrage"},
-    AlertType.MARKET_MIDDLE: {"color": 0xF1C40F, "emoji": "🟡", "label": "Market middle"},
-    AlertType.STEAM_MOVE: {"color": 0xE67E22, "emoji": "⚡", "label": "Steam move"},
-    AlertType.LADDER_EDGE: {"color": 0x9B59B6, "emoji": "🟣", "label": "Ladder prop edge"},
+ALERT_EMOJI = {
+    "PURE_ARBITRAGE": "🟢",
+    "MARKET_MIDDLE": "🟡",
+    "STEAM_MOVE": "⚡",
+    "LADDER_EDGE": "🟣",
 }
 
 
-@dataclass
-class AlertEvent:
-    """A single alert-worthy event, as reported by an upstream agent."""
-    event_id: str
-    alert_type: AlertType
-    market_type: str          # e.g. "spread", "moneyline", "player_prop"
-    book_pair: str            # e.g. "DraftKings/Kalshi"
-    line: str                 # e.g. "-3.5" or "112.5 rec yds"
-    title: str                # short headline, e.g. "3.1% ROI arb — Lakers/Celtics"
-    detail: str               # 1-2 sentence explanation
-    game: Optional[str] = None
-
-
-# ---------------------------------------------------------------------------
-# ALERT WEBHOOK AGENT
-# ---------------------------------------------------------------------------
-
-class AlertWebhookAgent:
+class AlertWebhookManager:
     """
-    Call `await agent.fire(event)` from any upstream agent (arb_steam_hunter,
-    props_matrix_hunter, etc.) whenever a VIP-threshold condition is met.
-    This agent handles dedup/cooldown and delivery — callers don't need to
-    worry about spam or missing webhooks.
+    Stateless across process restarts (cooldown cache is in-memory only —
+    fine for a long-running worker, resets on redeploy/restart).
     """
 
     def __init__(self):
-        self._last_sent: dict[str, float] = {}
-        self._client = httpx.AsyncClient(timeout=10.0)
+        self.telegram_token = TELEGRAM_BOT_TOKEN
+        self.telegram_chat_id = TELEGRAM_CHAT_ID
+        self.discord_url = DISCORD_WEBHOOK_URL
+        self._last_sent: Dict[str, float] = {}
 
-    # -- Public API ----------------------------------------------------
+    # -- Public API -----------------------------------------------------
 
-    async def fire(self, event: AlertEvent) -> bool:
+    def evaluate_and_send(self, result_summary: Dict[str, Any]) -> int:
         """
-        Attempt to send an alert. Returns True if it was sent, False if it
-        was suppressed by the cooldown. Never raises — logs and swallows
-        any delivery failure so the pipeline keeps running.
+        Takes the dict produced by an agent's scan() (with keys like
+        arbitrage_alerts, middle_alerts, steam_alerts, ladder_alerts —
+        any that are missing are just skipped) and sends the ones that
+        clear VIP thresholds and aren't on cooldown. Returns count sent.
         """
-        fingerprint = self._fingerprint(event)
+        sent_count = 0
 
-        if self._is_on_cooldown(fingerprint):
-            print(f"[alert_webhook] Suppressed (cooldown): {event.title}")
-            return False
+        for arb in result_summary.get("arbitrage_alerts", []):
+            if arb.get("roi_percent", 0) >= MIN_ARB_ROI_PERCENT:
+                if self._dispatch(self._build_arb_message(arb), self._arb_fingerprint(arb)):
+                    sent_count += 1
 
-        self._last_sent[fingerprint] = time.time()
+        for mid in result_summary.get("middle_alerts", []):
+            if mid.get("window_points", 0) >= MIN_MIDDLE_WINDOW_POINTS:
+                if self._dispatch(self._build_middle_message(mid), self._middle_fingerprint(mid)):
+                    sent_count += 1
 
-        # Fire both channels concurrently; each fails independently.
-        results = await asyncio.gather(
-            self._send_telegram(event),
-            self._send_discord(event),
-            return_exceptions=True,
+        for steam in result_summary.get("steam_alerts", []):
+            if steam.get("line_delta", 0) >= MIN_STEAM_LINE_DELTA or steam.get("odds_delta", 0) >= MIN_STEAM_ODDS_DELTA:
+                if self._dispatch(self._build_steam_message(steam), self._steam_fingerprint(steam)):
+                    sent_count += 1
+
+        for ladder in result_summary.get("ladder_alerts", []):
+            if ladder.get("margin_cents", 0) >= MIN_LADDER_MARGIN_CENTS:
+                if self._dispatch(self._build_ladder_message(ladder), self._ladder_fingerprint(ladder)):
+                    sent_count += 1
+
+        return sent_count
+
+    # -- Message builders -------------------------------------------------
+
+    def _build_arb_message(self, arb: Dict[str, Any]) -> str:
+        emoji = ALERT_EMOJI["PURE_ARBITRAGE"]
+        a, b = arb.get("side_a", {}), arb.get("side_b", {})
+        return (
+            f"{emoji} Pure arbitrage — {arb.get('roi_percent')}% ROI\n"
+            f"{arb.get('label', '')}\n"
+            f"{a.get('book')}: {a.get('american_odds')} (stake ${a.get('recommended_stake')})\n"
+            f"{b.get('book')}: {b.get('american_odds')} (stake ${b.get('recommended_stake')})\n"
+            f"Guaranteed profit: ${arb.get('guaranteed_profit_usd')}"
         )
 
-        for result in results:
-            if isinstance(result, Exception):
-                print(f"[alert_webhook] Delivery error: {result}")
+    def _build_middle_message(self, mid: Dict[str, Any]) -> str:
+        emoji = ALERT_EMOJI["MARKET_MIDDLE"]
+        return (
+            f"{emoji} Market middle — {mid.get('window_points')} pt window\n"
+            f"{mid.get('book_a')}: {mid.get('line_a'):+.1f}  vs  {mid.get('book_b')}: {mid.get('line_b'):+.1f}"
+        )
 
-        return True
+    def _build_steam_message(self, steam: Dict[str, Any]) -> str:
+        emoji = ALERT_EMOJI["STEAM_MOVE"]
+        return (
+            f"{emoji} Steam move — {steam.get('bookmaker')}\n"
+            f"{steam.get('prev_line')} → {steam.get('curr_line')} "
+            f"(Δ {steam.get('line_delta')} pts / {steam.get('odds_delta')}¢)"
+        )
 
-    async def aclose(self):
-        await self._client.aclose()
+    def _build_ladder_message(self, ladder: Dict[str, Any]) -> str:
+        emoji = ALERT_EMOJI["LADDER_EDGE"]
+        return (
+            f"{emoji} Ladder prop edge — {ladder.get('margin_cents')}¢ over consensus\n"
+            f"{ladder.get('summary', '')}"
+        )
 
-    # -- Internals -------------------------------------------------------
+    # -- Fingerprints (sha256(event_id_market_type_book_pair_line)) -------
 
     @staticmethod
-    def _fingerprint(event: AlertEvent) -> str:
-        raw = f"{event.event_id}_{event.market_type}_{event.book_pair}_{event.line}"
+    def _fingerprint(event_id: str, market_type: str, book_pair: str, line: str) -> str:
+        raw = f"{event_id}_{market_type}_{book_pair}_{line}"
         return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+    def _arb_fingerprint(self, arb: Dict[str, Any]) -> str:
+        a, b = arb.get("side_a", {}), arb.get("side_b", {})
+        book_pair = f"{a.get('book')}/{b.get('book')}"
+        line = f"{a.get('decimal_odds')}/{b.get('decimal_odds')}"
+        return self._fingerprint(arb.get("event_id", ""), arb.get("label", "arb"), book_pair, line)
+
+    def _middle_fingerprint(self, mid: Dict[str, Any]) -> str:
+        book_pair = f"{mid.get('book_a')}/{mid.get('book_b')}"
+        line = f"{mid.get('line_a')}/{mid.get('line_b')}"
+        return self._fingerprint(mid.get("event_id", ""), "middle", book_pair, line)
+
+    def _steam_fingerprint(self, steam: Dict[str, Any]) -> str:
+        line = f"{steam.get('prev_line')}->{steam.get('curr_line')}"
+        return self._fingerprint(steam.get("event_id", ""), steam.get("market_kind", "steam"), steam.get("bookmaker", ""), line)
+
+    def _ladder_fingerprint(self, ladder: Dict[str, Any]) -> str:
+        return self._fingerprint(
+            ladder.get("event_id", ""),
+            "ladder",
+            ladder.get("book", ""),
+            str(ladder.get("milestone", "")),
+        )
+
+    # -- Cooldown ---------------------------------------------------------
 
     def _is_on_cooldown(self, fingerprint: str) -> bool:
         last = self._last_sent.get(fingerprint)
@@ -128,100 +169,47 @@ class AlertWebhookAgent:
             return False
         return (time.time() - last) < COOLDOWN_SECONDS
 
-    async def _send_telegram(self, event: AlertEvent):
-        if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
-            print(f"[alert_webhook][dry-run] (no Telegram config) {event.title}")
+    # -- Dispatch -----------------------------------------------------------
+
+    def _dispatch(self, message: str, fingerprint: str) -> bool:
+        if self._is_on_cooldown(fingerprint):
+            return False
+        self._last_sent[fingerprint] = time.time()
+
+        self._send_telegram(message)
+        self._send_discord(message)
+        return True
+
+    def _send_telegram(self, message: str):
+        if not self.telegram_token or not self.telegram_chat_id:
+            print(f"[alert_webhook][dry-run] (no Telegram config): {message}")
             return
 
-        style = ALERT_STYLE[event.alert_type]
-        lines = [
-            f"{style['emoji']} *{style['label']}*",
-            f"*{event.title}*",
-        ]
-        if event.game:
-            lines.append(f"Game: {event.game}")
-        lines.append(event.detail)
-
-        text = "\n".join(lines)
-        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+        url = f"https://api.telegram.org/bot{self.telegram_token}/sendMessage"
+        payload = json.dumps({"chat_id": self.telegram_chat_id, "text": message}).encode("utf-8")
+        req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"}, method="POST")
 
         try:
-            resp = await self._client.post(
-                url,
-                json={
-                    "chat_id": TELEGRAM_CHAT_ID,
-                    "text": text,
-                    "parse_mode": "Markdown",
-                },
-            )
-            resp.raise_for_status()
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                resp.read()
+        except urllib.error.HTTPError as e:
+            print(f"[alert_webhook] Telegram HTTP error: {e.read().decode('utf-8')}")
         except Exception as e:
             print(f"[alert_webhook] Telegram send failed: {e}")
 
-    async def _send_discord(self, event: AlertEvent):
-        if not DISCORD_WEBHOOK_URL:
-            print(f"[alert_webhook][dry-run] (no Discord webhook set) {event.title}")
+    def _send_discord(self, message: str):
+        if not self.discord_url:
+            print(f"[alert_webhook][dry-run] (no Discord webhook set): {message}")
             return
 
-        style = ALERT_STYLE[event.alert_type]
-        embed = {
-            "title": event.title,
-            "description": event.detail,
-            "color": style["color"],
-            "fields": [
-                {"name": "Type", "value": style["label"], "inline": True},
-                {"name": "Book pair", "value": event.book_pair, "inline": True},
-            ],
-        }
-        if event.game:
-            embed["fields"].append({"name": "Game", "value": event.game, "inline": False})
+        payload = json.dumps({"content": message}).encode("utf-8")
+        req = urllib.request.Request(self.discord_url, data=payload, headers={"Content-Type": "application/json"}, method="POST")
 
         try:
-            resp = await self._client.post(
-                DISCORD_WEBHOOK_URL,
-                json={"embeds": [embed]},
-            )
-            resp.raise_for_status()
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                resp.read()
         except Exception as e:
             print(f"[alert_webhook] Discord send failed: {e}")
-
-
-# ---------------------------------------------------------------------------
-# HELPER — build an AlertEvent + fire it, in one call, from upstream agents
-# ---------------------------------------------------------------------------
-
-_agent_singleton: Optional[AlertWebhookAgent] = None
-
-
-def get_alert_agent() -> AlertWebhookAgent:
-    global _agent_singleton
-    if _agent_singleton is None:
-        _agent_singleton = AlertWebhookAgent()
-    return _agent_singleton
-
-
-async def send_alert(
-    event_id: str,
-    alert_type: AlertType,
-    market_type: str,
-    book_pair: str,
-    line: str,
-    title: str,
-    detail: str,
-    game: Optional[str] = None,
-) -> bool:
-    """Convenience wrapper — import this one function from other agents."""
-    event = AlertEvent(
-        event_id=event_id,
-        alert_type=alert_type,
-        market_type=market_type,
-        book_pair=book_pair,
-        line=line,
-        title=title,
-        detail=detail,
-        game=game,
-    )
-    return await get_alert_agent().fire(event)
 
 
 # ---------------------------------------------------------------------------
@@ -229,18 +217,18 @@ async def send_alert(
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    async def _test():
-        ok = await send_alert(
-            event_id="test-001",
-            alert_type=AlertType.PURE_ARB,
-            market_type="moneyline",
-            book_pair="DraftKings/Kalshi",
-            line="+150",
-            title="Test alert — 3.1% ROI arb",
-            detail="This is a test message from alert_webhook.py. If you see this in Telegram, it's working.",
-            game="Lakers @ Celtics",
-        )
-        print("Sent!" if ok else "Suppressed (cooldown).")
-        await get_alert_agent().aclose()
-
-    asyncio.run(_test())
+    mgr = AlertWebhookManager()
+    fake_summary = {
+        "arbitrage_alerts": [{
+            "event_id": "TEST_EVENT",
+            "label": "Home vs Away",
+            "roi_percent": 3.1,
+            "guaranteed_profit_usd": 31.0,
+            "side_a": {"book": "DraftKings", "american_odds": 150, "decimal_odds": 2.5, "recommended_stake": 400},
+            "side_b": {"book": "Kalshi", "american_odds": -120, "decimal_odds": 1.83, "recommended_stake": 546},
+        }],
+        "middle_alerts": [],
+        "steam_alerts": [],
+    }
+    count = mgr.evaluate_and_send(fake_summary)
+    print(f"Alerts sent: {count}")
