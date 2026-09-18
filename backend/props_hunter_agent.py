@@ -138,9 +138,20 @@ def normalize_stat_type(raw_stat: str) -> str:
     cleaned = raw_stat.strip().lower()
     return STAT_TYPE_MAP.get(cleaned, cleaned.replace(" ", "_"))
 
+try:
+    from injury_agent import InjuryImpactAgent
+except ImportError:
+    InjuryImpactAgent = None
+
 class PropsHunterAgent:
     def __init__(self):
-        pass
+        if InjuryImpactAgent:
+            try:
+                self.injury_agent = InjuryImpactAgent()
+            except Exception:
+                self.injury_agent = None
+        else:
+            self.injury_agent = None
 
     def normalize_prop_entry(self, raw_entry: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -188,16 +199,21 @@ class PropsHunterAgent:
             p = self.normalize_prop_entry(raw_p)
             key = f"{p['player']}|{p['stat_type']}"
 
+            is_scratched = self.injury_agent.is_player_out(p['player'], p['team']) if self.injury_agent else False
+
             if key not in matrix:
                 matrix[key] = {
                     "player": p["player"],
                     "team": p["team"],
                     "prop_type": p["stat_type"],
+                    "status": "SCRATCHED_SUPPRESSED" if is_scratched else "ACTIVE",
                     "books": {},
                     "best_over": None,
                     "best_under": None,
                     "middle_window": {"spread_points": 0.0, "viable": False}
                 }
+            elif is_scratched:
+                matrix[key]["status"] = "SCRATCHED_SUPPRESSED"
 
             entry = matrix[key]
             book = p["book"]
@@ -269,6 +285,10 @@ class PropsHunterAgent:
         ladder_edges = []
 
         for key, entry in matrix.items():
+            if entry.get("status") == "SCRATCHED_SUPPRESSED":
+                logger.info(f"Skipping prop discrepancy alerts for scratched player: {entry['player']}")
+                continue
+
             player = entry["player"]
             stat_type = entry["prop_type"]
 

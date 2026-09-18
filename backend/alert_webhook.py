@@ -48,6 +48,7 @@ ALERT_EMOJI = {
     "MARKET_MIDDLE": "🟡",
     "STEAM_MOVE": "⚡",
     "LADDER_EDGE": "🟣",
+    "CRITICAL_SCRATCH": "🩹"
 }
 
 
@@ -68,8 +69,8 @@ class AlertWebhookManager:
     def evaluate_and_send(self, result_summary: Dict[str, Any]) -> int:
         """
         Takes the dict produced by an agent's scan() (with keys like
-        arbitrage_alerts, middle_alerts, steam_alerts, ladder_alerts —
-        any that are missing are just skipped) and sends the ones that
+        arbitrage_alerts, middle_alerts, steam_alerts, ladder_alerts,
+        critical_scratches — any that are missing are just skipped) and sends the ones that
         clear VIP thresholds and aren't on cooldown. Returns count sent.
         """
         sent_count = 0
@@ -92,6 +93,11 @@ class AlertWebhookManager:
         for ladder in result_summary.get("ladder_alerts", []):
             if ladder.get("margin_cents", 0) >= MIN_LADDER_MARGIN_CENTS:
                 if self._dispatch(self._build_ladder_message(ladder), self._ladder_fingerprint(ladder)):
+                    sent_count += 1
+
+        for inj in result_summary.get("injury_alerts", []) or result_summary.get("critical_scratches", []):
+            if inj.get("category") == "CRITICAL" or str(inj.get("status", "")).lower() in ["out", "ir", "injured reserve", "60-day il", "injury_status_out"]:
+                if self._dispatch(self._build_injury_message(inj), self._injury_fingerprint(inj)):
                     sent_count += 1
 
         return sent_count
@@ -131,6 +137,16 @@ class AlertWebhookManager:
             f"{ladder.get('summary', '')}"
         )
 
+    def _build_injury_message(self, inj: Dict[str, Any]) -> str:
+        emoji = ALERT_EMOJI.get("CRITICAL_SCRATCH", "🩹")
+        notes = (inj.get("analyst_notes") or "N/A")[:120]
+        return (
+            f"{emoji} HIGH-PRIORITY CRITICAL SCRATCH — {inj.get('athlete_name')} ({inj.get('position', 'N/A')})\n"
+            f"Team: {inj.get('team_name')} ({inj.get('league')})\n"
+            f"Status: {inj.get('status')} | Injury: {inj.get('injury_type', 'Undisclosed')}\n"
+            f"Notes: {notes}"
+        )
+
     # -- Fingerprints (sha256(event_id_market_type_book_pair_line)) -------
 
     @staticmethod
@@ -158,7 +174,15 @@ class AlertWebhookManager:
             ladder.get("event_id", ""),
             "ladder",
             ladder.get("book", ""),
-            str(ladder.get("milestone", "")),
+            str(ladder.get("milestone", ""))
+        )
+
+    def _injury_fingerprint(self, inj: Dict[str, Any]) -> str:
+        return self._fingerprint(
+            inj.get("athlete_id") or inj.get("athlete_name", ""),
+            "injury_scratch",
+            inj.get("team_name", ""),
+            str(inj.get("status", "out"))
         )
 
     # -- Cooldown ---------------------------------------------------------

@@ -226,6 +226,22 @@ const DEFAULT_AGENTS = [
     mcp_endpoint: "mcp://agents.destiny.net/v1/props-hunter",
     mcp_type: "JSON-RPC 2.0 / Props Matrix Engine",
     description: "Ingests multi-sport player props, normalizes player identities across books, aggregates side-by-side matrices, and detects prop arbs, middles, and ladder edges."
+  },
+  {
+    id: "injury_agent",
+    name: "Injury & Roster Intel 🩹",
+    avatar: "🩹",
+    status: "Live",
+    role: "Multi-League Roster & Scratch Tracker",
+    specialty: "Cross-League Injury Reports & Scratches",
+    markets_tracked: ["Critical Out / IR", "Volatile GTDs", "Scratch Suppression"],
+    last_run: new Date().toISOString(),
+    records_processed: 1252,
+    latency_ms: 18,
+    uptime_pct: 100.0,
+    mcp_endpoint: "mcp://agents.destiny.net/v1/injury-agent",
+    mcp_type: "JSON-RPC 2.0 / Roster Engine",
+    description: "Ingests free ESPN multi-league injury reports, classifies critical scratches vs game-time decisions, and suppresses phantom prop edges."
   }
 ];
 
@@ -237,6 +253,7 @@ export default async function handler(req, res) {
     let qualityData = null;
     let arbData = null;
     let propsData = null;
+    let injuryData = null;
     let liveStreamData = null;
     let firewallData = null;
     let lifecycleData = null;
@@ -334,6 +351,19 @@ export default async function handler(req, res) {
       console.warn("Could not read props_matrix_latest.json:", e.message);
     }
 
+    // Try reading backend/snapshots/injury_report_latest.json
+    try {
+      const injPath = path.join(process.cwd(), 'backend', 'snapshots', 'injury_report_latest.json');
+      const fallbackInj = path.join(process.cwd(), 'backend', 'injury_report_latest.json');
+      if (fs.existsSync(injPath)) {
+        injuryData = JSON.parse(fs.readFileSync(injPath, 'utf8'));
+      } else if (fs.existsSync(fallbackInj)) {
+        injuryData = JSON.parse(fs.readFileSync(fallbackInj, 'utf8'));
+      }
+    } catch (e) {
+      console.warn("Could not read injury_report_latest.json:", e.message);
+    }
+
     // Merge dynamic telemetry into default agents
     const agents = DEFAULT_AGENTS.map(agent => {
       const liveTel = telemetryData[agent.id];
@@ -367,6 +397,14 @@ export default async function handler(req, res) {
       lifecycle_summary: lifecycleData || null,
       arb_summary: arbData || null,
       props_matrix_summary: propsData || null,
+      injury_summary: injuryData ? {
+        timestamp: injuryData.timestamp,
+        total_injuries: injuryData.total_injuries,
+        critical_out: injuryData.critical_out,
+        volatile_q: injuryData.volatile_q,
+        by_league: injuryData.by_league,
+        critical_scratches: injuryData.critical_scratches ? injuryData.critical_scratches.slice(0, 10) : []
+      } : null,
       live_stream_summary: liveStreamData ? {
         timestamp: liveStreamData.timestamp,
         total_records: liveStreamData.total_records,

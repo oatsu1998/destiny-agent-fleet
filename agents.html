@@ -1153,6 +1153,45 @@
             </div>
         </div>
 
+        <!-- Injury Impact & Roster Intelligence Monitor Card -->
+        <div class="quality-panel-card" id="injury-panel-container" style="margin-top: 16px; border-left: 4px solid #ec4899;">
+            <div class="quality-panel-header">
+                <div class="quality-panel-title" style="color: #ec4899;">
+                    <span>🩹</span> INJURY IMPACT & ROSTER INTEL MONITOR
+                </div>
+                <div class="quality-status-pill healthy" id="injury-status-badge">
+                    <span class="status-pulse"></span>
+                    <span id="injury-status-text">🟢 ACTIVE & TRACKING</span>
+                </div>
+            </div>
+
+            <!-- Injury Metric Badges Row -->
+            <div class="quality-metrics-row">
+                <div class="quality-metric-badge">
+                    <div class="lbl">Total Active Injuries</div>
+                    <div class="val" id="inj-total-val" style="color: #f59e0b;">0 Ingested</div>
+                </div>
+                <div class="quality-metric-badge">
+                    <div class="lbl">Critical Scratches (Out/IR)</div>
+                    <div class="val" id="inj-critical-val" style="color: #ef4444;">0 Players</div>
+                </div>
+                <div class="quality-metric-badge">
+                    <div class="lbl">Volatile (Questionable/GTD)</div>
+                    <div class="val" id="inj-volatile-val" style="color: #ec4899;">0 Players</div>
+                </div>
+                <div class="quality-metric-badge">
+                    <div class="lbl">Leagues Tracked</div>
+                    <div class="val" id="inj-leagues-val" style="color: #3b82f6;">7 / 7 Leagues</div>
+                </div>
+            </div>
+
+            <!-- Injury Audit Details Box -->
+            <div class="quality-audit-box" id="injury-audit-logs-box">
+                <div><span style="color: #ec4899; font-weight: 800;">[AGENT #15 ROSTER INTEL]</span> Live ESPN web API injury scoreboard ingestion across NFL, NCAAF, NBA, NCAAB, MLB, NHL, and WNBA. Scratched athletes automatically suppress phantom props.</div>
+                <div id="injury-details-text" style="color: #10b981;">• Zero critical scratches reported. Scratched athletes will auto-suppress phantom props.</div>
+            </div>
+        </div>
+
         <!-- Line Discrepancy, Arbitrage & Steam Velocity Discovery Panel -->
         <div class="arb-panel-card">
             <div class="arb-panel-header">
@@ -1603,6 +1642,7 @@
                         renderWeather(data.weather_summary);
                         renderQualityHealth(data.health_report);
                         renderFirewallSummary(data.firewall_summary);
+                        renderInjurySummary(data.injury_summary);
                         renderArbSummary(data.arb_summary);
                         renderPropsMatrix(data.props_matrix_summary);
                     }
@@ -1612,6 +1652,7 @@
                 renderWeather(null);
                 renderQualityHealth(null);
                 renderFirewallSummary(null);
+                renderInjurySummary(null);
                 renderArbSummary(null);
                 renderPropsMatrix(null);
             }
@@ -1648,6 +1689,42 @@
                 } else {
                     rejectionsEl.innerText = '• Zero corrupt feeds or palpable errors passing into intelligence fleet.';
                     rejectionsEl.style.color = '#10b981';
+                }
+            }
+        }
+
+        function renderInjurySummary(injData) {
+            const totalEl = document.getElementById('inj-total-val');
+            const criticalEl = document.getElementById('inj-critical-val');
+            const volatileEl = document.getElementById('inj-volatile-val');
+            const leaguesEl = document.getElementById('inj-leagues-val');
+            const detailsEl = document.getElementById('injury-details-text');
+
+            if (!injData) {
+                if (totalEl) totalEl.innerText = '0 Ingested';
+                if (criticalEl) criticalEl.innerText = '0 Out / IR';
+                if (volatileEl) volatileEl.innerText = '0 Questionable';
+                if (leaguesEl) leaguesEl.innerText = '7 / 7 Leagues';
+                if (detailsEl) detailsEl.innerText = '• Ingestion status: Idle / Standby';
+                return;
+            }
+
+            const leagueCount = injData.by_league ? Object.keys(injData.by_league).length : 7;
+
+            if (totalEl) totalEl.innerText = `${injData.total_injuries || 0} Ingested`;
+            if (criticalEl) criticalEl.innerText = `${injData.critical_out || 0} Out / IR`;
+            if (volatileEl) volatileEl.innerText = `${injData.volatile_q || 0} Questionable`;
+            if (leaguesEl) leaguesEl.innerText = `${leagueCount} / 7 Leagues`;
+
+            if (detailsEl) {
+                const scratches = injData.critical_scratches || [];
+                if (scratches.length > 0) {
+                    const sample = scratches.slice(0, 4).map(s => `${s.athlete_name} (${s.team_alias || s.league} - ${s.status})`).join('; ');
+                    detailsEl.innerText = `• Critical scratches active (${scratches.length} total): ${sample}${scratches.length > 4 ? '...' : ''}`;
+                    detailsEl.style.color = '#ef4444';
+                } else {
+                    detailsEl.innerText = '• Zero critical scratches reported. Scratched athletes will auto-suppress phantom props.';
+                    detailsEl.style.color = '#10b981';
                 }
             }
         }

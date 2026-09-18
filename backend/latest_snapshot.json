@@ -1,14 +1,15 @@
 {
-  "snapshot_id": "snap_1789771178",
-  "timestamp": "2026-09-18T22:39:38.778323+00:00",
-  "total_markets_processed": 55,
+  "snapshot_id": "snap_1789771774",
+  "timestamp": "2026-09-18T22:49:34.863959+00:00",
+  "total_markets_processed": 65,
   "leagues_covered": [
     "MLB",
+    "NBA",
     "NCAAF",
     "NFL",
     "NHL"
   ],
-  "execution_latency_ms": 1196.94,
+  "execution_latency_ms": 1528.2,
   "records": [
     {
       "id": "KXMLBGAME-26SEP201920MILBAL-MIL",
@@ -30,7 +31,7 @@
       "status": "active",
       "open_time": "2026-09-17T23:40:00Z",
       "close_time": "2026-09-23T23:20:00Z",
-      "updated_at": "2026-09-18T22:39:38.775227+00:00",
+      "updated_at": "2026-09-18T22:49:34.861386+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -53,7 +54,7 @@
       "status": "active",
       "open_time": "2026-09-17T20:25:00Z",
       "close_time": "2026-09-23T20:07:00Z",
-      "updated_at": "2026-09-18T22:39:38.775245+00:00",
+      "updated_at": "2026-09-18T22:49:34.861413+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -76,7 +77,7 @@
       "status": "active",
       "open_time": "2026-09-17T20:25:00Z",
       "close_time": "2026-09-23T20:10:00Z",
-      "updated_at": "2026-09-18T22:39:38.775255+00:00",
+      "updated_at": "2026-09-18T22:49:34.861430+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -99,7 +100,7 @@
       "status": "active",
       "open_time": "2026-09-17T20:25:00Z",
       "close_time": "2026-09-23T20:10:00Z",
-      "updated_at": "2026-09-18T22:39:38.775263+00:00",
+      "updated_at": "2026-09-18T22:49:34.861442+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -122,7 +123,7 @@
       "status": "active",
       "open_time": "2026-09-17T19:25:00Z",
       "close_time": "2026-09-23T19:10:00Z",
-      "updated_at": "2026-09-18T22:39:38.775270+00:00",
+      "updated_at": "2026-09-18T22:49:34.861454+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -145,7 +146,7 @@
       "status": "active",
       "open_time": "2026-09-17T18:25:00Z",
       "close_time": "2026-09-23T18:10:00Z",
-      "updated_at": "2026-09-18T22:39:38.775277+00:00",
+      "updated_at": "2026-09-18T22:49:34.861466+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -168,7 +169,7 @@
       "status": "active",
       "open_time": "2026-09-17T18:25:00Z",
       "close_time": "2026-09-23T18:10:00Z",
-      "updated_at": "2026-09-18T22:39:38.775284+00:00",
+      "updated_at": "2026-09-18T22:49:34.861478+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -191,7 +192,7 @@
       "status": "active",
       "open_time": "2026-09-17T17:25:00Z",
       "close_time": "2026-09-23T17:10:00Z",
-      "updated_at": "2026-09-18T22:39:38.775291+00:00",
+      "updated_at": "2026-09-18T22:49:34.861489+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -214,7 +215,7 @@
       "status": "active",
       "open_time": "2026-09-18T19:20:00Z",
       "close_time": "2026-09-23T01:38:00Z",
-      "updated_at": "2026-09-18T22:39:38.775301+00:00",
+      "updated_at": "2026-09-18T22:49:34.861504+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -237,7 +238,7 @@
       "status": "active",
       "open_time": "2026-09-18T19:20:00Z",
       "close_time": "2026-09-22T23:10:00Z",
-      "updated_at": "2026-09-18T22:39:38.775309+00:00",
+      "updated_at": "2026-09-18T22:49:34.861518+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -260,7 +261,7 @@
       "status": "active",
       "open_time": "2026-09-18T19:20:00Z",
       "close_time": "2026-09-22T23:10:00Z",
-      "updated_at": "2026-09-18T22:39:38.775318+00:00",
+      "updated_at": "2026-09-18T22:49:34.861530+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -283,7 +284,7 @@
       "status": "active",
       "open_time": "2026-09-18T19:20:00Z",
       "close_time": "2026-09-22T20:10:00Z",
-      "updated_at": "2026-09-18T22:39:38.775325+00:00",
+      "updated_at": "2026-09-18T22:49:34.861542+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -306,30 +307,7 @@
       "status": "active",
       "open_time": "2026-09-18T08:30:00Z",
       "close_time": "2026-09-22T00:10:00Z",
-      "updated_at": "2026-09-18T22:39:38.775332+00:00",
-      "lifecycle_stage": "PREGAME"
-    },
-    {
-      "id": "KXMLBTOTAL-26SEP192138MINLAA-9",
-      "ticker": "KXMLBTOTAL-26SEP192138MINLAA-9",
-      "event_ticker": "KXMLBTOTAL-26SEP192138MINLAA",
-      "league": "MLB",
-      "sport": "baseball",
-      "market_kind": "total",
-      "stat_category": null,
-      "title": "Over 8.5 runs scored",
-      "team_or_selection": "Over 8.5 runs scored",
-      "team_code": "9",
-      "yes_cents": 40,
-      "no_cents": 60,
-      "american_odds": "+150",
-      "implied_prob": 0.4,
-      "line_value": 8.5,
-      "volume": 6.0,
-      "status": "active",
-      "open_time": "2026-09-18T19:20:00Z",
-      "close_time": "2026-09-23T01:38:00Z",
-      "updated_at": "2026-09-18T22:39:38.775341+00:00",
+      "updated_at": "2026-09-18T22:49:34.861554+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -352,7 +330,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-10-01T00:15:00Z",
-      "updated_at": "2026-09-18T22:39:38.775349+00:00",
+      "updated_at": "2026-09-18T22:49:34.861566+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -375,7 +353,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-10-01T00:15:00Z",
-      "updated_at": "2026-09-18T22:39:38.775356+00:00",
+      "updated_at": "2026-09-18T22:49:34.861578+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -398,7 +376,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-09-30T00:20:00Z",
-      "updated_at": "2026-09-18T22:39:38.775363+00:00",
+      "updated_at": "2026-09-18T22:49:34.861589+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -412,16 +390,16 @@
       "title": "Dallas wins",
       "team_or_selection": "Dallas",
       "team_code": "DAL",
-      "yes_cents": 40,
-      "no_cents": 60,
-      "american_odds": "+150",
-      "implied_prob": 0.4,
+      "yes_cents": 37,
+      "no_cents": 63,
+      "american_odds": "+170",
+      "implied_prob": 0.37,
       "line_value": null,
-      "volume": 1854.74,
+      "volume": 1859.5,
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-09-29T20:25:00Z",
-      "updated_at": "2026-09-18T22:39:38.775370+00:00",
+      "updated_at": "2026-09-18T22:49:34.861600+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -444,7 +422,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-09-29T20:25:00Z",
-      "updated_at": "2026-09-18T22:39:38.775377+00:00",
+      "updated_at": "2026-09-18T22:49:34.861612+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -467,7 +445,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-09-29T20:05:00Z",
-      "updated_at": "2026-09-18T22:39:38.775384+00:00",
+      "updated_at": "2026-09-18T22:49:34.861622+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -490,7 +468,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-09-29T17:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775391+00:00",
+      "updated_at": "2026-09-18T22:49:34.861633+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -513,7 +491,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:15:00Z",
       "close_time": "2026-09-29T17:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775397+00:00",
+      "updated_at": "2026-09-18T22:49:34.861644+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -532,11 +510,11 @@
       "american_odds": "-233",
       "implied_prob": 0.7,
       "line_value": null,
-      "volume": 19337.67,
+      "volume": 19386.63,
       "status": "active",
       "open_time": "2026-09-15T16:15:00Z",
       "close_time": "2026-09-29T17:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775404+00:00",
+      "updated_at": "2026-09-18T22:49:34.861656+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -559,7 +537,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:15:00Z",
       "close_time": "2026-09-29T17:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775411+00:00",
+      "updated_at": "2026-09-18T22:49:34.861667+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -578,11 +556,11 @@
       "american_odds": "-525",
       "implied_prob": 0.84,
       "line_value": null,
-      "volume": 6814.09,
+      "volume": 6825.86,
       "status": "active",
       "open_time": "2026-09-15T16:15:00Z",
       "close_time": "2026-09-29T17:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775418+00:00",
+      "updated_at": "2026-09-18T22:49:34.861678+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -605,7 +583,329 @@
       "status": "active",
       "open_time": "2026-09-15T16:15:00Z",
       "close_time": "2026-09-27T00:15:00Z",
-      "updated_at": "2026-09-18T22:39:38.775424+00:00",
+      "updated_at": "2026-09-18T22:49:34.861689+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXNFLTOTAL-26SEP24ATLGB-68",
+      "ticker": "KXNFLTOTAL-26SEP24ATLGB-68",
+      "event_ticker": "KXNFLTOTAL-26SEP24ATLGB",
+      "league": "NFL",
+      "sport": "football",
+      "market_kind": "total",
+      "stat_category": null,
+      "title": "Full Game: over 67.5 points scored?",
+      "team_or_selection": "Over 67.5 points scored",
+      "team_code": "68",
+      "yes_cents": 12,
+      "no_cents": 88,
+      "american_odds": "+733",
+      "implied_prob": 0.12,
+      "line_value": 67.5,
+      "volume": 200.0,
+      "status": "active",
+      "open_time": "2026-09-18T01:05:00Z",
+      "close_time": "2026-09-27T00:15:00Z",
+      "updated_at": "2026-09-18T22:49:34.861701+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXNBAGAME-26OCT20OKCSAS-SAS",
+      "ticker": "KXNBAGAME-26OCT20OKCSAS-SAS",
+      "event_ticker": "KXNBAGAME-26OCT20OKCSAS",
+      "league": "NBA",
+      "sport": "basketball",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "San Antonio wins",
+      "team_or_selection": "San Antonio",
+      "team_code": "SAS",
+      "yes_cents": 54,
+      "no_cents": 46,
+      "american_odds": "-117",
+      "implied_prob": 0.54,
+      "line_value": null,
+      "volume": 5688.85,
+      "status": "active",
+      "open_time": "2026-08-20T15:28:00Z",
+      "close_time": "2026-10-23T01:30:00Z",
+      "updated_at": "2026-09-18T22:49:34.861714+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXNBAGAME-26OCT20OKCSAS-OKC",
+      "ticker": "KXNBAGAME-26OCT20OKCSAS-OKC",
+      "event_ticker": "KXNBAGAME-26OCT20OKCSAS",
+      "league": "NBA",
+      "sport": "basketball",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Oklahoma City wins",
+      "team_or_selection": "Oklahoma City",
+      "team_code": "OKC",
+      "yes_cents": 46,
+      "no_cents": 54,
+      "american_odds": "+117",
+      "implied_prob": 0.46,
+      "line_value": null,
+      "volume": 3051.19,
+      "status": "active",
+      "open_time": "2026-08-20T15:28:00Z",
+      "close_time": "2026-10-23T01:30:00Z",
+      "updated_at": "2026-09-18T22:49:34.861726+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXNBAGAME-26OCT20PHINYK-PHI",
+      "ticker": "KXNBAGAME-26OCT20PHINYK-PHI",
+      "event_ticker": "KXNBAGAME-26OCT20PHINYK",
+      "league": "NBA",
+      "sport": "basketball",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Philadelphia wins",
+      "team_or_selection": "Philadelphia",
+      "team_code": "PHI",
+      "yes_cents": 39,
+      "no_cents": 61,
+      "american_odds": "+156",
+      "implied_prob": 0.39,
+      "line_value": null,
+      "volume": 30131.21,
+      "status": "active",
+      "open_time": "2026-08-20T15:28:00Z",
+      "close_time": "2026-10-22T23:00:00Z",
+      "updated_at": "2026-09-18T22:49:34.861737+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXNBAGAME-26OCT20PHINYK-NYK",
+      "ticker": "KXNBAGAME-26OCT20PHINYK-NYK",
+      "event_ticker": "KXNBAGAME-26OCT20PHINYK",
+      "league": "NBA",
+      "sport": "basketball",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "New York wins",
+      "team_or_selection": "New York",
+      "team_code": "NYK",
+      "yes_cents": 64,
+      "no_cents": 36,
+      "american_odds": "-178",
+      "implied_prob": 0.64,
+      "line_value": null,
+      "volume": 10809.9,
+      "status": "active",
+      "open_time": "2026-08-20T15:28:00Z",
+      "close_time": "2026-10-22T23:00:00Z",
+      "updated_at": "2026-09-18T22:49:34.861757+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXNBAGAME-26OCT20BOSDET-BOS",
+      "ticker": "KXNBAGAME-26OCT20BOSDET-BOS",
+      "event_ticker": "KXNBAGAME-26OCT20BOSDET",
+      "league": "NBA",
+      "sport": "basketball",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Boston wins",
+      "team_or_selection": "Boston",
+      "team_code": "BOS",
+      "yes_cents": 50,
+      "no_cents": 50,
+      "american_odds": "+100",
+      "implied_prob": 0.5,
+      "line_value": null,
+      "volume": 17315.59,
+      "status": "active",
+      "open_time": "2026-08-20T15:28:00Z",
+      "close_time": "2026-10-22T19:00:00Z",
+      "updated_at": "2026-09-18T22:49:34.861771+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXNHLGAME-26SEP21COLWPG-WPG",
+      "ticker": "KXNHLGAME-26SEP21COLWPG-WPG",
+      "event_ticker": "KXNHLGAME-26SEP21COLWPG",
+      "league": "NHL",
+      "sport": "hockey",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Winnipeg wins",
+      "team_or_selection": "Winnipeg",
+      "team_code": "WPG",
+      "yes_cents": 48,
+      "no_cents": 52,
+      "american_odds": "+108",
+      "implied_prob": 0.48,
+      "line_value": null,
+      "volume": 0.0,
+      "status": "active",
+      "open_time": "2026-09-18T01:05:00Z",
+      "close_time": "2026-09-24T00:00:00Z",
+      "updated_at": "2026-09-18T22:49:34.861786+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXNHLGAME-26SEP21COLWPG-COL",
+      "ticker": "KXNHLGAME-26SEP21COLWPG-COL",
+      "event_ticker": "KXNHLGAME-26SEP21COLWPG",
+      "league": "NHL",
+      "sport": "hockey",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Colorado wins",
+      "team_or_selection": "Colorado",
+      "team_code": "COL",
+      "yes_cents": 44,
+      "no_cents": 56,
+      "american_odds": "+127",
+      "implied_prob": 0.44,
+      "line_value": null,
+      "volume": 18.25,
+      "status": "active",
+      "open_time": "2026-09-18T01:05:00Z",
+      "close_time": "2026-09-24T00:00:00Z",
+      "updated_at": "2026-09-18T22:49:34.861798+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXNHLGAME-26SEP21STLDAL-DAL",
+      "ticker": "KXNHLGAME-26SEP21STLDAL-DAL",
+      "event_ticker": "KXNHLGAME-26SEP21STLDAL",
+      "league": "NHL",
+      "sport": "hockey",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Dallas wins",
+      "team_or_selection": "Dallas",
+      "team_code": "DAL",
+      "yes_cents": 65,
+      "no_cents": 35,
+      "american_odds": "-186",
+      "implied_prob": 0.65,
+      "line_value": null,
+      "volume": 10.0,
+      "status": "active",
+      "open_time": "2026-09-18T01:05:00Z",
+      "close_time": "2026-09-24T00:00:00Z",
+      "updated_at": "2026-09-18T22:49:34.861810+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXNHLGAME-26SEP21NYRNJ-NYR",
+      "ticker": "KXNHLGAME-26SEP21NYRNJ-NYR",
+      "event_ticker": "KXNHLGAME-26SEP21NYRNJ",
+      "league": "NHL",
+      "sport": "hockey",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "New York R wins",
+      "team_or_selection": "New York R",
+      "team_code": "NYR",
+      "yes_cents": 49,
+      "no_cents": 51,
+      "american_odds": "+104",
+      "implied_prob": 0.49,
+      "line_value": null,
+      "volume": 0.0,
+      "status": "active",
+      "open_time": "2026-09-18T01:05:00Z",
+      "close_time": "2026-09-23T23:00:00Z",
+      "updated_at": "2026-09-18T22:49:34.861822+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXNHLGAME-26SEP20CARFLA-FLA",
+      "ticker": "KXNHLGAME-26SEP20CARFLA-FLA",
+      "event_ticker": "KXNHLGAME-26SEP20CARFLA",
+      "league": "NHL",
+      "sport": "hockey",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Florida wins",
+      "team_or_selection": "Florida",
+      "team_code": "FLA",
+      "yes_cents": 42,
+      "no_cents": 58,
+      "american_odds": "+138",
+      "implied_prob": 0.42,
+      "line_value": null,
+      "volume": 0.0,
+      "status": "active",
+      "open_time": "2026-09-17T16:05:00Z",
+      "close_time": "2026-09-22T23:00:00Z",
+      "updated_at": "2026-09-18T22:49:34.861834+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXNHLGAME-26SEP20WSHBOS-BOS",
+      "ticker": "KXNHLGAME-26SEP20WSHBOS-BOS",
+      "event_ticker": "KXNHLGAME-26SEP20WSHBOS",
+      "league": "NHL",
+      "sport": "hockey",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Boston wins",
+      "team_or_selection": "Boston",
+      "team_code": "BOS",
+      "yes_cents": 65,
+      "no_cents": 35,
+      "american_odds": "-186",
+      "implied_prob": 0.65,
+      "line_value": null,
+      "volume": 51.44,
+      "status": "active",
+      "open_time": "2026-09-17T16:05:00Z",
+      "close_time": "2026-09-22T21:00:00Z",
+      "updated_at": "2026-09-18T22:49:34.861846+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXNHLGAME-26SEP19VGKLA-VGK",
+      "ticker": "KXNHLGAME-26SEP19VGKLA-VGK",
+      "event_ticker": "KXNHLGAME-26SEP19VGKLA",
+      "league": "NHL",
+      "sport": "hockey",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Vegas wins",
+      "team_or_selection": "Vegas",
+      "team_code": "VGK",
+      "yes_cents": 54,
+      "no_cents": 46,
+      "american_odds": "-117",
+      "implied_prob": 0.54,
+      "line_value": null,
+      "volume": 271.11,
+      "status": "active",
+      "open_time": "2026-09-17T00:07:00Z",
+      "close_time": "2026-09-22T01:00:00Z",
+      "updated_at": "2026-09-18T22:49:34.861857+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXNHLGAME-26SEP19WPGEDM-EDM",
+      "ticker": "KXNHLGAME-26SEP19WPGEDM-EDM",
+      "event_ticker": "KXNHLGAME-26SEP19WPGEDM",
+      "league": "NHL",
+      "sport": "hockey",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Edmonton wins",
+      "team_or_selection": "Edmonton",
+      "team_code": "EDM",
+      "yes_cents": 62,
+      "no_cents": 38,
+      "american_odds": "-163",
+      "implied_prob": 0.62,
+      "line_value": null,
+      "volume": 1.0,
+      "status": "active",
+      "open_time": "2026-09-17T00:07:00Z",
+      "close_time": "2026-09-22T00:00:00Z",
+      "updated_at": "2026-09-18T22:49:34.861868+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -628,7 +928,7 @@
       "status": "active",
       "open_time": "2026-09-18T01:05:00Z",
       "close_time": "2026-09-24T00:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775432+00:00",
+      "updated_at": "2026-09-18T22:49:34.861882+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -651,7 +951,7 @@
       "status": "active",
       "open_time": "2026-09-18T01:05:00Z",
       "close_time": "2026-09-24T00:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775441+00:00",
+      "updated_at": "2026-09-18T22:49:34.861894+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -674,7 +974,7 @@
       "status": "active",
       "open_time": "2026-09-18T01:05:00Z",
       "close_time": "2026-09-24T00:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775448+00:00",
+      "updated_at": "2026-09-18T22:49:34.861906+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -697,7 +997,7 @@
       "status": "active",
       "open_time": "2026-09-17T16:05:00Z",
       "close_time": "2026-09-22T21:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775456+00:00",
+      "updated_at": "2026-09-18T22:49:34.861917+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -720,30 +1020,7 @@
       "status": "active",
       "open_time": "2026-09-17T00:07:00Z",
       "close_time": "2026-09-22T00:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775463+00:00",
-      "lifecycle_stage": "PREGAME"
-    },
-    {
-      "id": "KXNHLTOTAL-26SEP21COLWPG-9",
-      "ticker": "KXNHLTOTAL-26SEP21COLWPG-9",
-      "event_ticker": "KXNHLTOTAL-26SEP21COLWPG",
-      "league": "NHL",
-      "sport": "hockey",
-      "market_kind": "total",
-      "stat_category": null,
-      "title": "Full Game: Over 8.5 goals scored",
-      "team_or_selection": "Over 8.5 goals scored",
-      "team_code": "9",
-      "yes_cents": 46,
-      "no_cents": 54,
-      "american_odds": "+117",
-      "implied_prob": 0.46,
-      "line_value": 8.5,
-      "volume": 0.0,
-      "status": "active",
-      "open_time": "2026-09-18T01:05:00Z",
-      "close_time": "2026-09-24T00:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775470+00:00",
+      "updated_at": "2026-09-18T22:49:34.861930+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -766,7 +1043,7 @@
       "status": "active",
       "open_time": "2026-09-18T01:07:00Z",
       "close_time": "2026-10-04T01:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775477+00:00",
+      "updated_at": "2026-09-18T22:49:34.861943+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -789,7 +1066,7 @@
       "status": "active",
       "open_time": "2026-09-18T01:07:00Z",
       "close_time": "2026-10-04T01:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775484+00:00",
+      "updated_at": "2026-09-18T22:49:34.861954+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -812,7 +1089,7 @@
       "status": "active",
       "open_time": "2026-09-13T04:08:00Z",
       "close_time": "2026-09-29T02:30:00Z",
-      "updated_at": "2026-09-18T22:39:38.775491+00:00",
+      "updated_at": "2026-09-18T22:49:34.861965+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -835,7 +1112,7 @@
       "status": "active",
       "open_time": "2026-09-13T01:07:00Z",
       "close_time": "2026-09-29T01:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775497+00:00",
+      "updated_at": "2026-09-18T22:49:34.861975+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -858,7 +1135,7 @@
       "status": "active",
       "open_time": "2026-09-13T01:07:00Z",
       "close_time": "2026-09-29T00:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775504+00:00",
+      "updated_at": "2026-09-18T22:49:34.861983+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -881,7 +1158,7 @@
       "status": "active",
       "open_time": "2026-09-13T01:07:00Z",
       "close_time": "2026-09-29T00:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775511+00:00",
+      "updated_at": "2026-09-18T22:49:34.861991+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -904,7 +1181,7 @@
       "status": "active",
       "open_time": "2026-09-13T01:07:00Z",
       "close_time": "2026-09-29T00:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775518+00:00",
+      "updated_at": "2026-09-18T22:49:34.861998+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -927,7 +1204,7 @@
       "status": "active",
       "open_time": "2026-09-13T01:07:00Z",
       "close_time": "2026-09-28T23:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775525+00:00",
+      "updated_at": "2026-09-18T22:49:34.862006+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -950,7 +1227,7 @@
       "status": "active",
       "open_time": "2026-09-13T01:07:00Z",
       "close_time": "2026-09-28T23:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775531+00:00",
+      "updated_at": "2026-09-18T22:49:34.862016+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -973,7 +1250,7 @@
       "status": "active",
       "open_time": "2026-09-13T01:07:00Z",
       "close_time": "2026-09-28T22:30:00Z",
-      "updated_at": "2026-09-18T22:39:38.775538+00:00",
+      "updated_at": "2026-09-18T22:49:34.862027+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -996,7 +1273,7 @@
       "status": "active",
       "open_time": "2026-09-13T01:07:00Z",
       "close_time": "2026-09-28T22:30:00Z",
-      "updated_at": "2026-09-18T22:39:38.775545+00:00",
+      "updated_at": "2026-09-18T22:49:34.862038+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -1019,7 +1296,7 @@
       "status": "active",
       "open_time": "2026-09-12T22:08:00Z",
       "close_time": "2026-09-28T19:30:00Z",
-      "updated_at": "2026-09-18T22:39:38.775551+00:00",
+      "updated_at": "2026-09-18T22:49:34.862049+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -1038,11 +1315,11 @@
       "american_odds": "-113",
       "implied_prob": 0.53,
       "line_value": null,
-      "volume": 3871.05,
+      "volume": 3887.49,
       "status": "active",
       "open_time": "2026-09-12T19:07:00Z",
       "close_time": "2026-09-28T17:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775559+00:00",
+      "updated_at": "2026-09-18T22:49:34.862059+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -1065,7 +1342,7 @@
       "status": "active",
       "open_time": "2026-09-12T19:07:00Z",
       "close_time": "2026-09-28T17:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775566+00:00",
+      "updated_at": "2026-09-18T22:49:34.862068+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -1088,7 +1365,7 @@
       "status": "active",
       "open_time": "2026-09-12T19:07:00Z",
       "close_time": "2026-09-28T17:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775572+00:00",
+      "updated_at": "2026-09-18T22:49:34.862078+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -1111,7 +1388,7 @@
       "status": "active",
       "open_time": "2026-09-12T19:07:00Z",
       "close_time": "2026-09-28T17:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775579+00:00",
+      "updated_at": "2026-09-18T22:49:34.862087+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -1134,7 +1411,7 @@
       "status": "active",
       "open_time": "2026-09-12T19:07:00Z",
       "close_time": "2026-09-28T17:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775587+00:00",
+      "updated_at": "2026-09-18T22:49:34.862098+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -1148,62 +1425,39 @@
       "title": "Clemson wins",
       "team_or_selection": "Clemson",
       "team_code": "CLEM",
-      "yes_cents": 57,
-      "no_cents": 43,
-      "american_odds": "-133",
-      "implied_prob": 0.57,
+      "yes_cents": 63,
+      "no_cents": 37,
+      "american_odds": "-170",
+      "implied_prob": 0.63,
       "line_value": null,
-      "volume": 150.89,
+      "volume": 184.13,
       "status": "active",
       "open_time": "2026-09-12T04:08:00Z",
       "close_time": "2026-09-28T02:30:00Z",
-      "updated_at": "2026-09-18T22:39:38.775593+00:00",
+      "updated_at": "2026-09-18T22:49:34.862108+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
-      "id": "KXNFLPASSYDS-26SEP20CARATL-ATLCRUSH13-325",
-      "ticker": "KXNFLPASSYDS-26SEP20CARATL-ATLCRUSH13-325",
-      "event_ticker": "KXNFLPASSYDS-26SEP20CARATL",
+      "id": "KXNFLRECYDS-26SEP21NYGLAR-LARKWILLIAMS23-60",
+      "ticker": "KXNFLRECYDS-26SEP21NYGLAR-LARKWILLIAMS23-60",
+      "event_ticker": "KXNFLRECYDS-26SEP21NYGLAR",
       "league": "NFL",
       "sport": "football",
       "market_kind": "prop",
-      "stat_category": "Passing Yards",
-      "title": "Cooper Rush: 325+ passing yards",
-      "team_or_selection": "Cooper Rush: 325+",
-      "team_code": "325",
-      "yes_cents": 1,
-      "no_cents": 99,
-      "american_odds": "+9900",
-      "implied_prob": 0.01,
-      "line_value": 324.5,
-      "volume": 54.37,
+      "stat_category": "Receiving Yards",
+      "title": "Kyren Williams: 60+ receiving yards",
+      "team_or_selection": "Kyren Williams: 60+",
+      "team_code": "60",
+      "yes_cents": 5,
+      "no_cents": 95,
+      "american_odds": "+1900",
+      "implied_prob": 0.05,
+      "line_value": 59.5,
+      "volume": 0.0,
       "status": "active",
-      "open_time": "2026-09-18T17:15:00Z",
-      "close_time": "2026-09-22T17:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775605+00:00",
-      "lifecycle_stage": "PREGAME"
-    },
-    {
-      "id": "KXNFLPASSYDS-26SEP20NOBAL-NOTSHOUGH6-350",
-      "ticker": "KXNFLPASSYDS-26SEP20NOBAL-NOTSHOUGH6-350",
-      "event_ticker": "KXNFLPASSYDS-26SEP20NOBAL",
-      "league": "NFL",
-      "sport": "football",
-      "market_kind": "prop",
-      "stat_category": "Passing Yards",
-      "title": "Tyler Shough: 350+ passing yards",
-      "team_or_selection": "Tyler Shough: 350+",
-      "team_code": "350",
-      "yes_cents": 8,
-      "no_cents": 92,
-      "american_odds": "+1150",
-      "implied_prob": 0.08,
-      "line_value": 349.5,
-      "volume": 3778.22,
-      "status": "active",
-      "open_time": "2026-09-16T06:15:00Z",
-      "close_time": "2026-09-22T17:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775616+00:00",
+      "open_time": "2026-09-18T22:16:00Z",
+      "close_time": "2026-09-24T00:15:00Z",
+      "updated_at": "2026-09-18T22:49:34.862121+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -1226,7 +1480,7 @@
       "status": "active",
       "open_time": "2026-09-18T20:18:00Z",
       "close_time": "2026-09-24T00:15:00Z",
-      "updated_at": "2026-09-18T22:39:38.775628+00:00",
+      "updated_at": "2026-09-18T22:49:34.862132+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -1249,30 +1503,7 @@
       "status": "active",
       "open_time": "2026-09-17T02:15:00Z",
       "close_time": "2026-09-22T17:00:00Z",
-      "updated_at": "2026-09-18T22:39:38.775638+00:00",
-      "lifecycle_stage": "PREGAME"
-    },
-    {
-      "id": "KXNFLREC-26SEP20SEAARI-SEAJSMITHNJIGBA11-9",
-      "ticker": "KXNFLREC-26SEP20SEAARI-SEAJSMITHNJIGBA11-9",
-      "event_ticker": "KXNFLREC-26SEP20SEAARI",
-      "league": "NFL",
-      "sport": "football",
-      "market_kind": "prop",
-      "stat_category": "Receptions",
-      "title": "Jaxon Smith-Njigba: 9+ receptions",
-      "team_or_selection": "Jaxon Smith-Njigba: 9+",
-      "team_code": "9",
-      "yes_cents": 24,
-      "no_cents": 76,
-      "american_odds": "+317",
-      "implied_prob": 0.24,
-      "line_value": 8.5,
-      "volume": 3.56,
-      "status": "active",
-      "open_time": "2026-09-17T21:19:00Z",
-      "close_time": "2026-09-22T20:25:00Z",
-      "updated_at": "2026-09-18T22:39:38.775648+00:00",
+      "updated_at": "2026-09-18T22:49:34.862144+00:00",
       "lifecycle_stage": "PREGAME"
     }
   ]

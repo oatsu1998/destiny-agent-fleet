@@ -33,6 +33,7 @@ from fetchers.espn_fetcher import fetch_all_sports_odds
 from fetchers.kalshi_fetcher import fetch_sports_markets
 from firewall_agent import OddsSanityFirewall
 from lifecycle_router import GameLifecycleRouter
+from injury_agent import InjuryImpactAgent
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
@@ -211,7 +212,16 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
     # -------------------------------------------------------------------------
     # Lifecycle Queue Execution Dispatch
     # -------------------------------------------------------------------------
-    # 1. PREGAME Dispatch: Run Weather Edge & Props Matrix Hunter
+    # 1. PREGAME Dispatch: Run Weather Edge, Injury Roster Intel & Props Matrix Hunter
+    try:
+        injury_agent = InjuryImpactAgent()
+        injury_snap = injury_agent.scan_all_leagues()
+        total_injuries_found = injury_snap.get("total_injuries", 0)
+    except Exception as i_err:
+        logger.warning(f"Could not complete Injury Agent scan: {i_err}")
+        total_injuries_found = 0
+        injury_snap = {}
+
     try:
         weather_snap = generate_all_stadium_weather()
         venues_count = weather_snap.get("total_venues_scanned", 8)
@@ -284,6 +294,13 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
         agent_name="Atmospheric & Weather Edge Agent 🌦️",
         status="Live",
         records_processed=venues_count,
+        latency_ms=round(elapsed * 1000, 2)
+    )
+    db_manager.update_agent_telemetry(
+        agent_id="injury_agent",
+        agent_name="Injury & Roster Intel 🩹",
+        status="Live",
+        records_processed=injury_snap.get("total_injuries", 0) if 'injury_snap' in locals() else 0,
         latency_ms=round(elapsed * 1000, 2)
     )
     db_manager.update_agent_telemetry(
