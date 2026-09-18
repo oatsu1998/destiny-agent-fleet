@@ -146,6 +146,22 @@ const DEFAULT_AGENTS = [
     mcp_endpoint: "mcp://agents.destiny.net/v1/data-quality",
     mcp_type: "JSON-RPC 2.0 / Audit Engine",
     description: "Evaluates raw provider pulls against 8 strict validation gates, canonical team resolution, SHA-256 deduplication, and book coverage auditing."
+  },
+  {
+    id: "arb_steam_hunter",
+    name: "Line Discrepancy, Arbitrage & Steam Hunter ⚡",
+    avatar: "⚡",
+    status: "Live",
+    role: "Real-Time Discrepancy & Steam Engine",
+    specialty: "Pure Arbs, Middles & Rapid Velocity",
+    markets_tracked: ["Pure Mathematical Arbs", "Market Middles", "Steam Moves (>=1.5 pts / >=25¢)"],
+    last_run: new Date().toISOString(),
+    records_processed: 9,
+    latency_ms: 18,
+    uptime_pct: 100.0,
+    mcp_endpoint: "mcp://agents.destiny.net/v1/arb-hunter",
+    mcp_type: "JSON-RPC 2.0 / Discrepancy Engine",
+    description: "Detects pure mathematical arbitrage across books (<100% implied probability), cross-market middles, and rapid steam velocity line moves."
   }
 ];
 
@@ -155,6 +171,7 @@ export default async function handler(req, res) {
     let snapshotData = null;
     let weatherData = null;
     let qualityData = null;
+    let arbData = null;
 
     // Try reading backend/agent_telemetry.json
     try {
@@ -196,6 +213,16 @@ export default async function handler(req, res) {
       console.warn("Could not read quality_snapshot.json:", e.message);
     }
 
+    // Try reading backend/arb_opportunities.json
+    try {
+      const arbPath = path.join(process.cwd(), 'backend', 'arb_opportunities.json');
+      if (fs.existsSync(arbPath)) {
+        arbData = JSON.parse(fs.readFileSync(arbPath, 'utf8'));
+      }
+    } catch (e) {
+      console.warn("Could not read arb_opportunities.json:", e.message);
+    }
+
     // Merge dynamic telemetry into default agents
     const agents = DEFAULT_AGENTS.map(agent => {
       const liveTel = telemetryData[agent.id];
@@ -225,6 +252,7 @@ export default async function handler(req, res) {
       timestamp: new Date().toISOString(),
       agent_count: agents.length,
       health_report: qualityData || null,
+      arb_summary: arbData || null,
       snapshot_summary: snapshotData ? {
         snapshot_id: snapshotData.snapshot_id,
         total_records: snapshotData.total_markets_processed,

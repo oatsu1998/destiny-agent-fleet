@@ -27,6 +27,7 @@ from normalizer import normalize_market, create_snapshot
 from db import DatabaseManager
 from weather_agent import generate_all_stadium_weather
 from quality_agent import DataQualityAgent
+from arb_agent import ArbitrageSteamAgent
 
 # Configure Logging
 logging.basicConfig(
@@ -137,6 +138,15 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
         logger.warning(f"Could not complete weather ingestion cycle: {w_err}")
         venues_count = 8
 
+    # Run Line Discrepancy, Arbitrage & Steam Movement Discovery Scan
+    try:
+        arb_agent = ArbitrageSteamAgent()
+        arb_summary = arb_agent.scan(records_to_normalize)
+        total_arb_findings = arb_summary.get("total_arbs_found", 0) + arb_summary.get("total_middles_found", 0) + arb_summary.get("total_steam_moves", 0)
+    except Exception as a_err:
+        logger.warning(f"Could not complete Arbitrage & Steam scan: {a_err}")
+        total_arb_findings = 0
+
     # Update Fleet Telemetry
     db_manager.update_agent_telemetry(
         agent_id="kalshi_scraper",
@@ -164,6 +174,13 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
         agent_name="Atmospheric & Weather Edge Agent 🌦️",
         status="Live",
         records_processed=venues_count,
+        latency_ms=round(elapsed * 1000, 2)
+    )
+    db_manager.update_agent_telemetry(
+        agent_id="arb_steam_hunter",
+        agent_name="Line Discrepancy, Arbitrage & Steam Hunter ⚡",
+        status="Live",
+        records_processed=total_arb_findings,
         latency_ms=round(elapsed * 1000, 2)
     )
     db_manager.update_agent_telemetry(
