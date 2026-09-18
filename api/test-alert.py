@@ -1,50 +1,51 @@
 """
 api/test-alert.py
 
-TEMPORARY test endpoint — visit this URL in any browser (including your
-phone) to fire a test Telegram alert. Delete this file once you've
-confirmed alerts are working; it's not part of the real pipeline.
+TEMPORARY test endpoint — visit this URL in any browser to fire a test
+Telegram message. Self-contained (no external packages, no imports from
+other project files) so it builds cleanly on Vercel. Delete once confirmed
+working.
 """
 
 from http.server import BaseHTTPRequestHandler
-import asyncio
-import sys
-import os
+import json
+import urllib.request
+import urllib.error
 
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-
-from backend.alert_webhook import send_alert, AlertType, get_alert_agent
+TELEGRAM_BOT_TOKEN = "8940771064:AAHz6XRKxJrhaciM7yYlHKpGl9xRqGKMPN0"
+TELEGRAM_CHAT_ID = "6168326177"
 
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
+        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+        payload = json.dumps({
+            "chat_id": TELEGRAM_CHAT_ID,
+            "text": "Test alert from Destiny Agent Fleet. If you see this, it's working!",
+        }).encode("utf-8")
+
+        req = urllib.request.Request(
+            url,
+            data=payload,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+
         try:
-            sent = asyncio.run(self._fire())
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                body = resp.read().decode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
-            if sent:
-                msg = '{"status": "sent", "message": "Check Telegram!"}'
-            else:
-                msg = '{"status": "suppressed", "message": "On cooldown — wait 15 min and try again."}'
-            self.wfile.write(msg.encode())
+            self.wfile.write(f'{{"status": "sent", "telegram_response": {body}}}'.encode())
+        except urllib.error.HTTPError as e:
+            err_body = e.read().decode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(f'{{"status": "telegram_error", "details": {err_body}}}'.encode())
         except Exception as e:
-            self.send_response(500)
+            self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             self.wfile.write(f'{{"status": "error", "message": "{str(e)}"}}'.encode())
-
-    async def _fire(self):
-        ok = await send_alert(
-            event_id="phone-test-001",
-            alert_type=AlertType.PURE_ARB,
-            market_type="moneyline",
-            book_pair="DraftKings/Kalshi",
-            line="+150",
-            title="Test alert from phone",
-            detail="If you see this in Telegram, your alert pipeline works!",
-            game="Test Game",
-        )
-        await get_alert_agent().aclose()
-        return ok
-        
