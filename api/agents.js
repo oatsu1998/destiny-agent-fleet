@@ -162,6 +162,22 @@ const DEFAULT_AGENTS = [
     mcp_endpoint: "mcp://agents.destiny.net/v1/arb-hunter",
     mcp_type: "JSON-RPC 2.0 / Discrepancy Engine",
     description: "Detects pure mathematical arbitrage across books (<100% implied probability), cross-market middles, and rapid steam velocity line moves."
+  },
+  {
+    id: "props_matrix_hunter",
+    name: "Player Props Matrix & Cross-Book Hunter 🎯",
+    avatar: "🎯",
+    status: "Active (Cross-Book Prop Ingestion)",
+    role: "Player Prop Ladder Aggregation & Off-Market Edge Engine",
+    specialty: "Cross-Book Props, Prop Arbs, Middles & Ladders",
+    markets_tracked: ["Prop Kingz", "FanDuel", "DraftKings", "BetOnline", "Bovada"],
+    last_run: new Date().toISOString(),
+    records_processed: 42,
+    latency_ms: 22,
+    uptime_pct: 100.0,
+    mcp_endpoint: "mcp://agents.destiny.net/v1/props-hunter",
+    mcp_type: "JSON-RPC 2.0 / Props Matrix Engine",
+    description: "Ingests multi-sport player props, normalizes player identities across books, aggregates side-by-side matrices, and detects prop arbs, middles, and ladder edges."
   }
 ];
 
@@ -172,6 +188,7 @@ export default async function handler(req, res) {
     let weatherData = null;
     let qualityData = null;
     let arbData = null;
+    let propsData = null;
 
     // Try reading backend/agent_telemetry.json
     try {
@@ -223,6 +240,16 @@ export default async function handler(req, res) {
       console.warn("Could not read arb_opportunities.json:", e.message);
     }
 
+    // Try reading backend/props_matrix_latest.json
+    try {
+      const propsPath = path.join(process.cwd(), 'backend', 'props_matrix_latest.json');
+      if (fs.existsSync(propsPath)) {
+        propsData = JSON.parse(fs.readFileSync(propsPath, 'utf8'));
+      }
+    } catch (e) {
+      console.warn("Could not read props_matrix_latest.json:", e.message);
+    }
+
     // Merge dynamic telemetry into default agents
     const agents = DEFAULT_AGENTS.map(agent => {
       const liveTel = telemetryData[agent.id];
@@ -253,6 +280,7 @@ export default async function handler(req, res) {
       agent_count: agents.length,
       health_report: qualityData || null,
       arb_summary: arbData || null,
+      props_matrix_summary: propsData || null,
       snapshot_summary: snapshotData ? {
         snapshot_id: snapshotData.snapshot_id,
         total_records: snapshotData.total_markets_processed,

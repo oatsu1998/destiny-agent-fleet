@@ -3,54 +3,63 @@
     "agent_id": "kalshi_scraper",
     "agent_name": "Kalshi Market Scraper",
     "status": "Live",
-    "last_run": "2026-09-18T04:48:26.114863+00:00",
-    "records_processed": 25,
-    "latency_ms": 354.99,
+    "last_run": "2026-09-18T05:07:40.470750+00:00",
+    "records_processed": 29,
+    "latency_ms": 306.52,
     "uptime_pct": 99.9
   },
   "prop_normalizer": {
     "agent_id": "prop_normalizer",
     "agent_name": "Player Props Normalizer",
     "status": "Live",
-    "last_run": "2026-09-18T04:48:26.115725+00:00",
+    "last_run": "2026-09-18T05:07:40.472296+00:00",
     "records_processed": 3,
-    "latency_ms": 354.99,
+    "latency_ms": 306.52,
     "uptime_pct": 99.9
   },
   "supabase_ingestor": {
     "agent_id": "supabase_ingestor",
     "agent_name": "Supabase DB Ingestor",
     "status": "Live",
-    "last_run": "2026-09-18T04:48:26.119029+00:00",
-    "records_processed": 25,
-    "latency_ms": 354.99,
+    "last_run": "2026-09-18T05:07:40.478571+00:00",
+    "records_processed": 29,
+    "latency_ms": 306.52,
     "uptime_pct": 99.9
   },
   "weather_agent": {
     "agent_id": "weather_agent",
     "agent_name": "Atmospheric & Weather Edge Agent \ud83c\udf26\ufe0f",
     "status": "Live",
-    "last_run": "2026-09-18T04:48:26.117521+00:00",
+    "last_run": "2026-09-18T05:07:40.475189+00:00",
     "records_processed": 8,
-    "latency_ms": 354.99,
+    "latency_ms": 306.52,
     "uptime_pct": 99.9
   },
   "data_quality": {
     "agent_id": "data_quality",
     "agent_name": "Data Quality & Feed Guardian Agent \ud83d\udee1\ufe0f",
     "status": "Active",
-    "last_run": "2026-09-18T04:48:26.116797+00:00",
-    "records_processed": 25,
-    "latency_ms": 354.99,
+    "last_run": "2026-09-18T05:07:40.473718+00:00",
+    "records_processed": 29,
+    "latency_ms": 306.52,
     "uptime_pct": 99.9
   },
   "arb_steam_hunter": {
     "agent_id": "arb_steam_hunter",
     "agent_name": "Line Discrepancy, Arbitrage & Steam Hunter \u26a1",
     "status": "Live",
-    "last_run": "2026-09-18T04:48:26.118313+00:00",
+    "last_run": "2026-09-18T05:07:40.476264+00:00",
     "records_processed": 0,
-    "latency_ms": 354.99,
+    "latency_ms": 306.52,
+    "uptime_pct": 99.9
+  },
+  "props_matrix_hunter": {
+    "agent_id": "props_matrix_hunter",
+    "agent_name": "Player Props Matrix & Cross-Book Hunter \ud83c\udfaf",
+    "status": "Active (Cross-Book Prop Ingestion)",
+    "last_run": "2026-09-18T05:07:40.477268+00:00",
+    "records_processed": 28,
+    "latency_ms": 306.52,
     "uptime_pct": 99.9
   }
 }

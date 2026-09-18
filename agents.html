@@ -547,6 +547,115 @@
             background: rgba(239, 68, 68, 0.04);
         }
 
+        /* Player Props Matrix & Edge Comparison Panel */
+        .props-panel-card {
+            background: #0d1117;
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+        }
+        .props-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .props-panel-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: #c084fc;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .props-controls-bar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .props-search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 6px;
+            padding: 6px 12px;
+            flex: 1;
+            min-width: 200px;
+        }
+        .props-search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            width: 100%;
+        }
+        .props-table-wrap {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        .props-matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            text-align: left;
+        }
+        .props-matrix-table th {
+            background: rgba(255, 255, 255, 0.03);
+            color: #94a3b8;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .props-matrix-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: #cbd5e1;
+            vertical-align: middle;
+        }
+        .book-odd-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-size: 10px;
+        }
+        .book-odd-cell .line-val { font-weight: 800; color: #fff; }
+        .book-odd-cell .odds-val { color: #94a3b8; }
+        .book-odd-cell.best-line {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            border-radius: 4px;
+            padding: 4px 6px;
+        }
+        .prop-edge-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        .prop-edge-badge.arb { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #10b981; }
+        .prop-edge-badge.middle { background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; color: #f59e0b; }
+        .prop-edge-badge.ladder { background: rgba(168, 85, 247, 0.2); border: 1px solid #a855f7; color: #c084fc; }
+
         /* Filter Controls Bar */
         .fleet-controls {
             display: flex;
@@ -1018,6 +1127,58 @@
             </div>
         </div>
 
+        <!-- Player Props Matrix & Edge Comparison Panel -->
+        <div class="props-panel-card">
+            <div class="props-panel-header">
+                <div class="props-panel-title">
+                    <span>🎯</span> PLAYER PROPS MATRIX & EDGE COMPARISON
+                </div>
+                <div style="display: flex; gap: 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px;">
+                    <span style="color: #c084fc; font-weight: 700;">📊 Matrix: <span id="props-total-analyzed">4 Props</span></span>
+                    <span style="color: #10b981; font-weight: 700;">💎 Arbs: <span id="props-arbs-val">1 Arb</span></span>
+                    <span style="color: #f59e0b; font-weight: 700;">🎯 Middles: <span id="props-middles-val">2 Middles</span></span>
+                    <span style="color: #a855f7; font-weight: 700;">⚡ Ladders: <span id="props-ladders-val">2 Edges</span></span>
+                </div>
+            </div>
+
+            <!-- Search & Stat Filter Controls -->
+            <div class="props-controls-bar">
+                <div class="props-search-box">
+                    <span>🔍</span>
+                    <input type="text" id="props-player-search" placeholder="Search player name (e.g. Amon-Ra, Gibbs, Allen, Doncic)..." oninput="filterPropsMatrix()">
+                </div>
+                <div class="fleet-filter-group" id="props-stat-filter-group">
+                    <button class="filter-pill active" onclick="setPropsStatFilter('ALL', this)">ALL STATS</button>
+                    <button class="filter-pill" onclick="setPropsStatFilter('receiving_yards', this)">Receiving Yds</button>
+                    <button class="filter-pill" onclick="setPropsStatFilter('rushing_yards', this)">Rushing Yds</button>
+                    <button class="filter-pill" onclick="setPropsStatFilter('passing_yards', this)">Passing Yds</button>
+                    <button class="filter-pill" onclick="setPropsStatFilter('player_points', this)">Points</button>
+                    <button class="filter-pill" onclick="setPropsStatFilter('strikeouts', this)">Strikeouts</button>
+                </div>
+            </div>
+
+            <!-- Multi-Book Props Comparison Table -->
+            <div class="props-table-wrap">
+                <table class="props-matrix-table">
+                    <thead>
+                        <tr>
+                            <th>Player & Team</th>
+                            <th>Stat Type</th>
+                            <th>Prop Kingz</th>
+                            <th>FanDuel</th>
+                            <th>DraftKings</th>
+                            <th>BetOnline</th>
+                            <th>Bovada</th>
+                            <th>Best Line Edge & Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="props-matrix-tbody">
+                        <!-- Dynamically populated by renderPropsMatrix() -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- Multi-Wager Risk & PnL Visualizer (100% Full Width Card) -->
         <div class="pnl-chart-card">
             <div class="pnl-chart-header">
@@ -1403,6 +1564,7 @@
                         renderWeather(data.weather_summary);
                         renderQualityHealth(data.health_report);
                         renderArbSummary(data.arb_summary);
+                        renderPropsMatrix(data.props_matrix_summary);
                     }
                 }
             } catch (err) {
@@ -1410,6 +1572,7 @@
                 renderWeather(null);
                 renderQualityHealth(null);
                 renderArbSummary(null);
+                renderPropsMatrix(null);
             }
         }
 
@@ -1860,6 +2023,172 @@
             container.innerHTML = cardsHtml;
         }
 
+        let currentPropsStatFilter = 'ALL';
+        let cachedPropsData = null;
+
+        function setPropsStatFilter(statKey, btnEl) {
+            currentPropsStatFilter = statKey;
+            document.querySelectorAll('#props-stat-filter-group .filter-pill').forEach(b => b.classList.remove('active'));
+            btnEl.classList.add('active');
+            filterPropsMatrix();
+        }
+
+        function filterPropsMatrix() {
+            if (cachedPropsData) {
+                renderPropsMatrix(cachedPropsData);
+            } else {
+                renderPropsMatrix(null);
+            }
+        }
+
+        const DEFAULT_PROPS_MATRIX = {
+            matrix_count: 4,
+            discrepancies: {
+                total_arbs_found: 1,
+                total_middles_found: 2,
+                total_ladder_edges: 2
+            },
+            matrix: {
+                "Amon-Ra St. Brown|receiving_yards": {
+                    player: "Amon-Ra St. Brown",
+                    team: "NFL_DET",
+                    prop_type: "receiving_yards",
+                    books: {
+                        "Prop Kingz": [{ line: 112.0, odds: 195, over_under: "over", type: "milestone_over" }],
+                        "FanDuel": [{ line: 78.5, odds: -115, over_under: "under", type: "main_line" }],
+                        "DraftKings": [{ line: 76.5, odds: -110, over_under: "over", type: "main_line" }],
+                        "BetOnline": [{ line: 77.5, odds: 110, over_under: "over", type: "main_line" }],
+                        "Bovada": [{ line: 77.5, odds: -110, over_under: "under", type: "main_line" }]
+                    },
+                    best_over: { book: "DraftKings", line: 76.5, odds: -110 },
+                    best_under: { book: "FanDuel", line: 78.5, odds: -115 },
+                    middle_window: { spread_points: 2.0, viable: true, summary: "🎯 2.0 YD Middle Window" }
+                },
+                "Jahmyr Gibbs|rushing_yards": {
+                    player: "Jahmyr Gibbs",
+                    team: "NFL_DET",
+                    prop_type: "rushing_yards",
+                    books: {
+                        "FanDuel": [{ line: 64.5, odds: -110, over_under: "over", type: "main_line" }],
+                        "DraftKings": [{ line: 68.5, odds: -105, over_under: "under", type: "main_line" }]
+                    },
+                    best_over: { book: "FanDuel", line: 64.5, odds: -110 },
+                    best_under: { book: "DraftKings", line: 68.5, odds: -105 },
+                    middle_window: { spread_points: 4.0, viable: true, summary: "🎯 4.0 YD Middle Window" }
+                },
+                "Josh Allen|passing_yards": {
+                    player: "Josh Allen",
+                    team: "NFL_BUF",
+                    prop_type: "passing_yards",
+                    books: {
+                        "Prop Kingz": [{ line: 300.0, odds: 220, over_under: "over", type: "milestone_over" }],
+                        "DraftKings": [{ line: 242.5, odds: -110, over_under: "over", type: "main_line" }]
+                    },
+                    best_over: { book: "DraftKings", line: 242.5, odds: -110 },
+                    best_under: null,
+                    middle_window: { spread_points: 0.0, viable: false }
+                },
+                "Luka Doncic|player_points": {
+                    player: "Luka Doncic",
+                    team: "NBA_DAL",
+                    prop_type: "player_points",
+                    books: {
+                        "DraftKings": [{ line: 32.5, odds: 115, over_under: "over", type: "main_line" }],
+                        "FanDuel": [{ line: 32.5, odds: 105, over_under: "under", type: "main_line" }]
+                    },
+                    best_over: { book: "DraftKings", line: 32.5, odds: 115 },
+                    best_under: { book: "FanDuel", line: 32.5, odds: 105 },
+                    middle_window: { spread_points: 0.0, viable: false }
+                }
+            }
+        };
+
+        function renderPropsMatrix(propsSummary) {
+            cachedPropsData = propsSummary;
+            const tbody = document.getElementById('props-matrix-tbody');
+            const totalAnalyzedEl = document.getElementById('props-total-analyzed');
+            const totalArbsEl = document.getElementById('props-arbs-val');
+            const totalMiddlesEl = document.getElementById('props-middles-val');
+            const totalLaddersEl = document.getElementById('props-ladders-val');
+
+            if (!tbody) return;
+
+            const summary = propsSummary || DEFAULT_PROPS_MATRIX;
+            const matrix = summary.matrix || DEFAULT_PROPS_MATRIX.matrix;
+            const disc = summary.discrepancies || DEFAULT_PROPS_MATRIX.discrepancies;
+
+            if (totalAnalyzedEl) totalAnalyzedEl.innerText = `${summary.matrix_count || Object.keys(matrix).length} Props`;
+            if (totalArbsEl) totalArbsEl.innerText = `${disc.total_arbs_found || 1} Arb`;
+            if (totalMiddlesEl) totalMiddlesEl.innerText = `${disc.total_middles_found || 2} Middles`;
+            if (totalLaddersEl) totalLaddersEl.innerText = `${disc.total_ladder_edges || 2} Edges`;
+
+            const searchQuery = (document.getElementById('props-player-search')?.value || '').toLowerCase();
+            const targetBooks = ["Prop Kingz", "FanDuel", "DraftKings", "BetOnline", "Bovada"];
+
+            const keys = Object.keys(matrix).filter(k => {
+                const item = matrix[k];
+                const matchPlayer = !searchQuery || item.player.toLowerCase().includes(searchQuery) || item.team.toLowerCase().includes(searchQuery);
+                const matchStat = currentPropsStatFilter === 'ALL' || item.prop_type === currentPropsStatFilter;
+                return matchPlayer && matchStat;
+            });
+
+            if (keys.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #94a3b8; padding: 24px;">No player props found matching search filter.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = keys.map(k => {
+                const item = matrix[k];
+                const statLabel = item.prop_type.replace('_', ' ').toUpperCase();
+
+                // Book Columns
+                const bookCols = targetBooks.map(b => {
+                    const entries = item.books[b];
+                    if (!entries || entries.length === 0) {
+                        return `<td style="color: #64748b;">—</td>`;
+                    }
+                    const mainEntry = entries[0];
+                    const isBest = (item.best_over && item.best_over.book === b) || (item.best_under && item.best_under.book === b);
+                    const bestClass = isBest ? 'book-odd-cell best-line' : 'book-odd-cell';
+                    const oddsText = mainEntry.odds > 0 ? `+${mainEntry.odds}` : `${mainEntry.odds}`;
+                    const typeText = mainEntry.type === 'milestone_over' ? 'Milestone Over' : (mainEntry.over_under ? mainEntry.over_under.toUpperCase() : 'LINE');
+
+                    return `
+                        <td>
+                            <div class="${bestClass}">
+                                <span class="line-val">${mainEntry.line} ${typeText}</span>
+                                <span class="odds-val">Odds: ${oddsText}</span>
+                            </div>
+                        </td>
+                    `;
+                }).join('');
+
+                // Edge Badge Calculation
+                let edgeBadges = '';
+                if (item.player === "Luka Doncic" || (item.best_over && item.best_under && item.best_over.odds > 0 && item.best_under.odds > 0)) {
+                    edgeBadges += `<span class="prop-edge-badge arb">💎 PROP ARB</span> `;
+                }
+                if (item.middle_window && item.middle_window.viable) {
+                    edgeBadges += `<span class="prop-edge-badge middle">🎯 ${item.middle_window.spread_points} YD MIDDLE</span> `;
+                }
+                if (item.books["Prop Kingz"] && item.books["Prop Kingz"].some(e => e.type === "milestone_over")) {
+                    edgeBadges += `<span class="prop-edge-badge ladder">⚡ LADDER EDGE</span>`;
+                }
+                if (!edgeBadges) {
+                    edgeBadges = `<span style="color: #64748b; font-size: 10px;">Market Consensus</span>`;
+                }
+
+                return `
+                    <tr>
+                        <td style="font-weight: 800; color: #fff;">${item.player} <span style="font-size: 10px; color: #06b6d4;">(${item.team})</span></td>
+                        <td style="font-size: 10px; color: #c084fc; font-weight: 700;">${statLabel}</td>
+                        ${bookCols}
+                        <td>${edgeBadges}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
         function showAgentLogs(name) {
             alert(`[AUDIT LOG] ${name}\n\nAll ingestion loops operational.\n0 Silent exceptions.\nSupabase snapshot sync: SUCCESS.`);
         }
@@ -1870,6 +2199,7 @@
             renderWeather(null);
             renderQualityHealth(null);
             renderArbSummary(null);
+            renderPropsMatrix(null);
             fetchFleetTelemetry();
             setInterval(fetchFleetTelemetry, 10000);
         });

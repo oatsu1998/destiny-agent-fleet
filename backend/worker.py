@@ -28,6 +28,7 @@ from db import DatabaseManager
 from weather_agent import generate_all_stadium_weather
 from quality_agent import DataQualityAgent
 from arb_agent import ArbitrageSteamAgent
+from props_hunter_agent import PropsHunterAgent
 
 # Configure Logging
 logging.basicConfig(
@@ -147,6 +148,15 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
         logger.warning(f"Could not complete Arbitrage & Steam scan: {a_err}")
         total_arb_findings = 0
 
+    # Run Player Props Matrix & Cross-Book Line Hunter Scan
+    try:
+        props_hunter = PropsHunterAgent()
+        props_summary = props_hunter.scan(records_to_normalize)
+        total_props_findings = props_summary.get("matrix_count", 0)
+    except Exception as p_err:
+        logger.warning(f"Could not complete Props Hunter scan: {p_err}")
+        total_props_findings = 0
+
     # Update Fleet Telemetry
     db_manager.update_agent_telemetry(
         agent_id="kalshi_scraper",
@@ -181,6 +191,13 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
         agent_name="Line Discrepancy, Arbitrage & Steam Hunter ⚡",
         status="Live",
         records_processed=total_arb_findings,
+        latency_ms=round(elapsed * 1000, 2)
+    )
+    db_manager.update_agent_telemetry(
+        agent_id="props_matrix_hunter",
+        agent_name="Player Props Matrix & Cross-Book Hunter 🎯",
+        status="Active (Cross-Book Prop Ingestion)",
+        records_processed=total_props_findings,
         latency_ms=round(elapsed * 1000, 2)
     )
     db_manager.update_agent_telemetry(

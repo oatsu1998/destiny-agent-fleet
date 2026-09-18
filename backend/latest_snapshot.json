@@ -1,15 +1,15 @@
 {
-  "snapshot_id": "snap_1789706905",
-  "timestamp": "2026-09-18T04:48:25.002087+00:00",
-  "total_markets_processed": 25,
+  "snapshot_id": "snap_1789708057",
+  "timestamp": "2026-09-18T05:07:37.084857+00:00",
+  "total_markets_processed": 29,
   "leagues_covered": [
     "MLB",
-    "NCAAF",
+    "NBA",
     "NFL",
     "NHL",
     "WNBA"
   ],
-  "execution_latency_ms": 354.99,
+  "execution_latency_ms": 306.52,
   "records": [
     {
       "id": "KXMLBSPREAD-26SEP181915PHINYM-PHI4",
@@ -30,7 +30,7 @@
       "status": "active",
       "open_time": "2026-09-18T03:20:00Z",
       "close_time": "2026-09-21T23:15:00Z",
-      "updated_at": "2026-09-18T04:48:25.001804+00:00"
+      "updated_at": "2026-09-18T05:07:37.084398+00:00"
     },
     {
       "id": "KXMLBSPREAD-26SEP181915PHINYM-NYM4",
@@ -51,7 +51,7 @@
       "status": "active",
       "open_time": "2026-09-18T03:20:00Z",
       "close_time": "2026-09-21T23:15:00Z",
-      "updated_at": "2026-09-18T04:48:25.001835+00:00"
+      "updated_at": "2026-09-18T05:07:37.084440+00:00"
     },
     {
       "id": "KXMLBSPREAD-26SEP182010ATLHOU-HOU4",
@@ -72,7 +72,7 @@
       "status": "active",
       "open_time": "2026-09-17T23:00:00Z",
       "close_time": "2026-09-22T00:10:00Z",
-      "updated_at": "2026-09-18T04:48:25.001847+00:00"
+      "updated_at": "2026-09-18T05:07:37.084458+00:00"
     },
     {
       "id": "KXMLBSPREAD-26SEP182010ATLHOU-ATL4",
@@ -93,7 +93,28 @@
       "status": "active",
       "open_time": "2026-09-17T23:00:00Z",
       "close_time": "2026-09-22T00:10:00Z",
-      "updated_at": "2026-09-18T04:48:25.001857+00:00"
+      "updated_at": "2026-09-18T05:07:37.084472+00:00"
+    },
+    {
+      "id": "KXMLBTOTAL-26SEP181915PHINYM-9",
+      "ticker": "KXMLBTOTAL-26SEP181915PHINYM-9",
+      "event_ticker": "KXMLBTOTAL-26SEP181915PHINYM",
+      "league": "MLB",
+      "market_kind": "total",
+      "stat_category": null,
+      "title": "Over 8.5 runs scored",
+      "team_or_selection": "Over 8.5 runs scored",
+      "team_code": "9",
+      "yes_cents": 50,
+      "no_cents": 50,
+      "american_odds": "+100",
+      "implied_prob": 0.5,
+      "line_value": 8.5,
+      "volume": 147.43,
+      "status": "active",
+      "open_time": "2026-09-18T03:20:00Z",
+      "close_time": "2026-09-21T23:15:00Z",
+      "updated_at": "2026-09-18T05:07:37.084487+00:00"
     },
     {
       "id": "KXNFLGAME-26SEP28PHICHI-PHI",
@@ -114,7 +135,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-10-01T00:15:00Z",
-      "updated_at": "2026-09-18T04:48:25.001869+00:00"
+      "updated_at": "2026-09-18T05:07:37.084503+00:00"
     },
     {
       "id": "KXNFLGAME-26SEP28PHICHI-CHI",
@@ -131,11 +152,11 @@
       "american_odds": "-113",
       "implied_prob": 0.53,
       "line_value": null,
-      "volume": 5995.71,
+      "volume": 6015.78,
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-10-01T00:15:00Z",
-      "updated_at": "2026-09-18T04:48:25.001878+00:00"
+      "updated_at": "2026-09-18T05:07:37.084516+00:00"
     },
     {
       "id": "KXNFLGAME-26SEP27LARDEN-LAR",
@@ -147,16 +168,16 @@
       "title": "Los Angeles R wins",
       "team_or_selection": "Los Angeles R",
       "team_code": "LAR",
-      "yes_cents": 55,
-      "no_cents": 45,
-      "american_odds": "-122",
-      "implied_prob": 0.55,
+      "yes_cents": 56,
+      "no_cents": 44,
+      "american_odds": "-127",
+      "implied_prob": 0.56,
       "line_value": null,
-      "volume": 1459.74,
+      "volume": 1471.86,
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-09-30T00:20:00Z",
-      "updated_at": "2026-09-18T04:48:25.001886+00:00"
+      "updated_at": "2026-09-18T05:07:37.084529+00:00"
     },
     {
       "id": "KXNFLGAME-26SEP27BALDAL-DAL",
@@ -173,11 +194,11 @@
       "american_odds": "+150",
       "implied_prob": 0.4,
       "line_value": null,
-      "volume": 1165.4,
+      "volume": 1261.36,
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-09-29T20:25:00Z",
-      "updated_at": "2026-09-18T04:48:25.001894+00:00"
+      "updated_at": "2026-09-18T05:07:37.084540+00:00"
     },
     {
       "id": "KXNFLGAME-26SEP27BALDAL-BAL",
@@ -198,7 +219,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-09-29T20:25:00Z",
-      "updated_at": "2026-09-18T04:48:25.001901+00:00"
+      "updated_at": "2026-09-18T05:07:37.084552+00:00"
     },
     {
       "id": "KXNFLGAME-26SEP27ARISF-SF",
@@ -219,7 +240,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-09-29T20:05:00Z",
-      "updated_at": "2026-09-18T04:48:25.001909+00:00"
+      "updated_at": "2026-09-18T05:07:37.084564+00:00"
     },
     {
       "id": "KXNFLGAME-26SEP27LACBUF-BUF",
@@ -236,11 +257,11 @@
       "american_odds": "-245",
       "implied_prob": 0.71,
       "line_value": null,
-      "volume": 7838.92,
+      "volume": 7845.76,
       "status": "active",
       "open_time": "2026-09-15T16:15:00Z",
       "close_time": "2026-09-29T17:00:00Z",
-      "updated_at": "2026-09-18T04:48:25.001917+00:00"
+      "updated_at": "2026-09-18T05:07:37.084576+00:00"
     },
     {
       "id": "KXNFLGAME-26SEP27KCMIA-KC",
@@ -252,16 +273,16 @@
       "title": "Kansas City wins",
       "team_or_selection": "Kansas City",
       "team_code": "KC",
-      "yes_cents": 84,
-      "no_cents": 16,
-      "american_odds": "-525",
-      "implied_prob": 0.84,
+      "yes_cents": 82,
+      "no_cents": 18,
+      "american_odds": "-456",
+      "implied_prob": 0.82,
       "line_value": null,
-      "volume": 5867.86,
+      "volume": 5870.21,
       "status": "active",
       "open_time": "2026-09-15T16:15:00Z",
       "close_time": "2026-09-29T17:00:00Z",
-      "updated_at": "2026-09-18T04:48:25.001925+00:00"
+      "updated_at": "2026-09-18T05:07:37.084588+00:00"
     },
     {
       "id": "KXNFLGAME-26SEP24ATLGB-GB",
@@ -282,7 +303,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:15:00Z",
       "close_time": "2026-09-27T00:15:00Z",
-      "updated_at": "2026-09-18T04:48:25.001932+00:00"
+      "updated_at": "2026-09-18T05:07:37.084600+00:00"
     },
     {
       "id": "KXNFLSPREAD-26SEP24ATLGB-GB8",
@@ -294,16 +315,16 @@
       "title": "GB Packers wins by over 7.5 points?",
       "team_or_selection": "GB Packers wins by over 7.5 points",
       "team_code": "GB8",
-      "yes_cents": 43,
-      "no_cents": 57,
-      "american_odds": "+133",
-      "implied_prob": 0.43,
+      "yes_cents": 44,
+      "no_cents": 56,
+      "american_odds": "+127",
+      "implied_prob": 0.44,
       "line_value": 7.5,
       "volume": 0.0,
       "status": "active",
       "open_time": "2026-09-18T01:05:00Z",
       "close_time": "2026-09-27T00:15:00Z",
-      "updated_at": "2026-09-18T04:48:25.001940+00:00"
+      "updated_at": "2026-09-18T05:07:37.084618+00:00"
     },
     {
       "id": "KXNFLSPREAD-26SEP24ATLGB-ATL8",
@@ -315,16 +336,16 @@
       "title": "ATL Falcons wins by over 7.5 points?",
       "team_or_selection": "ATL Falcons wins by over 7.5 points",
       "team_code": "ATL8",
-      "yes_cents": 15,
-      "no_cents": 85,
-      "american_odds": "+567",
-      "implied_prob": 0.15,
+      "yes_cents": 10,
+      "no_cents": 90,
+      "american_odds": "+900",
+      "implied_prob": 0.1,
       "line_value": 7.5,
       "volume": 0.0,
       "status": "active",
       "open_time": "2026-09-18T01:05:00Z",
       "close_time": "2026-09-27T00:15:00Z",
-      "updated_at": "2026-09-18T04:48:25.001950+00:00"
+      "updated_at": "2026-09-18T05:07:37.084631+00:00"
     },
     {
       "id": "KXNFLSPREAD-26SEP20WASDAL-DAL8",
@@ -345,7 +366,7 @@
       "status": "active",
       "open_time": "2026-09-14T07:05:00Z",
       "close_time": "2026-09-22T20:25:00Z",
-      "updated_at": "2026-09-18T04:48:25.001958+00:00"
+      "updated_at": "2026-09-18T05:07:37.084644+00:00"
     },
     {
       "id": "KXNFLSPREAD-26SEP20NOBAL-BAL9",
@@ -357,16 +378,16 @@
       "title": "Baltimore wins by over 8.5 points?",
       "team_or_selection": "Baltimore wins by over 8.5 points",
       "team_code": "BAL9",
-      "yes_cents": 49,
-      "no_cents": 51,
-      "american_odds": "+104",
-      "implied_prob": 0.49,
+      "yes_cents": 48,
+      "no_cents": 52,
+      "american_odds": "+108",
+      "implied_prob": 0.48,
       "line_value": 8.5,
-      "volume": 16623.98,
+      "volume": 16775.26,
       "status": "active",
       "open_time": "2026-09-14T01:05:00Z",
       "close_time": "2026-09-22T17:00:00Z",
-      "updated_at": "2026-09-18T04:48:25.001966+00:00"
+      "updated_at": "2026-09-18T05:07:37.084655+00:00"
     },
     {
       "id": "KXNFLSPREAD-26SEP20MINCHI-CHI8",
@@ -383,11 +404,74 @@
       "american_odds": "+163",
       "implied_prob": 0.38,
       "line_value": 7.5,
-      "volume": 1018.08,
+      "volume": 1068.52,
       "status": "active",
       "open_time": "2026-09-14T01:05:00Z",
       "close_time": "2026-09-22T17:00:00Z",
-      "updated_at": "2026-09-18T04:48:25.001974+00:00"
+      "updated_at": "2026-09-18T05:07:37.084668+00:00"
+    },
+    {
+      "id": "KXNBAGAME-26OCT20OKCSAS-SAS",
+      "ticker": "KXNBAGAME-26OCT20OKCSAS-SAS",
+      "event_ticker": "KXNBAGAME-26OCT20OKCSAS",
+      "league": "NBA",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "San Antonio wins",
+      "team_or_selection": "San Antonio",
+      "team_code": "SAS",
+      "yes_cents": 53,
+      "no_cents": 47,
+      "american_odds": "-113",
+      "implied_prob": 0.53,
+      "line_value": null,
+      "volume": 5505.58,
+      "status": "active",
+      "open_time": "2026-08-20T15:28:00Z",
+      "close_time": "2026-10-23T01:30:00Z",
+      "updated_at": "2026-09-18T05:07:37.084681+00:00"
+    },
+    {
+      "id": "KXNBAGAME-26OCT20PHINYK-PHI",
+      "ticker": "KXNBAGAME-26OCT20PHINYK-PHI",
+      "event_ticker": "KXNBAGAME-26OCT20PHINYK",
+      "league": "NBA",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Philadelphia wins",
+      "team_or_selection": "Philadelphia",
+      "team_code": "PHI",
+      "yes_cents": 41,
+      "no_cents": 59,
+      "american_odds": "+144",
+      "implied_prob": 0.41,
+      "line_value": null,
+      "volume": 29850.36,
+      "status": "active",
+      "open_time": "2026-08-20T15:28:00Z",
+      "close_time": "2026-10-22T23:00:00Z",
+      "updated_at": "2026-09-18T05:07:37.084692+00:00"
+    },
+    {
+      "id": "KXNBAGAME-26OCT20BOSDET-BOS",
+      "ticker": "KXNBAGAME-26OCT20BOSDET-BOS",
+      "event_ticker": "KXNBAGAME-26OCT20BOSDET",
+      "league": "NBA",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Boston wins",
+      "team_or_selection": "Boston",
+      "team_code": "BOS",
+      "yes_cents": 49,
+      "no_cents": 51,
+      "american_odds": "+104",
+      "implied_prob": 0.49,
+      "line_value": null,
+      "volume": 17070.2,
+      "status": "active",
+      "open_time": "2026-08-20T15:28:00Z",
+      "close_time": "2026-10-22T19:00:00Z",
+      "updated_at": "2026-09-18T05:07:37.084703+00:00"
     },
     {
       "id": "KXNHLGAME-26SEP21COLWPG-WPG",
@@ -399,16 +483,16 @@
       "title": "Winnipeg wins",
       "team_or_selection": "Winnipeg",
       "team_code": "WPG",
-      "yes_cents": 52,
-      "no_cents": 48,
-      "american_odds": "-108",
-      "implied_prob": 0.52,
+      "yes_cents": 51,
+      "no_cents": 49,
+      "american_odds": "-104",
+      "implied_prob": 0.51,
       "line_value": null,
       "volume": 0.0,
       "status": "active",
       "open_time": "2026-09-18T01:05:00Z",
       "close_time": "2026-09-24T00:00:00Z",
-      "updated_at": "2026-09-18T04:48:25.001983+00:00"
+      "updated_at": "2026-09-18T05:07:37.084717+00:00"
     },
     {
       "id": "KXNHLSPREAD-26SEP21COLWPG-WPG3",
@@ -429,28 +513,28 @@
       "status": "active",
       "open_time": "2026-09-18T01:05:00Z",
       "close_time": "2026-09-24T00:00:00Z",
-      "updated_at": "2026-09-18T04:48:25.001992+00:00"
+      "updated_at": "2026-09-18T05:07:37.084731+00:00"
     },
     {
-      "id": "KXNCAAFGAME-26OCT01UNTTLSA-UNT",
-      "ticker": "KXNCAAFGAME-26OCT01UNTTLSA-UNT",
-      "event_ticker": "KXNCAAFGAME-26OCT01UNTTLSA",
-      "league": "NCAAF",
-      "market_kind": "game",
+      "id": "KXNHLTOTAL-26SEP21COLWPG-9",
+      "ticker": "KXNHLTOTAL-26SEP21COLWPG-9",
+      "event_ticker": "KXNHLTOTAL-26SEP21COLWPG",
+      "league": "NHL",
+      "market_kind": "total",
       "stat_category": null,
-      "title": "North Texas wins",
-      "team_or_selection": "North Texas",
-      "team_code": "UNT",
-      "yes_cents": 50,
-      "no_cents": 50,
-      "american_odds": "+100",
-      "implied_prob": 0.5,
-      "line_value": null,
+      "title": "Full Game: Over 8.5 goals scored",
+      "team_or_selection": "Over 8.5 goals scored",
+      "team_code": "9",
+      "yes_cents": 46,
+      "no_cents": 54,
+      "american_odds": "+117",
+      "implied_prob": 0.46,
+      "line_value": 8.5,
       "volume": 0.0,
       "status": "active",
-      "open_time": "2026-09-18T01:07:00Z",
-      "close_time": "2026-10-04T01:00:00Z",
-      "updated_at": "2026-09-18T04:48:25.002001+00:00"
+      "open_time": "2026-09-18T01:05:00Z",
+      "close_time": "2026-09-24T00:00:00Z",
+      "updated_at": "2026-09-18T05:07:37.084745+00:00"
     },
     {
       "id": "KXWNBAGAME-26SEP20SEALV-SEA",
@@ -471,28 +555,28 @@
       "status": "active",
       "open_time": "2026-09-18T01:10:00Z",
       "close_time": "2026-09-23T01:00:00Z",
-      "updated_at": "2026-09-18T04:48:25.002009+00:00"
+      "updated_at": "2026-09-18T05:07:37.084756+00:00"
     },
     {
-      "id": "KXNFLRSHYDS-26SEP20NOBAL-NOTSHOUGH6-50",
-      "ticker": "KXNFLRSHYDS-26SEP20NOBAL-NOTSHOUGH6-50",
-      "event_ticker": "KXNFLRSHYDS-26SEP20NOBAL",
+      "id": "KXNFLRECYDS-26SEP20SEAARI-SEACKUPP10-80",
+      "ticker": "KXNFLRECYDS-26SEP20SEAARI-SEACKUPP10-80",
+      "event_ticker": "KXNFLRECYDS-26SEP20SEAARI",
       "league": "NFL",
       "market_kind": "prop",
-      "stat_category": "Rushing Yards",
-      "title": "Tyler Shough: 50+ rushing yards",
-      "team_or_selection": "Tyler Shough: 50+",
-      "team_code": "50",
-      "yes_cents": 3,
-      "no_cents": 97,
-      "american_odds": "+3233",
-      "implied_prob": 0.03,
-      "line_value": 49.5,
+      "stat_category": "Receiving Yards",
+      "title": "Cooper Kupp: 80+ receiving yards",
+      "team_or_selection": "Cooper Kupp: 80+",
+      "team_code": "80",
+      "yes_cents": 5,
+      "no_cents": 95,
+      "american_odds": "+1900",
+      "implied_prob": 0.05,
+      "line_value": 79.5,
       "volume": 0.0,
       "status": "active",
-      "open_time": "2026-09-17T23:15:00Z",
-      "close_time": "2026-09-22T17:00:00Z",
-      "updated_at": "2026-09-18T04:48:25.002018+00:00"
+      "open_time": "2026-09-18T00:16:00Z",
+      "close_time": "2026-09-22T20:25:00Z",
+      "updated_at": "2026-09-18T05:07:37.084766+00:00"
     },
     {
       "id": "KXNFLRECYDS-26SEP20PHITEN-PHIDGOEDERT88-110",
@@ -513,7 +597,7 @@
       "status": "active",
       "open_time": "2026-09-17T02:15:00Z",
       "close_time": "2026-09-22T17:00:00Z",
-      "updated_at": "2026-09-18T04:48:25.002026+00:00"
+      "updated_at": "2026-09-18T05:07:37.084775+00:00"
     },
     {
       "id": "KXNFLRECYDS-26SEP20CLETB-TBEEGBUKA2-130",
@@ -534,7 +618,7 @@
       "status": "active",
       "open_time": "2026-09-17T00:16:00Z",
       "close_time": "2026-09-22T17:00:00Z",
-      "updated_at": "2026-09-18T04:48:25.002033+00:00"
+      "updated_at": "2026-09-18T05:07:37.084783+00:00"
     }
   ]
 }
