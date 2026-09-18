@@ -251,6 +251,19 @@ class ArbitrageSteamAgent:
         }
 
         self._archive_arb_snapshot(result_summary)
+
+        # Evaluate & dispatch outbound webhooks (Discord / Telegram)
+        try:
+            from alert_webhook import AlertWebhookManager
+            webhook_mgr = AlertWebhookManager()
+            alerts_sent = webhook_mgr.evaluate_and_send(result_summary)
+            result_summary["alerts_sent"] = alerts_sent
+            result_summary["webhook_status"] = "Active" if webhook_mgr.discord_url else "Dry-Run"
+        except Exception as w_err:
+            logger.warning(f"Could not dispatch alert webhooks: {w_err}")
+            result_summary["alerts_sent"] = 0
+            result_summary["webhook_status"] = "Disabled"
+
         logger.info(f"Scan Complete: Arbs: {len(arbs)} | Middles: {len(middles)} | Steam Moves: {len(steam)}")
         return result_summary
 

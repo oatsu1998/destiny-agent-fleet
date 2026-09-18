@@ -1,21 +1,21 @@
 {
-  "cycle_count": 8,
+  "cycle_count": 9,
   "lines_history": {
     "MLB_20260918_MLB_LAD@MLB_LAD|game|Consensus": {
       "last_val": 0.0,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 3
     },
     "MLB_20260918_AWAY@HOME|game|Consensus": {
       "last_val": 0.0,
-      "unchanged_cycles": 3
+      "unchanged_cycles": 6
     },
     "MLB_20260918_MLB_HOU@MLB_HOU|game|Consensus": {
       "last_val": 0.0,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 3
     },
     "MLB_20260918_MLB_ATL@MLB_ATL|game|Consensus": {
       "last_val": 0.0,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 3
     },
     "NBA_20260918_AWAY@HOME|game|Consensus": {
       "last_val": 0.0,
@@ -31,7 +31,7 @@
     },
     "NHL_20260918_AWAY@HOME|game|Consensus": {
       "last_val": 0.0,
-      "unchanged_cycles": 5
+      "unchanged_cycles": 6
     },
     "NCAAF_20260918_AWAY@HOME|game|Consensus": {
       "last_val": 0.0,
@@ -43,71 +43,71 @@
     },
     "NFL_20260918_NFL_DAL@NFL_DAL|game|Consensus": {
       "last_val": 0.0,
-      "unchanged_cycles": 4
+      "unchanged_cycles": 6
     },
     "NFL_20260918_NFL_GB@NFL_GB|game|Consensus": {
       "last_val": 0.0,
-      "unchanged_cycles": 4
+      "unchanged_cycles": 6
     },
     "NFL_20260918_NFL_CHI@NFL_CHI|game|Consensus": {
       "last_val": 0.0,
-      "unchanged_cycles": 3
+      "unchanged_cycles": 5
     },
     "401816975|game|ESPN Consensus": {
       "last_val": -110,
-      "unchanged_cycles": 2
+      "unchanged_cycles": 3
     },
     "401816974|game|ESPN Consensus": {
       "last_val": -110,
-      "unchanged_cycles": 2
+      "unchanged_cycles": 3
     },
     "401816973|game|ESPN Consensus": {
       "last_val": -110,
-      "unchanged_cycles": 2
+      "unchanged_cycles": 3
     },
     "401816980|game|ESPN Consensus": {
       "last_val": -110,
-      "unchanged_cycles": 2
+      "unchanged_cycles": 3
     },
     "401816976|game|ESPN Consensus": {
       "last_val": -110,
-      "unchanged_cycles": 2
+      "unchanged_cycles": 3
     },
     "401816979|game|ESPN Consensus": {
       "last_val": -110,
-      "unchanged_cycles": 2
+      "unchanged_cycles": 3
     },
     "401816978|game|ESPN Consensus": {
       "last_val": -110,
-      "unchanged_cycles": 2
+      "unchanged_cycles": 3
     },
     "401816977|game|ESPN Consensus": {
       "last_val": -110,
-      "unchanged_cycles": 2
+      "unchanged_cycles": 3
     },
     "401816981|game|ESPN Consensus": {
       "last_val": -110,
-      "unchanged_cycles": 2
+      "unchanged_cycles": 3
     },
     "401902644|game|ESPN Consensus": {
       "last_val": -110,
-      "unchanged_cycles": 2
+      "unchanged_cycles": 3
     },
     "GENERAL_20260918_AWAY@HOME|game|Consensus": {
       "last_val": "+100",
-      "unchanged_cycles": 2
+      "unchanged_cycles": 3
     },
     "GENERAL_20260918_AWAY@HOME|total|Consensus": {
       "last_val": "+100",
-      "unchanged_cycles": 2
+      "unchanged_cycles": 3
     },
     "GENERAL_20260918_AWAY@HOME|prop|Consensus": {
       "last_val": "+100",
-      "unchanged_cycles": 2
+      "unchanged_cycles": 3
     },
     "NFL_20260918_AWAY@HOME|total|Consensus": {
       "last_val": "+100",
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "NFL_20260918_AWAY@HOME|prop|Consensus": {
       "last_val": "+100",
@@ -119,7 +119,7 @@
     },
     "NFL_20260918_NFL_BAL@NFL_BAL|game|Consensus": {
       "last_val": 0.0,
-      "unchanged_cycles": 2
+      "unchanged_cycles": 3
     },
     "NFL_20260918_NFL_SF@NFL_SF|game|Consensus": {
       "last_val": 0.0,
@@ -139,187 +139,187 @@
     },
     "401872932|game|ESPN Consensus": {
       "last_val": -110,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872933|game|DraftKings": {
       "last_val": -110,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872933|spread|DraftKings": {
       "last_val": -2.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872933|total|DraftKings": {
       "last_val": 43.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872937|game|DraftKings": {
       "last_val": -110,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872937|spread|DraftKings": {
       "last_val": -4.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872937|total|DraftKings": {
       "last_val": 48.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872939|game|DraftKings": {
       "last_val": -110,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872939|spread|DraftKings": {
       "last_val": -7.0,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872939|total|DraftKings": {
       "last_val": 39.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872946|game|DraftKings": {
       "last_val": -110,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872946|spread|DraftKings": {
       "last_val": -5.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872946|total|DraftKings": {
       "last_val": 41.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872936|game|DraftKings": {
       "last_val": -110,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872936|spread|DraftKings": {
       "last_val": -3.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872936|total|DraftKings": {
       "last_val": 44.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872935|game|DraftKings": {
       "last_val": -110,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872935|spread|DraftKings": {
       "last_val": -8.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872935|total|DraftKings": {
       "last_val": 41.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872938|game|DraftKings": {
       "last_val": -110,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872938|spread|DraftKings": {
       "last_val": -7.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872938|total|DraftKings": {
       "last_val": 46.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872934|game|DraftKings": {
       "last_val": -110,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872934|spread|DraftKings": {
       "last_val": -2.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872934|total|DraftKings": {
       "last_val": 46.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872940|game|DraftKings": {
       "last_val": -110,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872940|spread|DraftKings": {
       "last_val": -2.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872940|total|DraftKings": {
       "last_val": 45.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872941|game|DraftKings": {
       "last_val": -110,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872941|spread|DraftKings": {
       "last_val": -6.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872941|total|DraftKings": {
       "last_val": 43.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872944|game|DraftKings": {
       "last_val": -110,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872944|spread|DraftKings": {
       "last_val": -3.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872944|total|DraftKings": {
       "last_val": 50.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872943|game|DraftKings": {
       "last_val": -110,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872943|spread|DraftKings": {
       "last_val": -3.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872943|total|DraftKings": {
       "last_val": 40.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872942|game|DraftKings": {
       "last_val": -110,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872942|spread|DraftKings": {
       "last_val": -13.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872942|total|DraftKings": {
       "last_val": 44.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872945|game|DraftKings": {
       "last_val": -110,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872945|spread|DraftKings": {
       "last_val": -6.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872945|total|DraftKings": {
       "last_val": 46.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872947|game|DraftKings": {
       "last_val": -110,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872947|spread|DraftKings": {
       "last_val": -7.0,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "401872947|total|DraftKings": {
       "last_val": 48.5,
-      "unchanged_cycles": 1
+      "unchanged_cycles": 2
     },
     "KALSHI_KXMLBTOTAL-26SEP181915PHINYM-9|game|Kalshi Live WS": {
       "last_val": 0.54,
@@ -332,6 +332,18 @@
     "KALSHI_KXMLBTOTAL-26SEP181915PHINYM-7|game|Kalshi Live WS": {
       "last_val": 0.54,
       "unchanged_cycles": 2
+    },
+    "MLB_20260918_MLB_LAA@MLB_LAA|game|Consensus": {
+      "last_val": 0.0,
+      "unchanged_cycles": 1
+    },
+    "MLB_20260918_MLB_NYY@MLB_NYY|game|Consensus": {
+      "last_val": 0.0,
+      "unchanged_cycles": 1
+    },
+    "MLB_20260918_MLB_SEA@MLB_SEA|game|Consensus": {
+      "last_val": 0.0,
+      "unchanged_cycles": 1
     }
   }
 }

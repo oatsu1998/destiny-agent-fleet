@@ -286,7 +286,7 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
     db_manager.update_agent_telemetry(
         agent_id="arb_steam_hunter",
         agent_name="Line Discrepancy, Arbitrage & Steam Hunter ⚡",
-        status="Live",
+        status=f"Live (Webhooks: {arb_summary.get('webhook_status', 'Active')})",
         records_processed=total_arb_findings,
         latency_ms=round(elapsed * 1000, 2)
     )

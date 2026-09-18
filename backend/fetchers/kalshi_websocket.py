@@ -38,6 +38,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from firewall_agent import OddsSanityFirewall
 from arb_agent import ArbitrageSteamAgent
+from alert_webhook import AlertWebhookManager
 
 # RSA-PSS Signing imports from cryptography
 try:
@@ -247,6 +248,7 @@ class KalshiWebSocketDaemon:
         self.book_manager = OrderBookManager()
         self.firewall = OddsSanityFirewall()
         self.arb_agent = ArbitrageSteamAgent()
+        self.webhook_mgr = AlertWebhookManager()
         self.received_deltas_count = 0
 
     def _persist_live_orderbook(self) -> None:
@@ -309,7 +311,8 @@ class KalshiWebSocketDaemon:
                 
                 # Execute sub-second firewall & arbitrage evaluation
                 self.firewall.validate([tick_record])
-                self.arb_agent.scan([tick_record])
+                arb_findings = self.arb_agent.scan([tick_record])
+                self.webhook_mgr.evaluate_and_send(arb_findings)
                 self._persist_live_orderbook()
 
     async def start(self) -> None:
