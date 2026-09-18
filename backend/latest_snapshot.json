@@ -1,15 +1,199 @@
 {
-  "snapshot_id": "snap_1789770765",
-  "timestamp": "2026-09-18T22:32:45.444018+00:00",
-  "total_markets_processed": 46,
+  "snapshot_id": "snap_1789771178",
+  "timestamp": "2026-09-18T22:39:38.778323+00:00",
+  "total_markets_processed": 55,
   "leagues_covered": [
     "MLB",
     "NCAAF",
     "NFL",
     "NHL"
   ],
-  "execution_latency_ms": 1525.81,
+  "execution_latency_ms": 1196.94,
   "records": [
+    {
+      "id": "KXMLBGAME-26SEP201920MILBAL-MIL",
+      "ticker": "KXMLBGAME-26SEP201920MILBAL-MIL",
+      "event_ticker": "KXMLBGAME-26SEP201920MILBAL",
+      "league": "MLB",
+      "sport": "baseball",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Milwaukee wins",
+      "team_or_selection": "Milwaukee",
+      "team_code": "MIL",
+      "yes_cents": 62,
+      "no_cents": 38,
+      "american_odds": "-163",
+      "implied_prob": 0.62,
+      "line_value": null,
+      "volume": 220.95,
+      "status": "active",
+      "open_time": "2026-09-17T23:40:00Z",
+      "close_time": "2026-09-23T23:20:00Z",
+      "updated_at": "2026-09-18T22:39:38.775227+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXMLBGAME-26SEP201607MINLAA-LAA",
+      "ticker": "KXMLBGAME-26SEP201607MINLAA-LAA",
+      "event_ticker": "KXMLBGAME-26SEP201607MINLAA",
+      "league": "MLB",
+      "sport": "baseball",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Los Angeles A wins",
+      "team_or_selection": "Los Angeles A",
+      "team_code": "LAA",
+      "yes_cents": 47,
+      "no_cents": 53,
+      "american_odds": "+113",
+      "implied_prob": 0.47,
+      "line_value": null,
+      "volume": 322.22,
+      "status": "active",
+      "open_time": "2026-09-17T20:25:00Z",
+      "close_time": "2026-09-23T20:07:00Z",
+      "updated_at": "2026-09-18T22:39:38.775245+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXMLBGAME-26SEP201610NYYAZ-NYY",
+      "ticker": "KXMLBGAME-26SEP201610NYYAZ-NYY",
+      "event_ticker": "KXMLBGAME-26SEP201610NYYAZ",
+      "league": "MLB",
+      "sport": "baseball",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "New York Y wins",
+      "team_or_selection": "New York Y",
+      "team_code": "NYY",
+      "yes_cents": 53,
+      "no_cents": 47,
+      "american_odds": "-113",
+      "implied_prob": 0.53,
+      "line_value": null,
+      "volume": 155.84,
+      "status": "active",
+      "open_time": "2026-09-17T20:25:00Z",
+      "close_time": "2026-09-23T20:10:00Z",
+      "updated_at": "2026-09-18T22:39:38.775255+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXMLBGAME-26SEP201610SFLAD-LAD",
+      "ticker": "KXMLBGAME-26SEP201610SFLAD-LAD",
+      "event_ticker": "KXMLBGAME-26SEP201610SFLAD",
+      "league": "MLB",
+      "sport": "baseball",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Los Angeles D wins",
+      "team_or_selection": "Los Angeles D",
+      "team_code": "LAD",
+      "yes_cents": 70,
+      "no_cents": 30,
+      "american_odds": "-233",
+      "implied_prob": 0.7,
+      "line_value": null,
+      "volume": 359.21,
+      "status": "active",
+      "open_time": "2026-09-17T20:25:00Z",
+      "close_time": "2026-09-23T20:10:00Z",
+      "updated_at": "2026-09-18T22:39:38.775263+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXMLBGAME-26SEP201510SEACOL-SEA",
+      "ticker": "KXMLBGAME-26SEP201510SEACOL-SEA",
+      "event_ticker": "KXMLBGAME-26SEP201510SEACOL",
+      "league": "MLB",
+      "sport": "baseball",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Seattle wins",
+      "team_or_selection": "Seattle",
+      "team_code": "SEA",
+      "yes_cents": 57,
+      "no_cents": 43,
+      "american_odds": "-133",
+      "implied_prob": 0.57,
+      "line_value": null,
+      "volume": 252.69,
+      "status": "active",
+      "open_time": "2026-09-17T19:25:00Z",
+      "close_time": "2026-09-23T19:10:00Z",
+      "updated_at": "2026-09-18T22:39:38.775270+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXMLBGAME-26SEP201410ATLHOU-HOU",
+      "ticker": "KXMLBGAME-26SEP201410ATLHOU-HOU",
+      "event_ticker": "KXMLBGAME-26SEP201410ATLHOU",
+      "league": "MLB",
+      "sport": "baseball",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Houston wins",
+      "team_or_selection": "Houston",
+      "team_code": "HOU",
+      "yes_cents": 55,
+      "no_cents": 45,
+      "american_odds": "-122",
+      "implied_prob": 0.55,
+      "line_value": null,
+      "volume": 59.69,
+      "status": "active",
+      "open_time": "2026-09-17T18:25:00Z",
+      "close_time": "2026-09-23T18:10:00Z",
+      "updated_at": "2026-09-18T22:39:38.775277+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXMLBGAME-26SEP201410ATLHOU-ATL",
+      "ticker": "KXMLBGAME-26SEP201410ATLHOU-ATL",
+      "event_ticker": "KXMLBGAME-26SEP201410ATLHOU",
+      "league": "MLB",
+      "sport": "baseball",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "Atlanta wins",
+      "team_or_selection": "Atlanta",
+      "team_code": "ATL",
+      "yes_cents": 46,
+      "no_cents": 54,
+      "american_odds": "+117",
+      "implied_prob": 0.46,
+      "line_value": null,
+      "volume": 59.74,
+      "status": "active",
+      "open_time": "2026-09-17T18:25:00Z",
+      "close_time": "2026-09-23T18:10:00Z",
+      "updated_at": "2026-09-18T22:39:38.775284+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXMLBGAME-26SEP201310PHINYM-NYM",
+      "ticker": "KXMLBGAME-26SEP201310PHINYM-NYM",
+      "event_ticker": "KXMLBGAME-26SEP201310PHINYM",
+      "league": "MLB",
+      "sport": "baseball",
+      "market_kind": "game",
+      "stat_category": null,
+      "title": "New York M wins",
+      "team_or_selection": "New York M",
+      "team_code": "NYM",
+      "yes_cents": 42,
+      "no_cents": 58,
+      "american_odds": "+138",
+      "implied_prob": 0.42,
+      "line_value": null,
+      "volume": 127.34,
+      "status": "active",
+      "open_time": "2026-09-17T17:25:00Z",
+      "close_time": "2026-09-23T17:10:00Z",
+      "updated_at": "2026-09-18T22:39:38.775291+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
     {
       "id": "KXMLBSPREAD-26SEP192138MINLAA-MIN4",
       "ticker": "KXMLBSPREAD-26SEP192138MINLAA-MIN4",
@@ -30,7 +214,7 @@
       "status": "active",
       "open_time": "2026-09-18T19:20:00Z",
       "close_time": "2026-09-23T01:38:00Z",
-      "updated_at": "2026-09-18T22:32:45.441723+00:00",
+      "updated_at": "2026-09-18T22:39:38.775301+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -53,7 +237,7 @@
       "status": "active",
       "open_time": "2026-09-18T19:20:00Z",
       "close_time": "2026-09-22T23:10:00Z",
-      "updated_at": "2026-09-18T22:32:45.441752+00:00",
+      "updated_at": "2026-09-18T22:39:38.775309+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -76,7 +260,7 @@
       "status": "active",
       "open_time": "2026-09-18T19:20:00Z",
       "close_time": "2026-09-22T23:10:00Z",
-      "updated_at": "2026-09-18T22:32:45.441769+00:00",
+      "updated_at": "2026-09-18T22:39:38.775318+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -99,7 +283,7 @@
       "status": "active",
       "open_time": "2026-09-18T19:20:00Z",
       "close_time": "2026-09-22T20:10:00Z",
-      "updated_at": "2026-09-18T22:32:45.441783+00:00",
+      "updated_at": "2026-09-18T22:39:38.775325+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -122,7 +306,7 @@
       "status": "active",
       "open_time": "2026-09-18T08:30:00Z",
       "close_time": "2026-09-22T00:10:00Z",
-      "updated_at": "2026-09-18T22:32:45.441794+00:00",
+      "updated_at": "2026-09-18T22:39:38.775332+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -145,7 +329,7 @@
       "status": "active",
       "open_time": "2026-09-18T19:20:00Z",
       "close_time": "2026-09-23T01:38:00Z",
-      "updated_at": "2026-09-18T22:32:45.441807+00:00",
+      "updated_at": "2026-09-18T22:39:38.775341+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -168,7 +352,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-10-01T00:15:00Z",
-      "updated_at": "2026-09-18T22:32:45.441819+00:00",
+      "updated_at": "2026-09-18T22:39:38.775349+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -191,7 +375,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-10-01T00:15:00Z",
-      "updated_at": "2026-09-18T22:32:45.441831+00:00",
+      "updated_at": "2026-09-18T22:39:38.775356+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -214,7 +398,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-09-30T00:20:00Z",
-      "updated_at": "2026-09-18T22:32:45.441843+00:00",
+      "updated_at": "2026-09-18T22:39:38.775363+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -237,7 +421,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-09-29T20:25:00Z",
-      "updated_at": "2026-09-18T22:32:45.441853+00:00",
+      "updated_at": "2026-09-18T22:39:38.775370+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -260,7 +444,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-09-29T20:25:00Z",
-      "updated_at": "2026-09-18T22:32:45.441862+00:00",
+      "updated_at": "2026-09-18T22:39:38.775377+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -283,7 +467,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-09-29T20:05:00Z",
-      "updated_at": "2026-09-18T22:32:45.441872+00:00",
+      "updated_at": "2026-09-18T22:39:38.775384+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -306,7 +490,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:16:00Z",
       "close_time": "2026-09-29T17:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.441883+00:00",
+      "updated_at": "2026-09-18T22:39:38.775391+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -329,7 +513,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:15:00Z",
       "close_time": "2026-09-29T17:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.441894+00:00",
+      "updated_at": "2026-09-18T22:39:38.775397+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -352,7 +536,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:15:00Z",
       "close_time": "2026-09-29T17:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.441904+00:00",
+      "updated_at": "2026-09-18T22:39:38.775404+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -375,7 +559,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:15:00Z",
       "close_time": "2026-09-29T17:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.441915+00:00",
+      "updated_at": "2026-09-18T22:39:38.775411+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -398,7 +582,7 @@
       "status": "active",
       "open_time": "2026-09-15T16:15:00Z",
       "close_time": "2026-09-29T17:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.441925+00:00",
+      "updated_at": "2026-09-18T22:39:38.775418+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -417,11 +601,11 @@
       "american_odds": "-270",
       "implied_prob": 0.73,
       "line_value": null,
-      "volume": 2655.54,
+      "volume": 2656.88,
       "status": "active",
       "open_time": "2026-09-15T16:15:00Z",
       "close_time": "2026-09-27T00:15:00Z",
-      "updated_at": "2026-09-18T22:32:45.441934+00:00",
+      "updated_at": "2026-09-18T22:39:38.775424+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -444,7 +628,7 @@
       "status": "active",
       "open_time": "2026-09-18T01:05:00Z",
       "close_time": "2026-09-24T00:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.441946+00:00",
+      "updated_at": "2026-09-18T22:39:38.775432+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -467,7 +651,7 @@
       "status": "active",
       "open_time": "2026-09-18T01:05:00Z",
       "close_time": "2026-09-24T00:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.441957+00:00",
+      "updated_at": "2026-09-18T22:39:38.775441+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -490,7 +674,7 @@
       "status": "active",
       "open_time": "2026-09-18T01:05:00Z",
       "close_time": "2026-09-24T00:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.441969+00:00",
+      "updated_at": "2026-09-18T22:39:38.775448+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -513,7 +697,7 @@
       "status": "active",
       "open_time": "2026-09-17T16:05:00Z",
       "close_time": "2026-09-22T21:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.441980+00:00",
+      "updated_at": "2026-09-18T22:39:38.775456+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -536,7 +720,30 @@
       "status": "active",
       "open_time": "2026-09-17T00:07:00Z",
       "close_time": "2026-09-22T00:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.441990+00:00",
+      "updated_at": "2026-09-18T22:39:38.775463+00:00",
+      "lifecycle_stage": "PREGAME"
+    },
+    {
+      "id": "KXNHLTOTAL-26SEP21COLWPG-9",
+      "ticker": "KXNHLTOTAL-26SEP21COLWPG-9",
+      "event_ticker": "KXNHLTOTAL-26SEP21COLWPG",
+      "league": "NHL",
+      "sport": "hockey",
+      "market_kind": "total",
+      "stat_category": null,
+      "title": "Full Game: Over 8.5 goals scored",
+      "team_or_selection": "Over 8.5 goals scored",
+      "team_code": "9",
+      "yes_cents": 46,
+      "no_cents": 54,
+      "american_odds": "+117",
+      "implied_prob": 0.46,
+      "line_value": 8.5,
+      "volume": 0.0,
+      "status": "active",
+      "open_time": "2026-09-18T01:05:00Z",
+      "close_time": "2026-09-24T00:00:00Z",
+      "updated_at": "2026-09-18T22:39:38.775470+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -559,7 +766,7 @@
       "status": "active",
       "open_time": "2026-09-18T01:07:00Z",
       "close_time": "2026-10-04T01:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.442002+00:00",
+      "updated_at": "2026-09-18T22:39:38.775477+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -582,7 +789,7 @@
       "status": "active",
       "open_time": "2026-09-18T01:07:00Z",
       "close_time": "2026-10-04T01:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.442012+00:00",
+      "updated_at": "2026-09-18T22:39:38.775484+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -605,7 +812,7 @@
       "status": "active",
       "open_time": "2026-09-13T04:08:00Z",
       "close_time": "2026-09-29T02:30:00Z",
-      "updated_at": "2026-09-18T22:32:45.442023+00:00",
+      "updated_at": "2026-09-18T22:39:38.775491+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -628,7 +835,7 @@
       "status": "active",
       "open_time": "2026-09-13T01:07:00Z",
       "close_time": "2026-09-29T01:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.442037+00:00",
+      "updated_at": "2026-09-18T22:39:38.775497+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -651,7 +858,7 @@
       "status": "active",
       "open_time": "2026-09-13T01:07:00Z",
       "close_time": "2026-09-29T00:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.442053+00:00",
+      "updated_at": "2026-09-18T22:39:38.775504+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -674,7 +881,7 @@
       "status": "active",
       "open_time": "2026-09-13T01:07:00Z",
       "close_time": "2026-09-29T00:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.442065+00:00",
+      "updated_at": "2026-09-18T22:39:38.775511+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -697,7 +904,7 @@
       "status": "active",
       "open_time": "2026-09-13T01:07:00Z",
       "close_time": "2026-09-29T00:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.442075+00:00",
+      "updated_at": "2026-09-18T22:39:38.775518+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -720,7 +927,7 @@
       "status": "active",
       "open_time": "2026-09-13T01:07:00Z",
       "close_time": "2026-09-28T23:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.442085+00:00",
+      "updated_at": "2026-09-18T22:39:38.775525+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -743,7 +950,7 @@
       "status": "active",
       "open_time": "2026-09-13T01:07:00Z",
       "close_time": "2026-09-28T23:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.442094+00:00",
+      "updated_at": "2026-09-18T22:39:38.775531+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -766,7 +973,7 @@
       "status": "active",
       "open_time": "2026-09-13T01:07:00Z",
       "close_time": "2026-09-28T22:30:00Z",
-      "updated_at": "2026-09-18T22:32:45.442104+00:00",
+      "updated_at": "2026-09-18T22:39:38.775538+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -789,7 +996,7 @@
       "status": "active",
       "open_time": "2026-09-13T01:07:00Z",
       "close_time": "2026-09-28T22:30:00Z",
-      "updated_at": "2026-09-18T22:32:45.442115+00:00",
+      "updated_at": "2026-09-18T22:39:38.775545+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -812,7 +1019,7 @@
       "status": "active",
       "open_time": "2026-09-12T22:08:00Z",
       "close_time": "2026-09-28T19:30:00Z",
-      "updated_at": "2026-09-18T22:32:45.442125+00:00",
+      "updated_at": "2026-09-18T22:39:38.775551+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -835,7 +1042,7 @@
       "status": "active",
       "open_time": "2026-09-12T19:07:00Z",
       "close_time": "2026-09-28T17:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.442135+00:00",
+      "updated_at": "2026-09-18T22:39:38.775559+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -858,7 +1065,7 @@
       "status": "active",
       "open_time": "2026-09-12T19:07:00Z",
       "close_time": "2026-09-28T17:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.442147+00:00",
+      "updated_at": "2026-09-18T22:39:38.775566+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -881,7 +1088,7 @@
       "status": "active",
       "open_time": "2026-09-12T19:07:00Z",
       "close_time": "2026-09-28T17:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.442156+00:00",
+      "updated_at": "2026-09-18T22:39:38.775572+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -904,7 +1111,7 @@
       "status": "active",
       "open_time": "2026-09-12T19:07:00Z",
       "close_time": "2026-09-28T17:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.442216+00:00",
+      "updated_at": "2026-09-18T22:39:38.775579+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -927,7 +1134,7 @@
       "status": "active",
       "open_time": "2026-09-12T19:07:00Z",
       "close_time": "2026-09-28T17:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.442244+00:00",
+      "updated_at": "2026-09-18T22:39:38.775587+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -950,7 +1157,7 @@
       "status": "active",
       "open_time": "2026-09-12T04:08:00Z",
       "close_time": "2026-09-28T02:30:00Z",
-      "updated_at": "2026-09-18T22:32:45.442263+00:00",
+      "updated_at": "2026-09-18T22:39:38.775593+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -973,7 +1180,7 @@
       "status": "active",
       "open_time": "2026-09-18T17:15:00Z",
       "close_time": "2026-09-22T17:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.442282+00:00",
+      "updated_at": "2026-09-18T22:39:38.775605+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -996,7 +1203,7 @@
       "status": "active",
       "open_time": "2026-09-16T06:15:00Z",
       "close_time": "2026-09-22T17:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.442299+00:00",
+      "updated_at": "2026-09-18T22:39:38.775616+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -1019,7 +1226,7 @@
       "status": "active",
       "open_time": "2026-09-18T20:18:00Z",
       "close_time": "2026-09-24T00:15:00Z",
-      "updated_at": "2026-09-18T22:32:45.442318+00:00",
+      "updated_at": "2026-09-18T22:39:38.775628+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -1042,7 +1249,7 @@
       "status": "active",
       "open_time": "2026-09-17T02:15:00Z",
       "close_time": "2026-09-22T17:00:00Z",
-      "updated_at": "2026-09-18T22:32:45.442335+00:00",
+      "updated_at": "2026-09-18T22:39:38.775638+00:00",
       "lifecycle_stage": "PREGAME"
     },
     {
@@ -1065,7 +1272,7 @@
       "status": "active",
       "open_time": "2026-09-17T21:19:00Z",
       "close_time": "2026-09-22T20:25:00Z",
-      "updated_at": "2026-09-18T22:32:45.442351+00:00",
+      "updated_at": "2026-09-18T22:39:38.775648+00:00",
       "lifecycle_stage": "PREGAME"
     }
   ]

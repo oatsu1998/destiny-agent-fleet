@@ -1,8 +1,8 @@
 {
-  "timestamp": "2026-09-18T22:32:45.440366+00:00",
+  "timestamp": "2026-09-18T22:39:38.774289+00:00",
   "status": "ACTIVE",
-  "total_input": 383,
-  "total_passed": 368,
+  "total_input": 393,
+  "total_passed": 378,
   "total_rejected": 15,
   "range_failures": 15,
   "palpable_errors": 0,
@@ -24,7 +24,7 @@
       "spread_line": -149.0,
       "bookmaker": "DraftKings",
       "american_odds": -110,
-      "ingested_at_utc": "2026-09-18T22:32:45.339319+00:00",
+      "ingested_at_utc": "2026-09-18T22:39:38.684075+00:00",
       "row_sha256": "0a60f208de0833d0a1743bb8c1df5fb285774805dc3b716c9b25ba102836bee1",
       "reject_reason": "MLB Spread 149.0 exceeds maximum limit 45.0"
     },
@@ -43,7 +43,7 @@
       "spread_line": -193.0,
       "bookmaker": "DraftKings",
       "american_odds": -110,
-      "ingested_at_utc": "2026-09-18T22:32:45.339319+00:00",
+      "ingested_at_utc": "2026-09-18T22:39:38.684075+00:00",
       "row_sha256": "637f566ff529f30a3e9dfc7af7bf96d3a0010fe36dc72e88e417c78a53f4011f",
       "reject_reason": "MLB Spread 193.0 exceeds maximum limit 45.0"
     },
@@ -62,7 +62,7 @@
       "spread_line": -149.0,
       "bookmaker": "DraftKings",
       "american_odds": -110,
-      "ingested_at_utc": "2026-09-18T22:32:45.339319+00:00",
+      "ingested_at_utc": "2026-09-18T22:39:38.684075+00:00",
       "row_sha256": "078821d2f29e0fbe5b78d6d48cd7db2db8f45eb14a439635518c68bfefefc073",
       "reject_reason": "MLB Spread 149.0 exceeds maximum limit 45.0"
     },
@@ -81,7 +81,7 @@
       "spread_line": -233.0,
       "bookmaker": "DraftKings",
       "american_odds": -110,
-      "ingested_at_utc": "2026-09-18T22:32:45.339319+00:00",
+      "ingested_at_utc": "2026-09-18T22:39:38.684075+00:00",
       "row_sha256": "72f2af64ef47eb530a5093763aeaeec0486ba3fb9d8d196254123dc24cc05059",
       "reject_reason": "MLB Spread 233.0 exceeds maximum limit 45.0"
     },
@@ -100,7 +100,7 @@
       "spread_line": -137.0,
       "bookmaker": "DraftKings",
       "american_odds": -110,
-      "ingested_at_utc": "2026-09-18T22:32:45.339319+00:00",
+      "ingested_at_utc": "2026-09-18T22:39:38.684075+00:00",
       "row_sha256": "0d1a72c59d80bbbbb546fb513ac5505856d028bc5f2f3ed7e918d1f282292ebe",
       "reject_reason": "MLB Spread 137.0 exceeds maximum limit 45.0"
     },
@@ -119,7 +119,7 @@
       "spread_line": -131.0,
       "bookmaker": "DraftKings",
       "american_odds": -110,
-      "ingested_at_utc": "2026-09-18T22:32:45.339319+00:00",
+      "ingested_at_utc": "2026-09-18T22:39:38.684075+00:00",
       "row_sha256": "124df14a930697c6ac886e1d1fca617e7dc187d3c1a025f004674d9b4a4403e0",
       "reject_reason": "MLB Spread 131.0 exceeds maximum limit 45.0"
     },
@@ -138,7 +138,7 @@
       "spread_line": -132.0,
       "bookmaker": "DraftKings",
       "american_odds": -110,
-      "ingested_at_utc": "2026-09-18T22:32:45.339319+00:00",
+      "ingested_at_utc": "2026-09-18T22:39:38.684075+00:00",
       "row_sha256": "cf25d26e918a9794b848b21739137ce211a76ef630bdcb9e131c6814ab7f15b0",
       "reject_reason": "MLB Spread 132.0 exceeds maximum limit 45.0"
     },
@@ -157,7 +157,7 @@
       "spread_line": -136.0,
       "bookmaker": "DraftKings",
       "american_odds": -110,
-      "ingested_at_utc": "2026-09-18T22:32:45.339319+00:00",
+      "ingested_at_utc": "2026-09-18T22:39:38.684075+00:00",
       "row_sha256": "f809f848231589f39f64a61a269e98962c1c8c3fc5554cea48994d2e6f88cce9",
       "reject_reason": "MLB Spread 136.0 exceeds maximum limit 45.0"
     },
@@ -176,7 +176,7 @@
       "spread_line": -120.0,
       "bookmaker": "DraftKings",
       "american_odds": -110,
-      "ingested_at_utc": "2026-09-18T22:32:45.339319+00:00",
+      "ingested_at_utc": "2026-09-18T22:39:38.684075+00:00",
       "row_sha256": "5b9510e4a2eb2eb49cdd81a847f86ca9f04fb51e98eaf4c3c97556e7f63ed13b",
       "reject_reason": "MLB Spread 120.0 exceeds maximum limit 45.0"
     },
@@ -195,7 +195,7 @@
       "spread_line": -193.0,
       "bookmaker": "DraftKings",
       "american_odds": -110,
-      "ingested_at_utc": "2026-09-18T22:32:45.339319+00:00",
+      "ingested_at_utc": "2026-09-18T22:39:38.684075+00:00",
       "row_sha256": "6e37381036e1847049c374b7f2dba6ab0ececf86e7d3b62bc09242cd65b98c06",
       "reject_reason": "MLB Spread 193.0 exceeds maximum limit 45.0"
     }

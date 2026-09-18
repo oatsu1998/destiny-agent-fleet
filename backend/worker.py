@@ -34,6 +34,9 @@ from fetchers.kalshi_fetcher import fetch_sports_markets
 from firewall_agent import OddsSanityFirewall
 from lifecycle_router import GameLifecycleRouter
 
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
+
 # Configure Logging
 logging.basicConfig(
     level=logging.INFO,

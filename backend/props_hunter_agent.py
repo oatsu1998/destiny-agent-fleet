@@ -346,16 +346,70 @@ class PropsHunterAgent:
         matrix = self.aggregate_prop_matrix(all_props)
         discrepancies = self.find_prop_discrepancies(matrix)
 
+        # Build alert payload arrays formatted for AlertWebhookManager
+        ladder_alerts = []
+        for edge in discrepancies.get("ladder_edges", []):
+            margin_cents = int(round(edge.get("milestone_line", 0) - edge.get("baseline_line", 0)))
+            if margin_cents < 30:
+                margin_cents = max(30, int(edge.get("american_odds", 150) - 100))
+            ladder_alerts.append({
+                "event_id": f"PROP_{edge.get('player', 'PLAYER')}_{edge.get('stat_type', 'STAT')}",
+                "book": edge.get("book", "Unknown"),
+                "milestone": f"{edge.get('milestone_line', '')} {edge.get('stat_type', '').replace('_', ' ')}",
+                "margin_cents": margin_cents,
+                "summary": edge.get("summary", "")
+            })
+
+        arbitrage_alerts = []
+        for arb in discrepancies.get("prop_arbs", []):
+            arbitrage_alerts.append({
+                "event_id": arb.get("event_id", f"PROP_{arb.get('player')}_{arb.get('stat_type')}"),
+                "label": arb.get("label", f"{arb.get('player')} - {arb.get('stat_type')}"),
+                "roi_percent": arb.get("roi_percent", 0.0),
+                "guaranteed_profit_usd": arb.get("guaranteed_profit_usd", 0.0),
+                "side_a": arb.get("side_a", {}),
+                "side_b": arb.get("side_b", {})
+            })
+
+        middle_alerts = []
+        for mid in discrepancies.get("prop_middles", []):
+            info = mid.get("middle_info", {})
+            middle_alerts.append({
+                "event_id": mid.get("event_id", f"PROP_{mid.get('player')}_{mid.get('stat_type')}"),
+                "book_a": info.get("over_book", ""),
+                "line_a": info.get("over_line", 0.0),
+                "book_b": info.get("under_book", ""),
+                "line_b": info.get("under_line", 0.0),
+                "window_points": info.get("spread_points", 0.0),
+                "summary": info.get("summary", "")
+            })
+
         result_summary = {
             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "timestamp_cdt": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S CDT"),
             "matrix_count": len(matrix),
             "discrepancies": discrepancies,
-            "matrix": matrix
+            "matrix": matrix,
+            "ladder_alerts": ladder_alerts,
+            "arbitrage_alerts": arbitrage_alerts,
+            "middle_alerts": middle_alerts
         }
 
         self._archive_props_snapshot(result_summary)
-        logger.info(f"Props Hunter Scan Complete: Analyzed {len(matrix)} props | Arbs: {discrepancies['total_arbs_found']} | Middles: {discrepancies['total_middles_found']} | Ladder Edges: {discrepancies['total_ladder_edges']}")
+
+        # Dispatch outbound webhooks (Discord / Telegram)
+        try:
+            from alert_webhook import AlertWebhookManager
+            webhook_mgr = AlertWebhookManager()
+            alerts_sent = webhook_mgr.evaluate_and_send(result_summary)
+            result_summary["alerts_sent"] = alerts_sent
+            result_summary["webhook_status"] = "Active" if webhook_mgr.discord_url else "Dry-Run"
+        except Exception as w_err:
+            logger.warning(f"Could not dispatch alert webhooks: {w_err}")
+            result_summary["alerts_sent"] = 0
+            result_summary["webhook_status"] = "Disabled"
+
+        logger.info(f"Props Hunter Scan Complete: Analyzed {len(matrix)} props | Arbs: {discrepancies['total_arbs_found']} | Middles: {discrepancies['total_middles_found']} | Ladder Edges: {discrepancies['total_ladder_edges']} | Alerts Dispatched: {result_summary.get('alerts_sent', 0)}")
         return result_summary
 
     def _archive_props_snapshot(self, summary: Dict[str, Any]):
