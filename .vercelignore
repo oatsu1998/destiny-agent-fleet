@@ -1,2 +1,4 @@
 backend/
 requirements.txt
+pyproject.toml
+*.py
