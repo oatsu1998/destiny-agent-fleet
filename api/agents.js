@@ -4,6 +4,22 @@ import path from 'path';
 
 const DEFAULT_AGENTS = [
   {
+    id: "espn_scraper",
+    name: "ESPN Free Odds Scraper 🏈⚾🏀",
+    avatar: "📡",
+    status: "Live",
+    role: "Zero-Cost Sportsbook Odds Engine",
+    specialty: "NFL, MLB, NBA Live Scores & Odds",
+    markets_tracked: ["Moneyline", "Point Spreads", "Over/Under Totals"],
+    last_run: new Date().toISOString(),
+    records_processed: 56,
+    latency_ms: 190,
+    uptime_pct: 100.0,
+    mcp_endpoint: "mcp://agents.destiny.net/v1/espn-scraper",
+    mcp_type: "REST API / Free Site Endpoint",
+    description: "Polls free ESPN Site API scoreboards with zero subscriptions, extracting live consensus game odds, point spreads, over/under totals, and scores."
+  },
+  {
     id: "kalshi_scraper",
     name: "Kalshi Market Scraper",
     avatar: "🤖",
@@ -189,6 +205,7 @@ export default async function handler(req, res) {
     let qualityData = null;
     let arbData = null;
     let propsData = null;
+    let liveStreamData = null;
 
     // Try reading backend/agent_telemetry.json
     try {
@@ -198,6 +215,19 @@ export default async function handler(req, res) {
       }
     } catch (e) {
       console.warn("Could not read agent_telemetry.json:", e.message);
+    }
+
+    // Try reading backend/snapshots/live_market_stream.json
+    try {
+      const livePath = path.join(process.cwd(), 'backend', 'snapshots', 'live_market_stream.json');
+      const fallbackPath = path.join(process.cwd(), 'backend', 'live_market_stream.json');
+      if (fs.existsSync(livePath)) {
+        liveStreamData = JSON.parse(fs.readFileSync(livePath, 'utf8'));
+      } else if (fs.existsSync(fallbackPath)) {
+        liveStreamData = JSON.parse(fs.readFileSync(fallbackPath, 'utf8'));
+      }
+    } catch (e) {
+      console.warn("Could not read live_market_stream.json:", e.message);
     }
 
     // Try reading backend/latest_snapshot.json
@@ -281,6 +311,11 @@ export default async function handler(req, res) {
       health_report: qualityData || null,
       arb_summary: arbData || null,
       props_matrix_summary: propsData || null,
+      live_stream_summary: liveStreamData ? {
+        timestamp: liveStreamData.timestamp,
+        total_records: liveStreamData.total_records,
+        sources: liveStreamData.sources
+      } : null,
       snapshot_summary: snapshotData ? {
         snapshot_id: snapshotData.snapshot_id,
         total_records: snapshotData.total_markets_processed,

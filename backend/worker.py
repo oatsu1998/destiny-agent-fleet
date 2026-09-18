@@ -29,6 +29,8 @@ from weather_agent import generate_all_stadium_weather
 from quality_agent import DataQualityAgent
 from arb_agent import ArbitrageSteamAgent
 from props_hunter_agent import PropsHunterAgent
+from fetchers.espn_fetcher import fetch_all_sports_odds
+from fetchers.kalshi_fetcher import fetch_sports_markets
 
 # Configure Logging
 logging.basicConfig(
@@ -101,12 +103,48 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
         tasks = [fetch_series(session, item) for item in SERIES_LIST]
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
+    espn_result, kalshi_public_result = await asyncio.gather(
+        fetch_all_sports_odds(),
+        fetch_sports_markets(),
+        return_exceptions=True
+    )
+
     raw_markets = []
     for res in results:
         if isinstance(res, list):
             raw_markets.extend(res)
 
-    logger.info(f"Ingested {len(raw_markets)} raw market records across {len(SERIES_LIST)} series tickers.")
+    espn_records = espn_result.get("records", []) if isinstance(espn_result, dict) else []
+    kalshi_public_records = kalshi_public_result.get("records", []) if isinstance(kalshi_public_result, dict) else []
+
+    raw_markets.extend(espn_records)
+    raw_markets.extend(kalshi_public_records)
+
+    logger.info(f"Ingested {len(raw_markets)} raw market records (Kalshi Series: {len(raw_markets) - len(espn_records) - len(kalshi_public_records)}, ESPN Free: {len(espn_records)}, Kalshi Public: {len(kalshi_public_records)}).")
+
+    # Persist Live Market Stream Payload Snapshot
+    snapshots_dir = os.path.join(os.path.dirname(__file__), "snapshots")
+    os.makedirs(snapshots_dir, exist_ok=True)
+    live_stream_payload = {
+        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "total_records": len(raw_markets),
+        "sources": {
+            "espn_records": len(espn_records),
+            "kalshi_public_records": len(kalshi_public_records),
+            "kalshi_series_records": len(raw_markets) - len(espn_records) - len(kalshi_public_records)
+        },
+        "records": raw_markets
+    }
+    for path_target in [
+        os.path.join(snapshots_dir, "live_market_stream.json"),
+        os.path.join(os.path.dirname(__file__), "live_market_stream.json")
+    ]:
+        try:
+            import json
+            with open(path_target, "w", encoding="utf-8") as f:
+                json.dump(live_stream_payload, f, indent=2)
+        except Exception as write_err:
+            logger.warning(f"Could not save live market stream to {path_target}: {write_err}")
 
     # Run Data Quality & Feed Guardian 8-Gate Audit
     try:
@@ -159,10 +197,17 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
 
     # Update Fleet Telemetry
     db_manager.update_agent_telemetry(
+        agent_id="espn_scraper",
+        agent_name="ESPN Free Odds Scraper 🏈⚾🏀",
+        status="Live",
+        records_processed=len(espn_records),
+        latency_ms=round(elapsed * 1000, 2)
+    )
+    db_manager.update_agent_telemetry(
         agent_id="kalshi_scraper",
         agent_name="Kalshi Market Scraper",
         status="Live",
-        records_processed=len(normalized_records),
+        records_processed=len(kalshi_public_records) if kalshi_public_records else len(normalized_records),
         latency_ms=round(elapsed * 1000, 2)
     )
     db_manager.update_agent_telemetry(

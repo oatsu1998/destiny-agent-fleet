@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-09-18T05:13:49.798409+00:00",
-  "timestamp_cdt": "2026-09-18 00:13:49 CDT",
-  "matrix_count": 29,
+  "timestamp": "2026-09-18T05:26:27.933346+00:00",
+  "timestamp_cdt": "2026-09-18 00:26:27 CDT",
+  "matrix_count": 80,
   "discrepancies": {
-    "total_props_analyzed": 29,
+    "total_props_analyzed": 80,
     "total_arbs_found": 0,
     "total_middles_found": 0,
     "total_ladder_edges": 0,
@@ -120,46 +120,12 @@
         "viable": false
       }
     },
-    "Over 8.5 Runs Scored|receiving_yards": {
-      "player": "Over 8.5 Runs Scored",
-      "team": "NFL_DET",
-      "prop_type": "receiving_yards",
-      "books": {
-        "DraftKings": [
-          {
-            "line": 0.0,
-            "type": "main_line",
-            "odds": -110.0,
-            "dec": 1.9091,
-            "over_under": "under"
-          }
-        ]
-      },
-      "best_over": null,
-      "best_under": {
-        "book": "DraftKings",
-        "line": 0.0,
-        "odds": -110.0,
-        "dec": 1.9091
-      },
-      "middle_window": {
-        "spread_points": 0.0,
-        "viable": false
-      }
-    },
     "Philadelphia Wins|receiving_yards": {
       "player": "Philadelphia Wins",
       "team": "NFL_DET",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
-          {
-            "line": 0.0,
-            "type": "main_line",
-            "odds": -110.0,
-            "dec": 1.9091,
-            "over_under": "under"
-          },
           {
             "line": 0.0,
             "type": "main_line",
@@ -397,141 +363,6 @@
         "viable": false
       }
     },
-    "Gb Packers Wins By Over 7.5 Points?|receiving_yards": {
-      "player": "Gb Packers Wins By Over 7.5 Points?",
-      "team": "NFL_DET",
-      "prop_type": "receiving_yards",
-      "books": {
-        "DraftKings": [
-          {
-            "line": 0.0,
-            "type": "main_line",
-            "odds": -110.0,
-            "dec": 1.9091,
-            "over_under": "under"
-          }
-        ]
-      },
-      "best_over": null,
-      "best_under": {
-        "book": "DraftKings",
-        "line": 0.0,
-        "odds": -110.0,
-        "dec": 1.9091
-      },
-      "middle_window": {
-        "spread_points": 0.0,
-        "viable": false
-      }
-    },
-    "Atl Falcons Wins By Over 7.5 Points?|receiving_yards": {
-      "player": "Atl Falcons Wins By Over 7.5 Points?",
-      "team": "NFL_DET",
-      "prop_type": "receiving_yards",
-      "books": {
-        "DraftKings": [
-          {
-            "line": 0.0,
-            "type": "main_line",
-            "odds": -110.0,
-            "dec": 1.9091,
-            "over_under": "under"
-          }
-        ]
-      },
-      "best_over": null,
-      "best_under": {
-        "book": "DraftKings",
-        "line": 0.0,
-        "odds": -110.0,
-        "dec": 1.9091
-      },
-      "middle_window": {
-        "spread_points": 0.0,
-        "viable": false
-      }
-    },
-    "Dallas Wins By Over 7.5 Points?|receiving_yards": {
-      "player": "Dallas Wins By Over 7.5 Points?",
-      "team": "NFL_DET",
-      "prop_type": "receiving_yards",
-      "books": {
-        "DraftKings": [
-          {
-            "line": 0.0,
-            "type": "main_line",
-            "odds": -110.0,
-            "dec": 1.9091,
-            "over_under": "under"
-          }
-        ]
-      },
-      "best_over": null,
-      "best_under": {
-        "book": "DraftKings",
-        "line": 0.0,
-        "odds": -110.0,
-        "dec": 1.9091
-      },
-      "middle_window": {
-        "spread_points": 0.0,
-        "viable": false
-      }
-    },
-    "Baltimore Wins By Over 8.5 Points?|receiving_yards": {
-      "player": "Baltimore Wins By Over 8.5 Points?",
-      "team": "NFL_DET",
-      "prop_type": "receiving_yards",
-      "books": {
-        "DraftKings": [
-          {
-            "line": 0.0,
-            "type": "main_line",
-            "odds": -110.0,
-            "dec": 1.9091,
-            "over_under": "under"
-          }
-        ]
-      },
-      "best_over": null,
-      "best_under": {
-        "book": "DraftKings",
-        "line": 0.0,
-        "odds": -110.0,
-        "dec": 1.9091
-      },
-      "middle_window": {
-        "spread_points": 0.0,
-        "viable": false
-      }
-    },
-    "Chicago Wins By Over 7.5 Points?|receiving_yards": {
-      "player": "Chicago Wins By Over 7.5 Points?",
-      "team": "NFL_DET",
-      "prop_type": "receiving_yards",
-      "books": {
-        "DraftKings": [
-          {
-            "line": 0.0,
-            "type": "main_line",
-            "odds": -110.0,
-            "dec": 1.9091,
-            "over_under": "under"
-          }
-        ]
-      },
-      "best_over": null,
-      "best_under": {
-        "book": "DraftKings",
-        "line": 0.0,
-        "odds": -110.0,
-        "dec": 1.9091
-      },
-      "middle_window": {
-        "spread_points": 0.0,
-        "viable": false
-      }
-    },
     "Full Game: Over 67.5 Points Scored?|receiving_yards": {
       "player": "Full Game: Over 67.5 Points Scored?",
       "team": "NFL_DET",
@@ -559,35 +390,8 @@
         "viable": false
       }
     },
-    "San Antonio Wins|receiving_yards": {
-      "player": "San Antonio Wins",
-      "team": "NFL_DET",
-      "prop_type": "receiving_yards",
-      "books": {
-        "DraftKings": [
-          {
-            "line": 0.0,
-            "type": "main_line",
-            "odds": -110.0,
-            "dec": 1.9091,
-            "over_under": "under"
-          }
-        ]
-      },
-      "best_over": null,
-      "best_under": {
-        "book": "DraftKings",
-        "line": 0.0,
-        "odds": -110.0,
-        "dec": 1.9091
-      },
-      "middle_window": {
-        "spread_points": 0.0,
-        "viable": false
-      }
-    },
-    "Boston Wins|receiving_yards": {
-      "player": "Boston Wins",
+    "Winnipeg Wins|receiving_yards": {
+      "player": "Winnipeg Wins",
       "team": "NFL_DET",
       "prop_type": "receiving_yards",
       "books": {
@@ -640,8 +444,8 @@
         "viable": false
       }
     },
-    "Full Game: Over 8.5 Goals Scored|receiving_yards": {
-      "player": "Full Game: Over 8.5 Goals Scored",
+    "North Texas Wins|receiving_yards": {
+      "player": "North Texas Wins",
       "team": "NFL_DET",
       "prop_type": "receiving_yards",
       "books": {
@@ -667,8 +471,8 @@
         "viable": false
       }
     },
-    "North Texas Wins|receiving_yards": {
-      "player": "North Texas Wins",
+    "Seattle Wins|receiving_yards": {
+      "player": "Seattle Wins",
       "team": "NFL_DET",
       "prop_type": "receiving_yards",
       "books": {
@@ -721,10 +525,37 @@
         "viable": false
       }
     },
-    "Xavier Hutchinson: 8+ Receptions|receiving_yards": {
-      "player": "Xavier Hutchinson: 8+ Receptions",
+    "Detroit Lions @ Buffalo Bills|receiving_yards": {
+      "player": "Detroit Lions @ Buffalo Bills",
       "team": "NFL_DET",
       "prop_type": "receiving_yards",
+      "books": {
+        "ESPN Consensus": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "ESPN Consensus",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Carolina Panthers @ Atlanta Falcons|moneyline": {
+      "player": "Carolina Panthers @ Atlanta Falcons",
+      "team": "NFL_DET",
+      "prop_type": "moneyline",
       "books": {
         "DraftKings": [
           {
@@ -748,10 +579,10 @@
         "viable": false
       }
     },
-    "Dalton Schultz: 11+ Receptions|receiving_yards": {
-      "player": "Dalton Schultz: 11+ Receptions",
+    "Carolina Panthers @ Atlanta Falcons|spread": {
+      "player": "Carolina Panthers @ Atlanta Falcons",
       "team": "NFL_DET",
-      "prop_type": "receiving_yards",
+      "prop_type": "spread",
       "books": {
         "DraftKings": [
           {
@@ -775,10 +606,10 @@
         "viable": false
       }
     },
-    "Jaxon Smith-Njigba: 9+ Receptions|receiving_yards": {
-      "player": "Jaxon Smith-Njigba: 9+ Receptions",
+    "Carolina Panthers @ Atlanta Falcons|over/under_total": {
+      "player": "Carolina Panthers @ Atlanta Falcons",
       "team": "NFL_DET",
-      "prop_type": "receiving_yards",
+      "prop_type": "over/under_total",
       "books": {
         "DraftKings": [
           {
@@ -797,6 +628,1545 @@
         "odds": -110.0,
         "dec": 1.9091
       },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Minnesota Vikings @ Chicago Bears|moneyline": {
+      "player": "Minnesota Vikings @ Chicago Bears",
+      "team": "NFL_DET",
+      "prop_type": "moneyline",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Minnesota Vikings @ Chicago Bears|spread": {
+      "player": "Minnesota Vikings @ Chicago Bears",
+      "team": "NFL_DET",
+      "prop_type": "spread",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Minnesota Vikings @ Chicago Bears|over/under_total": {
+      "player": "Minnesota Vikings @ Chicago Bears",
+      "team": "NFL_DET",
+      "prop_type": "over/under_total",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Philadelphia Eagles @ Tennessee Titans|moneyline": {
+      "player": "Philadelphia Eagles @ Tennessee Titans",
+      "team": "NFL_DET",
+      "prop_type": "moneyline",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Philadelphia Eagles @ Tennessee Titans|spread": {
+      "player": "Philadelphia Eagles @ Tennessee Titans",
+      "team": "NFL_DET",
+      "prop_type": "spread",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Philadelphia Eagles @ Tennessee Titans|over/under_total": {
+      "player": "Philadelphia Eagles @ Tennessee Titans",
+      "team": "NFL_DET",
+      "prop_type": "over/under_total",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Pittsburgh Steelers @ New England Patriots|moneyline": {
+      "player": "Pittsburgh Steelers @ New England Patriots",
+      "team": "NFL_DET",
+      "prop_type": "moneyline",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Pittsburgh Steelers @ New England Patriots|spread": {
+      "player": "Pittsburgh Steelers @ New England Patriots",
+      "team": "NFL_DET",
+      "prop_type": "spread",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Pittsburgh Steelers @ New England Patriots|over/under_total": {
+      "player": "Pittsburgh Steelers @ New England Patriots",
+      "team": "NFL_DET",
+      "prop_type": "over/under_total",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Green Bay Packers @ New York Jets|moneyline": {
+      "player": "Green Bay Packers @ New York Jets",
+      "team": "NFL_DET",
+      "prop_type": "moneyline",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Green Bay Packers @ New York Jets|spread": {
+      "player": "Green Bay Packers @ New York Jets",
+      "team": "NFL_DET",
+      "prop_type": "spread",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Green Bay Packers @ New York Jets|over/under_total": {
+      "player": "Green Bay Packers @ New York Jets",
+      "team": "NFL_DET",
+      "prop_type": "over/under_total",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Cleveland Browns @ Tampa Bay Buccaneers|moneyline": {
+      "player": "Cleveland Browns @ Tampa Bay Buccaneers",
+      "team": "NFL_DET",
+      "prop_type": "moneyline",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Cleveland Browns @ Tampa Bay Buccaneers|spread": {
+      "player": "Cleveland Browns @ Tampa Bay Buccaneers",
+      "team": "NFL_DET",
+      "prop_type": "spread",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Cleveland Browns @ Tampa Bay Buccaneers|over/under_total": {
+      "player": "Cleveland Browns @ Tampa Bay Buccaneers",
+      "team": "NFL_DET",
+      "prop_type": "over/under_total",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "New Orleans Saints @ Baltimore Ravens|moneyline": {
+      "player": "New Orleans Saints @ Baltimore Ravens",
+      "team": "NFL_DET",
+      "prop_type": "moneyline",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "New Orleans Saints @ Baltimore Ravens|spread": {
+      "player": "New Orleans Saints @ Baltimore Ravens",
+      "team": "NFL_DET",
+      "prop_type": "spread",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "New Orleans Saints @ Baltimore Ravens|over/under_total": {
+      "player": "New Orleans Saints @ Baltimore Ravens",
+      "team": "NFL_DET",
+      "prop_type": "over/under_total",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Cincinnati Bengals @ Houston Texans|moneyline": {
+      "player": "Cincinnati Bengals @ Houston Texans",
+      "team": "NFL_DET",
+      "prop_type": "moneyline",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Cincinnati Bengals @ Houston Texans|spread": {
+      "player": "Cincinnati Bengals @ Houston Texans",
+      "team": "NFL_DET",
+      "prop_type": "spread",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Cincinnati Bengals @ Houston Texans|over/under_total": {
+      "player": "Cincinnati Bengals @ Houston Texans",
+      "team": "NFL_DET",
+      "prop_type": "over/under_total",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Jacksonville Jaguars @ Denver Broncos|moneyline": {
+      "player": "Jacksonville Jaguars @ Denver Broncos",
+      "team": "NFL_DET",
+      "prop_type": "moneyline",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Jacksonville Jaguars @ Denver Broncos|spread": {
+      "player": "Jacksonville Jaguars @ Denver Broncos",
+      "team": "NFL_DET",
+      "prop_type": "spread",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Jacksonville Jaguars @ Denver Broncos|over/under_total": {
+      "player": "Jacksonville Jaguars @ Denver Broncos",
+      "team": "NFL_DET",
+      "prop_type": "over/under_total",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Las Vegas Raiders @ Los Angeles Chargers|moneyline": {
+      "player": "Las Vegas Raiders @ Los Angeles Chargers",
+      "team": "NFL_DET",
+      "prop_type": "moneyline",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Las Vegas Raiders @ Los Angeles Chargers|spread": {
+      "player": "Las Vegas Raiders @ Los Angeles Chargers",
+      "team": "NFL_DET",
+      "prop_type": "spread",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Las Vegas Raiders @ Los Angeles Chargers|over/under_total": {
+      "player": "Las Vegas Raiders @ Los Angeles Chargers",
+      "team": "NFL_DET",
+      "prop_type": "over/under_total",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Washington Commanders @ Dallas Cowboys|moneyline": {
+      "player": "Washington Commanders @ Dallas Cowboys",
+      "team": "NFL_DET",
+      "prop_type": "moneyline",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Washington Commanders @ Dallas Cowboys|spread": {
+      "player": "Washington Commanders @ Dallas Cowboys",
+      "team": "NFL_DET",
+      "prop_type": "spread",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Washington Commanders @ Dallas Cowboys|over/under_total": {
+      "player": "Washington Commanders @ Dallas Cowboys",
+      "team": "NFL_DET",
+      "prop_type": "over/under_total",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Seattle Seahawks @ Arizona Cardinals|moneyline": {
+      "player": "Seattle Seahawks @ Arizona Cardinals",
+      "team": "NFL_DET",
+      "prop_type": "moneyline",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Seattle Seahawks @ Arizona Cardinals|spread": {
+      "player": "Seattle Seahawks @ Arizona Cardinals",
+      "team": "NFL_DET",
+      "prop_type": "spread",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Seattle Seahawks @ Arizona Cardinals|over/under_total": {
+      "player": "Seattle Seahawks @ Arizona Cardinals",
+      "team": "NFL_DET",
+      "prop_type": "over/under_total",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Miami Dolphins @ San Francisco 49Ers|moneyline": {
+      "player": "Miami Dolphins @ San Francisco 49Ers",
+      "team": "NFL_DET",
+      "prop_type": "moneyline",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Miami Dolphins @ San Francisco 49Ers|spread": {
+      "player": "Miami Dolphins @ San Francisco 49Ers",
+      "team": "NFL_DET",
+      "prop_type": "spread",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Miami Dolphins @ San Francisco 49Ers|over/under_total": {
+      "player": "Miami Dolphins @ San Francisco 49Ers",
+      "team": "NFL_DET",
+      "prop_type": "over/under_total",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Indianapolis Colts @ Kansas City Chiefs|moneyline": {
+      "player": "Indianapolis Colts @ Kansas City Chiefs",
+      "team": "NFL_DET",
+      "prop_type": "moneyline",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Indianapolis Colts @ Kansas City Chiefs|spread": {
+      "player": "Indianapolis Colts @ Kansas City Chiefs",
+      "team": "NFL_DET",
+      "prop_type": "spread",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Indianapolis Colts @ Kansas City Chiefs|over/under_total": {
+      "player": "Indianapolis Colts @ Kansas City Chiefs",
+      "team": "NFL_DET",
+      "prop_type": "over/under_total",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "New York Giants @ Los Angeles Rams|moneyline": {
+      "player": "New York Giants @ Los Angeles Rams",
+      "team": "NFL_DET",
+      "prop_type": "moneyline",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "New York Giants @ Los Angeles Rams|spread": {
+      "player": "New York Giants @ Los Angeles Rams",
+      "team": "NFL_DET",
+      "prop_type": "spread",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "New York Giants @ Los Angeles Rams|over/under_total": {
+      "player": "New York Giants @ Los Angeles Rams",
+      "team": "NFL_DET",
+      "prop_type": "over/under_total",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Milwaukee Brewers @ Pittsburgh Pirates|receiving_yards": {
+      "player": "Milwaukee Brewers @ Pittsburgh Pirates",
+      "team": "NFL_DET",
+      "prop_type": "receiving_yards",
+      "books": {
+        "ESPN Consensus": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "ESPN Consensus",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Los Angeles Dodgers @ Cincinnati Reds|receiving_yards": {
+      "player": "Los Angeles Dodgers @ Cincinnati Reds",
+      "team": "NFL_DET",
+      "prop_type": "receiving_yards",
+      "books": {
+        "ESPN Consensus": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "ESPN Consensus",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Athletics @ Tampa Bay Rays|receiving_yards": {
+      "player": "Athletics @ Tampa Bay Rays",
+      "team": "NFL_DET",
+      "prop_type": "receiving_yards",
+      "books": {
+        "ESPN Consensus": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "ESPN Consensus",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "San Diego Padres @ Colorado Rockies|receiving_yards": {
+      "player": "San Diego Padres @ Colorado Rockies",
+      "team": "NFL_DET",
+      "prop_type": "receiving_yards",
+      "books": {
+        "ESPN Consensus": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "ESPN Consensus",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Philadelphia Phillies @ New York Mets|receiving_yards": {
+      "player": "Philadelphia Phillies @ New York Mets",
+      "team": "NFL_DET",
+      "prop_type": "receiving_yards",
+      "books": {
+        "ESPN Consensus": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "ESPN Consensus",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Kansas City Royals @ Houston Astros|receiving_yards": {
+      "player": "Kansas City Royals @ Houston Astros",
+      "team": "NFL_DET",
+      "prop_type": "receiving_yards",
+      "books": {
+        "ESPN Consensus": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "ESPN Consensus",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Detroit Tigers @ Chicago White Sox|receiving_yards": {
+      "player": "Detroit Tigers @ Chicago White Sox",
+      "team": "NFL_DET",
+      "prop_type": "receiving_yards",
+      "books": {
+        "ESPN Consensus": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "ESPN Consensus",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Boston Red Sox @ Texas Rangers|receiving_yards": {
+      "player": "Boston Red Sox @ Texas Rangers",
+      "team": "NFL_DET",
+      "prop_type": "receiving_yards",
+      "books": {
+        "ESPN Consensus": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "ESPN Consensus",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Minnesota Twins @ Los Angeles Angels|receiving_yards": {
+      "player": "Minnesota Twins @ Los Angeles Angels",
+      "team": "NFL_DET",
+      "prop_type": "receiving_yards",
+      "books": {
+        "ESPN Consensus": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "ESPN Consensus",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Miami Heat @ Toronto Raptors|receiving_yards": {
+      "player": "Miami Heat @ Toronto Raptors",
+      "team": "NFL_DET",
+      "prop_type": "receiving_yards",
+      "books": {
+        "ESPN Consensus": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "ESPN Consensus",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Yes Xtreme Gaming,Yes Natus Vincere,Yes Team Yandex,Yes Lgd Gaming,Yes Both Teams To Score,Yes Both Teams To Score,Yes Both Teams To Score,Yes Arsenal,Yes Manchester City,Yes Lyon,Yes Psg,Yes Sentinels,Yes Lyon,Yes Team Liquid,Yes New Mexico St.,Yes Miami (Fl),Yes Iowa St.,Yes Byu,Yes Notre Dame,Yes Penn,Yes Ucla,Yes Texas A&M,Yes Army,Yes Navy,Yes Air Force,Yes Colorado St.,Yes Georgia Tech,Yes Hawai'I,Yes North Texas,Yes Texas St.,Yes Kansas St.,Yes Notre Dame,Yes Tennessee Tech,Yes North Dakota,Yes Virginia Tech,Yes Penn St.,Yes Indiana,Yes Minnesota,Yes Atlanta,Yes Minnesota,Yes Las Vegas|receiving_yards": {
+      "player": "Yes Xtreme Gaming,Yes Natus Vincere,Yes Team Yandex,Yes Lgd Gaming,Yes Both Teams To Score,Yes Both Teams To Score,Yes Both Teams To Score,Yes Arsenal,Yes Manchester City,Yes Lyon,Yes Psg,Yes Sentinels,Yes Lyon,Yes Team Liquid,Yes New Mexico St.,Yes Miami (Fl),Yes Iowa St.,Yes Byu,Yes Notre Dame,Yes Penn,Yes Ucla,Yes Texas A&M,Yes Army,Yes Navy,Yes Air Force,Yes Colorado St.,Yes Georgia Tech,Yes Hawai'I,Yes North Texas,Yes Texas St.,Yes Kansas St.,Yes Notre Dame,Yes Tennessee Tech,Yes North Dakota,Yes Virginia Tech,Yes Penn St.,Yes Indiana,Yes Minnesota,Yes Atlanta,Yes Minnesota,Yes Las Vegas",
+      "team": "0A47893B964",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": 100.0,
+            "dec": 2.0,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": 100.0,
+        "dec": 2.0
+      },
+      "best_under": null,
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Yes Samsung Lions,Yes Samsung Lions,Yes San Diego,Yes Los Angeles D,Yes Miami (Fl),Yes Minnesota,Yes Iowa St.,Yes Lehigh,Yes Wisconsin,Yes Harvard,Yes Kansas St.,Yes East Tennessee St.,Yes Villanova,Yes Yale,Yes Tampa Bay,Yes Kansas City,Yes Los Angeles C,Yes San Francisco,Yes Baltimore,Yes Philadelphia,Yes New England,Yes Fukuoka Hawks,Yes Gable Steveson,Yes Indiana,Yes Minnesota,Yes Golden State,Yes Atlanta,Yes Dallas,Yes Golden State,Yes Minnesota,Yes New York,Yes Las Vegas,Yes Indiana,Yes Quinn Gleason / Katarzyna Piter|receiving_yards": {
+      "player": "Yes Samsung Lions,Yes Samsung Lions,Yes San Diego,Yes Los Angeles D,Yes Miami (Fl),Yes Minnesota,Yes Iowa St.,Yes Lehigh,Yes Wisconsin,Yes Harvard,Yes Kansas St.,Yes East Tennessee St.,Yes Villanova,Yes Yale,Yes Tampa Bay,Yes Kansas City,Yes Los Angeles C,Yes San Francisco,Yes Baltimore,Yes Philadelphia,Yes New England,Yes Fukuoka Hawks,Yes Gable Steveson,Yes Indiana,Yes Minnesota,Yes Golden State,Yes Atlanta,Yes Dallas,Yes Golden State,Yes Minnesota,Yes New York,Yes Las Vegas,Yes Indiana,Yes Quinn Gleason / Katarzyna Piter",
+      "team": "171057D899E",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": 100.0,
+            "dec": 2.0,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": 100.0,
+        "dec": 2.0
+      },
+      "best_under": null,
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Yes Chicago,Yes Houston Wins By Over 2.5 Points,Yes Philadelphia Wins By Over 3.5 Points,Yes Dallas Wins By Over 3.5 Points,Yes Over 43.5 Points Scored|receiving_yards": {
+      "player": "Yes Chicago,Yes Houston Wins By Over 2.5 Points,Yes Philadelphia Wins By Over 3.5 Points,Yes Dallas Wins By Over 3.5 Points,Yes Over 43.5 Points Scored",
+      "team": "837DB088AF1",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": 100.0,
+            "dec": 2.0,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": 100.0,
+        "dec": 2.0
+      },
+      "best_under": null,
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Yes Bryce Young: 1+,Yes Joe Burrow: 1+,Yes Baker Mayfield: 1+,Yes Marshawn Lloyd: 1+,Yes Caleb Williams: 1+,Yes Lamar Jackson: 1+,Yes Drake Maye: 1+|receiving_yards": {
+      "player": "Yes Bryce Young: 1+,Yes Joe Burrow: 1+,Yes Baker Mayfield: 1+,Yes Marshawn Lloyd: 1+,Yes Caleb Williams: 1+,Yes Lamar Jackson: 1+,Yes Drake Maye: 1+",
+      "team": "14122C6DBA6",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": 100.0,
+            "dec": 2.0,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": 100.0,
+        "dec": 2.0
+      },
+      "best_under": null,
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Yes Both Teams To Score,Yes Kt Wiz,Yes Samsung Lions,Yes Emeka Egbuka: 1+,Yes Luther Burden Iii: 1+,Yes Devonta Smith: 1+,Yes Yomiuri Giants,Yes Yokohama Dena Baystars|receiving_yards": {
+      "player": "Yes Both Teams To Score,Yes Kt Wiz,Yes Samsung Lions,Yes Emeka Egbuka: 1+,Yes Luther Burden Iii: 1+,Yes Devonta Smith: 1+,Yes Yomiuri Giants,Yes Yokohama Dena Baystars",
+      "team": "E967FCD6762",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": 100.0,
+            "dec": 2.0,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": 100.0,
+        "dec": 2.0
+      },
+      "best_under": null,
       "middle_window": {
         "spread_points": 0.0,
         "viable": false
