@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-09-18T05:07:40.465698+00:00",
-  "timestamp_cdt": "2026-09-18 00:07:40 CDT",
-  "matrix_count": 28,
+  "timestamp": "2026-09-18T05:13:49.798409+00:00",
+  "timestamp_cdt": "2026-09-18 00:13:49 CDT",
+  "matrix_count": 29,
   "discrepancies": {
-    "total_props_analyzed": 28,
+    "total_props_analyzed": 29,
     "total_arbs_found": 0,
     "total_middles_found": 0,
     "total_ladder_edges": 0,
@@ -532,6 +532,33 @@
         "viable": false
       }
     },
+    "Full Game: Over 67.5 Points Scored?|receiving_yards": {
+      "player": "Full Game: Over 67.5 Points Scored?",
+      "team": "NFL_DET",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
     "San Antonio Wins|receiving_yards": {
       "player": "San Antonio Wins",
       "team": "NFL_DET",
@@ -561,33 +588,6 @@
     },
     "Boston Wins|receiving_yards": {
       "player": "Boston Wins",
-      "team": "NFL_DET",
-      "prop_type": "receiving_yards",
-      "books": {
-        "DraftKings": [
-          {
-            "line": 0.0,
-            "type": "main_line",
-            "odds": -110.0,
-            "dec": 1.9091,
-            "over_under": "under"
-          }
-        ]
-      },
-      "best_over": null,
-      "best_under": {
-        "book": "DraftKings",
-        "line": 0.0,
-        "odds": -110.0,
-        "dec": 1.9091
-      },
-      "middle_window": {
-        "spread_points": 0.0,
-        "viable": false
-      }
-    },
-    "Winnipeg Wins|receiving_yards": {
-      "player": "Winnipeg Wins",
       "team": "NFL_DET",
       "prop_type": "receiving_yards",
       "books": {
@@ -667,8 +667,8 @@
         "viable": false
       }
     },
-    "Seattle Wins|receiving_yards": {
-      "player": "Seattle Wins",
+    "North Texas Wins|receiving_yards": {
+      "player": "North Texas Wins",
       "team": "NFL_DET",
       "prop_type": "receiving_yards",
       "books": {
@@ -694,8 +694,8 @@
         "viable": false
       }
     },
-    "Cooper Kupp: 80+ Receiving Yards|receiving_yards": {
-      "player": "Cooper Kupp: 80+ Receiving Yards",
+    "Brock Purdy: 350+ Passing Yards|receiving_yards": {
+      "player": "Brock Purdy: 350+ Passing Yards",
       "team": "NFL_DET",
       "prop_type": "receiving_yards",
       "books": {
@@ -721,8 +721,8 @@
         "viable": false
       }
     },
-    "Dallas Goedert: 110+ Receiving Yards|receiving_yards": {
-      "player": "Dallas Goedert: 110+ Receiving Yards",
+    "Xavier Hutchinson: 8+ Receptions|receiving_yards": {
+      "player": "Xavier Hutchinson: 8+ Receptions",
       "team": "NFL_DET",
       "prop_type": "receiving_yards",
       "books": {
@@ -748,8 +748,35 @@
         "viable": false
       }
     },
-    "Emeka Egbuka: 130+ Receiving Yards|receiving_yards": {
-      "player": "Emeka Egbuka: 130+ Receiving Yards",
+    "Dalton Schultz: 11+ Receptions|receiving_yards": {
+      "player": "Dalton Schultz: 11+ Receptions",
+      "team": "NFL_DET",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -110.0,
+            "dec": 1.9091,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -110.0,
+        "dec": 1.9091
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Jaxon Smith-Njigba: 9+ Receptions|receiving_yards": {
+      "player": "Jaxon Smith-Njigba: 9+ Receptions",
       "team": "NFL_DET",
       "prop_type": "receiving_yards",
       "books": {

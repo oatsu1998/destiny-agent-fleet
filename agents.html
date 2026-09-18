@@ -1213,8 +1213,8 @@
             </div>
 
             <!-- Chart Canvas -->
-            <div style="position: relative; width: 100%; height: 320px;">
-                <canvas id="pnlCurveChart"></canvas>
+            <div style="position: relative; height: 350px; width: 100%; margin-bottom: 20px;">
+                <canvas id="pnlChart"></canvas>
             </div>
 
             <!-- Wager Profile Pills Row -->
@@ -1383,26 +1383,24 @@
         let agentFleetData = [];
         let currentStatusFilter = 'ALL';
 
-        // Chart.js Instance & Data (Total Game Score Axis - Starts at 9.0 Base Score)
+        // Chart.js Instance & Data (Total Game Score Axis: 6.0 to 12.0)
         let pnlChart = null;
         let chartToggleMode = 'unhedged';
 
-        const totalScoresX = ['9.0 (7-2 Base)', '9.5 Line', '10.0 (+1 Run)', '11.0 (+2 Runs)', '12.0 (+3 Runs)', '13.0+ (+4+ Runs)'];
+        const totalScoresX = ['6.0', '7.0', '8.0', '9.0 (Baseline)', '10.0 (+1 Run)', '11.0', '12.0'];
 
-        // Dataset Values by Total Game Score Line (7-2 = 9.0 Base Score)
-        // Leg 2: Over 9.5 ($50K) -> -$50,000 when Total <= 9, +$52,500 when Total >= 9.5 threshold (10.0+)
-        const datasetLeg2 = [-50000, -50000, 52500, 52500, 52500, 52500];
-        
-        // Spread Net PnL (Angels +4.5 cover vs Mariners -4.5 cover)
-        const datasetSpreadUnhedged = [-455000, -455000, -455000, -455000, 243817.2, 243817.2];
-        const datasetSpreadHedged   = [45000, 45000, 45000, 45000, 252317.2, 252317.2];
+        // Dataset 1: Unhedged Risk Exposure (Deep Red)
+        // Below 9.5 line: Downside -$390,500 to -$505,000 | Above 9.5: +$296,317.20
+        const datasetUnhedgedRisk = [-390500, -390500, -390500, -505000, 296317.20, 296317.20, 296317.20];
 
-        // Total Portfolio Net PnL Curve
-        const datasetNetUnhedged = [-505000, -505000, -402500, -402500, 296317.2, 296317.2];
-        const datasetNetHedged   = [-5000, -5000, 97500, 97500, 304817.2, 304817.2];
+        // Dataset 2: Hedged Zero-Risk Curve (Vibrant Emerald Green)
+        // Locked Profit Floor: $0.00 below 9.5 line | +$97,500.00 to +$304,817.20 above 9.5
+        const datasetHedgedZeroRisk = [0, 0, 0, 0, 97500.00, 97500.00, 304817.20];
 
         function initPnlChart() {
-            const ctx = document.getElementById('pnlCurveChart').getContext('2d');
+            const canvas = document.getElementById('pnlChart') || document.getElementById('pnlCurveChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
             
             pnlChart = new Chart(ctx, {
                 type: 'line',
@@ -1410,43 +1408,28 @@
                     labels: totalScoresX,
                     datasets: [
                         {
-                            label: 'Over 9.5 Leg PnL ($50K)',
-                            data: datasetLeg2,
-                            borderColor: '#f59e0b',
-                            borderWidth: 2,
-                            borderDash: [5, 5],
-                            pointRadius: 4,
-                            pointBackgroundColor: '#f59e0b',
-                            stepped: true
-                        },
-                        {
-                            label: 'Run Spread Net PnL',
-                            data: datasetSpreadUnhedged,
-                            borderColor: '#a855f7',
-                            borderWidth: 2,
-                            borderDash: [5, 5],
-                            pointRadius: 3,
-                            pointBackgroundColor: '#a855f7',
-                            tension: 0.1
-                        },
-                        {
-                            label: 'Net Portfolio PnL Summary',
-                            data: datasetNetUnhedged,
-                            borderColor: function(context) {
-                                const index = context.dataIndex;
-                                const value = context.dataset.data[index];
-                                return value >= 0 ? '#10b981' : '#ef4444';
-                            },
-                            borderWidth: 3.5,
+                            label: 'Unhedged Risk Exposure (Before)',
+                            data: datasetUnhedgedRisk,
+                            borderColor: '#ef4444',
+                            borderWidth: 3,
+                            backgroundColor: 'rgba(239, 68, 68, 0.12)',
                             fill: true,
-                            backgroundColor: 'rgba(239, 68, 68, 0.15)',
                             pointRadius: 5,
-                            pointBackgroundColor: function(context) {
-                                const index = context.dataIndex;
-                                const value = context.dataset.data[index];
-                                return value >= 0 ? '#10b981' : '#ef4444';
-                            },
-                            tension: 0.1
+                            pointBackgroundColor: '#ef4444',
+                            pointHoverRadius: 7,
+                            tension: 0.2
+                        },
+                        {
+                            label: 'Hedged Zero-Risk Curve (After 🛡️)',
+                            data: datasetHedgedZeroRisk,
+                            borderColor: '#10b981',
+                            borderWidth: 3.5,
+                            backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                            fill: true,
+                            pointRadius: 6,
+                            pointBackgroundColor: '#10b981',
+                            pointHoverRadius: 8,
+                            tension: 0.2
                         }
                     ]
                 },
@@ -1475,7 +1458,7 @@
                             callbacks: {
                                 title: function(items) {
                                     const score = items[0].label;
-                                    return `Total Combined Game Score: ${score}`;
+                                    return `Total Combined Game Score: ${score} Runs`;
                                 },
                                 label: function(context) {
                                     let label = context.dataset.label || '';
@@ -1497,7 +1480,7 @@
                         y: {
                             grid: {
                                 color: function(context) {
-                                    if (context.tick.value === 0) return 'rgba(255, 255, 255, 0.8)';
+                                    if (context.tick.value === 0) return 'rgba(255, 255, 255, 0.7)';
                                     return 'rgba(255, 255, 255, 0.05)';
                                 },
                                 lineWidth: function(context) {
@@ -1532,9 +1515,8 @@
                 downsideEl.style.color = '#ef4444';
 
                 if (pnlChart) {
-                    pnlChart.data.datasets[1].data = datasetSpreadUnhedged;
-                    pnlChart.data.datasets[2].data = datasetNetUnhedged;
-                    pnlChart.data.datasets[2].backgroundColor = 'rgba(239, 68, 68, 0.15)';
+                    pnlChart.setDatasetVisibility(0, true);
+                    pnlChart.setDatasetVisibility(1, false);
                     pnlChart.update();
                 }
             } else {
@@ -1544,9 +1526,8 @@
                 downsideEl.style.color = '#10b981';
 
                 if (pnlChart) {
-                    pnlChart.data.datasets[1].data = datasetSpreadHedged;
-                    pnlChart.data.datasets[2].data = datasetNetHedged;
-                    pnlChart.data.datasets[2].backgroundColor = 'rgba(16, 185, 129, 0.15)';
+                    pnlChart.setDatasetVisibility(0, true);
+                    pnlChart.setDatasetVisibility(1, true);
                     pnlChart.update();
                 }
             }
