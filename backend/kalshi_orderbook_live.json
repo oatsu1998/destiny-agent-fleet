@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-09-18T06:23:12.252496+00:00",
+  "total_markets_tracked": 3,
+  "orderbooks": {
+    "KXMLBTOTAL-26SEP181915PHINYM-9": {
+      "ticker": "KXMLBTOTAL-26SEP181915PHINYM-9",
+      "best_yes_bid": 54,
+      "best_yes_ask": 100,
+      "best_no_bid": 0,
+      "spread_cents": 46,
+      "implied_probability": 0.54,
+      "timestamp": "2026-09-18T06:23:12.252484+00:00"
+    },
+    "KXMLBTOTAL-26SEP181915PHINYM-8": {
+      "ticker": "KXMLBTOTAL-26SEP181915PHINYM-8",
+      "best_yes_bid": 54,
+      "best_yes_ask": 100,
+      "best_no_bid": 0,
+      "spread_cents": 46,
+      "implied_probability": 0.54,
+      "timestamp": "2026-09-18T06:23:12.252491+00:00"
+    },
+    "KXMLBTOTAL-26SEP181915PHINYM-7": {
+      "ticker": "KXMLBTOTAL-26SEP181915PHINYM-7",
+      "best_yes_bid": 54,
+      "best_yes_ask": 100,
+      "best_no_bid": 0,
+      "spread_cents": 46,
+      "implied_probability": 0.54,
+      "timestamp": "2026-09-18T06:23:12.252495+00:00"
+    }
+  }
+}

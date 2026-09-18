@@ -1,5 +1,5 @@
 {
-  "cycle_count": 2,
+  "cycle_count": 8,
   "lines_history": {
     "MLB_20260918_MLB_LAD@MLB_LAD|game|Consensus": {
       "last_val": 0.0,
@@ -320,6 +320,18 @@
     "401872947|total|DraftKings": {
       "last_val": 48.5,
       "unchanged_cycles": 1
+    },
+    "KALSHI_KXMLBTOTAL-26SEP181915PHINYM-9|game|Kalshi Live WS": {
+      "last_val": 0.54,
+      "unchanged_cycles": 2
+    },
+    "KALSHI_KXMLBTOTAL-26SEP181915PHINYM-8|game|Kalshi Live WS": {
+      "last_val": 0.54,
+      "unchanged_cycles": 2
+    },
+    "KALSHI_KXMLBTOTAL-26SEP181915PHINYM-7|game|Kalshi Live WS": {
+      "last_val": 0.54,
+      "unchanged_cycles": 2
     }
   }
 }
