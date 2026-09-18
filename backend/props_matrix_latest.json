@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-09-18T06:47:35.910451+00:00",
-  "timestamp_cdt": "2026-09-18 01:47:35 CDT",
-  "matrix_count": 23,
+  "timestamp": "2026-09-18T22:32:49.108492+00:00",
+  "timestamp_cdt": "2026-09-18 17:32:49 CDT",
+  "matrix_count": 46,
   "discrepancies": {
-    "total_props_analyzed": 23,
+    "total_props_analyzed": 46,
     "total_arbs_found": 0,
     "total_middles_found": 0,
     "total_ladder_edges": 0,
@@ -12,53 +12,26 @@
     "ladder_edges": []
   },
   "matrix": {
-    "Milwaukee Wins|receiving_yards": {
-      "player": "Milwaukee Wins",
-      "team": "MIL",
+    "Minnesota Wins By Over 3.5 Runs?|receiving_yards": {
+      "player": "Minnesota Wins By Over 3.5 Runs?",
+      "team": "MIN4",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
-            "line": 0.0,
+            "line": 3.5,
             "type": "main_line",
-            "odds": -178.0,
-            "dec": 1.5618,
-            "over_under": "under"
-          }
-        ]
-      },
-      "best_over": null,
-      "best_under": {
-        "book": "DraftKings",
-        "line": 0.0,
-        "odds": -178.0,
-        "dec": 1.5618
-      },
-      "middle_window": {
-        "spread_points": 0.0,
-        "viable": false
-      }
-    },
-    "Los Angeles A Wins|receiving_yards": {
-      "player": "Los Angeles A Wins",
-      "team": "LAA",
-      "prop_type": "receiving_yards",
-      "books": {
-        "DraftKings": [
-          {
-            "line": 0.0,
-            "type": "main_line",
-            "odds": 122.0,
-            "dec": 2.22,
+            "odds": 400.0,
+            "dec": 5.0,
             "over_under": "over"
           }
         ]
       },
       "best_over": {
         "book": "DraftKings",
-        "line": 0.0,
-        "odds": 122.0,
-        "dec": 2.22
+        "line": 3.5,
+        "odds": 400.0,
+        "dec": 5.0
       },
       "best_under": null,
       "middle_window": {
@@ -66,17 +39,179 @@
         "viable": false
       }
     },
-    "New York Y Wins|receiving_yards": {
-      "player": "New York Y Wins",
-      "team": "NYY",
+    "Houston Wins By Over 3.5 Runs?|receiving_yards": {
+      "player": "Houston Wins By Over 3.5 Runs?",
+      "team": "HOU4",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 3.5,
+            "type": "main_line",
+            "odds": 456.0,
+            "dec": 5.56,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 3.5,
+        "odds": 456.0,
+        "dec": 5.56
+      },
+      "best_under": null,
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Atlanta Wins By Over 3.5 Runs?|receiving_yards": {
+      "player": "Atlanta Wins By Over 3.5 Runs?",
+      "team": "ATL4",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 3.5,
+            "type": "main_line",
+            "odds": 400.0,
+            "dec": 5.0,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 3.5,
+        "odds": 400.0,
+        "dec": 5.0
+      },
+      "best_under": null,
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Philadelphia Wins By Over 3.5 Runs?|receiving_yards": {
+      "player": "Philadelphia Wins By Over 3.5 Runs?",
+      "team": "PHI4",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 3.5,
+            "type": "main_line",
+            "odds": 400.0,
+            "dec": 5.0,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 3.5,
+        "odds": 400.0,
+        "dec": 5.0
+      },
+      "best_under": null,
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Seattle Wins By Over 3.5 Runs?|receiving_yards": {
+      "player": "Seattle Wins By Over 3.5 Runs?",
+      "team": "SEA4",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 3.5,
+            "type": "main_line",
+            "odds": 194.0,
+            "dec": 2.94,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 3.5,
+        "odds": 194.0,
+        "dec": 2.94
+      },
+      "best_under": null,
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Over 8.5 Runs Scored|receiving_yards": {
+      "player": "Over 8.5 Runs Scored",
+      "team": "9",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 8.5,
+            "type": "main_line",
+            "odds": 150.0,
+            "dec": 2.5,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 8.5,
+        "odds": 150.0,
+        "dec": 2.5
+      },
+      "best_under": null,
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Philadelphia Wins|receiving_yards": {
+      "player": "Philadelphia Wins",
+      "team": "PHI",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
             "line": 0.0,
             "type": "main_line",
-            "odds": -113.0,
-            "dec": 1.885,
+            "odds": 100.0,
+            "dec": 2.0,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": 100.0,
+        "dec": 2.0
+      },
+      "best_under": null,
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Chicago Wins|receiving_yards": {
+      "player": "Chicago Wins",
+      "team": "CHI",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -108.0,
+            "dec": 1.9259,
             "over_under": "under"
           }
         ]
@@ -85,25 +220,25 @@
       "best_under": {
         "book": "DraftKings",
         "line": 0.0,
-        "odds": -113.0,
-        "dec": 1.885
+        "odds": -108.0,
+        "dec": 1.9259
       },
       "middle_window": {
         "spread_points": 0.0,
         "viable": false
       }
     },
-    "Los Angeles D Wins|receiving_yards": {
-      "player": "Los Angeles D Wins",
-      "team": "LAD",
+    "Los Angeles R Wins|receiving_yards": {
+      "player": "Los Angeles R Wins",
+      "team": "LAR",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
             "line": 0.0,
             "type": "main_line",
-            "odds": -300.0,
-            "dec": 1.3333,
+            "odds": -133.0,
+            "dec": 1.7519,
             "over_under": "under"
           }
         ]
@@ -112,25 +247,52 @@
       "best_under": {
         "book": "DraftKings",
         "line": 0.0,
-        "odds": -300.0,
-        "dec": 1.3333
+        "odds": -133.0,
+        "dec": 1.7519
       },
       "middle_window": {
         "spread_points": 0.0,
         "viable": false
       }
     },
-    "Seattle Wins|receiving_yards": {
-      "player": "Seattle Wins",
-      "team": "SEA",
+    "Dallas Wins|receiving_yards": {
+      "player": "Dallas Wins",
+      "team": "DAL",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
             "line": 0.0,
             "type": "main_line",
-            "odds": -127.0,
-            "dec": 1.7874,
+            "odds": 150.0,
+            "dec": 2.5,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": 150.0,
+        "dec": 2.5
+      },
+      "best_under": null,
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Baltimore Wins|receiving_yards": {
+      "player": "Baltimore Wins",
+      "team": "BAL",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -163.0,
+            "dec": 1.6135,
             "over_under": "under"
           }
         ]
@@ -139,8 +301,35 @@
       "best_under": {
         "book": "DraftKings",
         "line": 0.0,
-        "odds": -127.0,
-        "dec": 1.7874
+        "odds": -163.0,
+        "dec": 1.6135
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "San Francisco Wins|receiving_yards": {
+      "player": "San Francisco Wins",
+      "team": "SF",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -456.0,
+            "dec": 1.2193,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -456.0,
+        "dec": 1.2193
       },
       "middle_window": {
         "spread_points": 0.0,
@@ -174,68 +363,68 @@
         "viable": false
       }
     },
-    "Atlanta Wins|receiving_yards": {
-      "player": "Atlanta Wins",
-      "team": "ATL",
+    "Detroit Wins|receiving_yards": {
+      "player": "Detroit Wins",
+      "team": "DET",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
             "line": 0.0,
             "type": "main_line",
-            "odds": 117.0,
-            "dec": 2.17,
-            "over_under": "over"
+            "odds": -300.0,
+            "dec": 1.3333,
+            "over_under": "under"
           }
         ]
       },
-      "best_over": {
+      "best_over": null,
+      "best_under": {
         "book": "DraftKings",
         "line": 0.0,
-        "odds": 117.0,
-        "dec": 2.17
+        "odds": -300.0,
+        "dec": 1.3333
       },
-      "best_under": null,
       "middle_window": {
         "spread_points": 0.0,
         "viable": false
       }
     },
-    "Philadelphia Wins By Over 3.5 Runs?|receiving_yards": {
-      "player": "Philadelphia Wins By Over 3.5 Runs?",
-      "team": "PHI4",
+    "Buffalo Wins|receiving_yards": {
+      "player": "Buffalo Wins",
+      "team": "BUF",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
-            "line": 3.5,
+            "line": 0.0,
             "type": "main_line",
-            "odds": 426.0,
-            "dec": 5.26,
-            "over_under": "over"
+            "odds": -233.0,
+            "dec": 1.4292,
+            "over_under": "under"
           }
         ]
       },
-      "best_over": {
+      "best_over": null,
+      "best_under": {
         "book": "DraftKings",
-        "line": 3.5,
-        "odds": 426.0,
-        "dec": 5.26
+        "line": 0.0,
+        "odds": -233.0,
+        "dec": 1.4292
       },
-      "best_under": null,
       "middle_window": {
         "spread_points": 0.0,
         "viable": false
       }
     },
-    "New York M Wins By Over 3.5 Runs?|receiving_yards": {
-      "player": "New York M Wins By Over 3.5 Runs?",
-      "team": "NYM4",
+    "Miami Wins|receiving_yards": {
+      "player": "Miami Wins",
+      "team": "MIA",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
-            "line": 3.5,
+            "line": 0.0,
             "type": "main_line",
             "odds": 456.0,
             "dec": 5.56,
@@ -245,7 +434,7 @@
       },
       "best_over": {
         "book": "DraftKings",
-        "line": 3.5,
+        "line": 0.0,
         "odds": 456.0,
         "dec": 5.56
       },
@@ -255,26 +444,80 @@
         "viable": false
       }
     },
-    "Houston Wins By Over 3.5 Runs?|receiving_yards": {
-      "player": "Houston Wins By Over 3.5 Runs?",
-      "team": "HOU4",
+    "Kansas City Wins|receiving_yards": {
+      "player": "Kansas City Wins",
+      "team": "KC",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
-            "line": 3.5,
+            "line": 0.0,
             "type": "main_line",
-            "odds": 567.0,
-            "dec": 6.67,
+            "odds": -525.0,
+            "dec": 1.1905,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -525.0,
+        "dec": 1.1905
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Green Bay Wins|receiving_yards": {
+      "player": "Green Bay Wins",
+      "team": "GB",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -270.0,
+            "dec": 1.3704,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -270.0,
+        "dec": 1.3704
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Winnipeg Wins By Over 2.5 Goals|receiving_yards": {
+      "player": "Winnipeg Wins By Over 2.5 Goals",
+      "team": "WPG3",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 2.5,
+            "type": "main_line",
+            "odds": 203.0,
+            "dec": 3.03,
             "over_under": "over"
           }
         ]
       },
       "best_over": {
         "book": "DraftKings",
-        "line": 3.5,
-        "odds": 567.0,
-        "dec": 6.67
+        "line": 2.5,
+        "odds": 203.0,
+        "dec": 3.03
       },
       "best_under": null,
       "middle_window": {
@@ -282,26 +525,26 @@
         "viable": false
       }
     },
-    "Atlanta Wins By Over 3.5 Runs?|receiving_yards": {
-      "player": "Atlanta Wins By Over 3.5 Runs?",
-      "team": "ATL4",
+    "Colorado Wins By Over 2.5 Goals|receiving_yards": {
+      "player": "Colorado Wins By Over 2.5 Goals",
+      "team": "COL3",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
-            "line": 3.5,
+            "line": 2.5,
             "type": "main_line",
-            "odds": 355.0,
-            "dec": 4.55,
+            "odds": 203.0,
+            "dec": 3.03,
             "over_under": "over"
           }
         ]
       },
       "best_over": {
         "book": "DraftKings",
-        "line": 3.5,
-        "odds": 355.0,
-        "dec": 4.55
+        "line": 2.5,
+        "odds": 203.0,
+        "dec": 3.03
       },
       "best_under": null,
       "middle_window": {
@@ -309,26 +552,26 @@
         "viable": false
       }
     },
-    "Over 8.5 Runs Scored|receiving_yards": {
-      "player": "Over 8.5 Runs Scored",
-      "team": "9",
+    "Dallas Wins By Over 2.5 Goals|receiving_yards": {
+      "player": "Dallas Wins By Over 2.5 Goals",
+      "team": "DAL3",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
-            "line": 8.5,
+            "line": 2.5,
             "type": "main_line",
-            "odds": 104.0,
-            "dec": 2.04,
+            "odds": 203.0,
+            "dec": 3.03,
             "over_under": "over"
           }
         ]
       },
       "best_over": {
         "book": "DraftKings",
-        "line": 8.5,
-        "odds": 104.0,
-        "dec": 2.04
+        "line": 2.5,
+        "odds": 203.0,
+        "dec": 3.03
       },
       "best_under": null,
       "middle_window": {
@@ -336,26 +579,26 @@
         "viable": false
       }
     },
-    "Gb Packers Wins By Over 7.5 Points?|receiving_yards": {
-      "player": "Gb Packers Wins By Over 7.5 Points?",
-      "team": "GB8",
+    "Boston Wins By Over 2.5 Goals|receiving_yards": {
+      "player": "Boston Wins By Over 2.5 Goals",
+      "team": "BOS3",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
-            "line": 7.5,
+            "line": 2.5,
             "type": "main_line",
-            "odds": 127.0,
-            "dec": 2.27,
+            "odds": 203.0,
+            "dec": 3.03,
             "over_under": "over"
           }
         ]
       },
       "best_over": {
         "book": "DraftKings",
-        "line": 7.5,
-        "odds": 127.0,
-        "dec": 2.27
+        "line": 2.5,
+        "odds": 203.0,
+        "dec": 3.03
       },
       "best_under": null,
       "middle_window": {
@@ -363,26 +606,26 @@
         "viable": false
       }
     },
-    "Atl Falcons Wins By Over 7.5 Points?|receiving_yards": {
-      "player": "Atl Falcons Wins By Over 7.5 Points?",
-      "team": "ATL8",
+    "Edmonton Wins By Over 2.5 Goals|receiving_yards": {
+      "player": "Edmonton Wins By Over 2.5 Goals",
+      "team": "EDM3",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
-            "line": 7.5,
+            "line": 2.5,
             "type": "main_line",
-            "odds": 809.0,
-            "dec": 9.09,
+            "odds": 212.0,
+            "dec": 3.12,
             "over_under": "over"
           }
         ]
       },
       "best_over": {
         "book": "DraftKings",
-        "line": 7.5,
-        "odds": 809.0,
-        "dec": 9.09
+        "line": 2.5,
+        "odds": 212.0,
+        "dec": 3.12
       },
       "best_under": null,
       "middle_window": {
@@ -390,14 +633,176 @@
         "viable": false
       }
     },
-    "Dallas Wins By Over 7.5 Points?|receiving_yards": {
-      "player": "Dallas Wins By Over 7.5 Points?",
-      "team": "DAL8",
+    "North Texas Wins|receiving_yards": {
+      "player": "North Texas Wins",
+      "team": "UNT",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
-            "line": 7.5,
+            "line": 0.0,
+            "type": "main_line",
+            "odds": 100.0,
+            "dec": 2.0,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": 100.0,
+        "dec": 2.0
+      },
+      "best_under": null,
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Tulsa Wins|receiving_yards": {
+      "player": "Tulsa Wins",
+      "team": "TLSA",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -1150.0,
+            "dec": 1.087,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -1150.0,
+        "dec": 1.087
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Georgia Tech Wins|receiving_yards": {
+      "player": "Georgia Tech Wins",
+      "team": "GT",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -400.0,
+            "dec": 1.25,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -400.0,
+        "dec": 1.25
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Oregon St. Wins|receiving_yards": {
+      "player": "Oregon St. Wins",
+      "team": "ORST",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -900.0,
+            "dec": 1.1111,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -900.0,
+        "dec": 1.1111
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Southern Utah Wins|receiving_yards": {
+      "player": "Southern Utah Wins",
+      "team": "SUU",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": 203.0,
+            "dec": 3.03,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": 203.0,
+        "dec": 3.03
+      },
+      "best_under": null,
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Northern Colorado Wins|receiving_yards": {
+      "player": "Northern Colorado Wins",
+      "team": "UNCO",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -567.0,
+            "dec": 1.1764,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -567.0,
+        "dec": 1.1764
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Portland St. Wins|receiving_yards": {
+      "player": "Portland St. Wins",
+      "team": "PRST",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
             "type": "main_line",
             "odds": 178.0,
             "dec": 2.78,
@@ -407,7 +812,7 @@
       },
       "best_over": {
         "book": "DraftKings",
-        "line": 7.5,
+        "line": 0.0,
         "odds": 178.0,
         "dec": 2.78
       },
@@ -417,26 +822,26 @@
         "viable": false
       }
     },
-    "Baltimore Wins By Over 8.5 Points?|receiving_yards": {
-      "player": "Baltimore Wins By Over 8.5 Points?",
-      "team": "BAL9",
+    "Middle Tennessee Wins|receiving_yards": {
+      "player": "Middle Tennessee Wins",
+      "team": "MTU",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
-            "line": 8.5,
+            "line": 0.0,
             "type": "main_line",
-            "odds": 104.0,
-            "dec": 2.04,
+            "odds": 150.0,
+            "dec": 2.5,
             "over_under": "over"
           }
         ]
       },
       "best_over": {
         "book": "DraftKings",
-        "line": 8.5,
-        "odds": 104.0,
-        "dec": 2.04
+        "line": 0.0,
+        "odds": 150.0,
+        "dec": 2.5
       },
       "best_under": null,
       "middle_window": {
@@ -444,26 +849,26 @@
         "viable": false
       }
     },
-    "Chicago Wins By Over 7.5 Points?|receiving_yards": {
-      "player": "Chicago Wins By Over 7.5 Points?",
-      "team": "CHI8",
+    "Alabama A&M Wins|receiving_yards": {
+      "player": "Alabama A&M Wins",
+      "team": "AAMU",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
-            "line": 7.5,
+            "line": 0.0,
             "type": "main_line",
-            "odds": 163.0,
-            "dec": 2.63,
+            "odds": 133.0,
+            "dec": 2.33,
             "over_under": "over"
           }
         ]
       },
       "best_over": {
         "book": "DraftKings",
-        "line": 7.5,
-        "odds": 163.0,
-        "dec": 2.63
+        "line": 0.0,
+        "odds": 133.0,
+        "dec": 2.33
       },
       "best_under": null,
       "middle_window": {
@@ -471,26 +876,53 @@
         "viable": false
       }
     },
-    "Full Game: Over 67.5 Points Scored?|receiving_yards": {
-      "player": "Full Game: Over 67.5 Points Scored?",
-      "team": "68",
+    "Miami (Fl) Wins|receiving_yards": {
+      "player": "Miami (Fl) Wins",
+      "team": "MIA",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
-            "line": 67.5,
+            "line": 0.0,
             "type": "main_line",
-            "odds": 733.0,
-            "dec": 8.33,
+            "odds": -9900.0,
+            "dec": 1.0101,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -9900.0,
+        "dec": 1.0101
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Central Michigan Wins|receiving_yards": {
+      "player": "Central Michigan Wins",
+      "team": "CMU",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": 9900.0,
+            "dec": 100.0,
             "over_under": "over"
           }
         ]
       },
       "best_over": {
         "book": "DraftKings",
-        "line": 67.5,
-        "odds": 733.0,
-        "dec": 8.33
+        "line": 0.0,
+        "odds": 9900.0,
+        "dec": 100.0
       },
       "best_under": null,
       "middle_window": {
@@ -498,26 +930,107 @@
         "viable": false
       }
     },
-    "Full Game: Over 8.5 Goals Scored|receiving_yards": {
-      "player": "Full Game: Over 8.5 Goals Scored",
-      "team": "9",
+    "Ohio Wins|receiving_yards": {
+      "player": "Ohio Wins",
+      "team": "OHIO",
       "prop_type": "receiving_yards",
       "books": {
         "DraftKings": [
           {
-            "line": 8.5,
+            "line": 0.0,
             "type": "main_line",
-            "odds": 117.0,
-            "dec": 2.17,
+            "odds": -3233.0,
+            "dec": 1.0309,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -3233.0,
+        "dec": 1.0309
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Usc Wins|receiving_yards": {
+      "player": "Usc Wins",
+      "team": "USC",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -113.0,
+            "dec": 1.885,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -113.0,
+        "dec": 1.885
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Lsu Wins|receiving_yards": {
+      "player": "Lsu Wins",
+      "team": "LSU",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -194.0,
+            "dec": 1.5155,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -194.0,
+        "dec": 1.5155
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Ole Miss Wins|receiving_yards": {
+      "player": "Ole Miss Wins",
+      "team": "MISS",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": 100.0,
+            "dec": 2.0,
             "over_under": "over"
           }
         ]
       },
       "best_over": {
         "book": "DraftKings",
-        "line": 8.5,
-        "odds": 117.0,
-        "dec": 2.17
+        "line": 0.0,
+        "odds": 100.0,
+        "dec": 2.0
       },
       "best_under": null,
       "middle_window": {
@@ -525,8 +1038,116 @@
         "viable": false
       }
     },
-    "Brock Purdy: 350+ Passing Yards|passing_yards": {
-      "player": "Brock Purdy: 350+ Passing Yards",
+    "Florida Wins|receiving_yards": {
+      "player": "Florida Wins",
+      "team": "FLA",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -113.0,
+            "dec": 1.885,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -113.0,
+        "dec": 1.885
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Penn Wins|receiving_yards": {
+      "player": "Penn Wins",
+      "team": "PENN",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": 456.0,
+            "dec": 5.56,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": 456.0,
+        "dec": 5.56
+      },
+      "best_under": null,
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Clemson Wins|receiving_yards": {
+      "player": "Clemson Wins",
+      "team": "CLEM",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 0.0,
+            "type": "main_line",
+            "odds": -133.0,
+            "dec": 1.7519,
+            "over_under": "under"
+          }
+        ]
+      },
+      "best_over": null,
+      "best_under": {
+        "book": "DraftKings",
+        "line": 0.0,
+        "odds": -133.0,
+        "dec": 1.7519
+      },
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Cooper Rush: 325+ Passing Yards|passing_yards": {
+      "player": "Cooper Rush: 325+ Passing Yards",
+      "team": "325",
+      "prop_type": "passing_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 324.5,
+            "type": "main_line",
+            "odds": 9900.0,
+            "dec": 100.0,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 324.5,
+        "odds": 9900.0,
+        "dec": 100.0
+      },
+      "best_under": null,
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Tyler Shough: 350+ Passing Yards|passing_yards": {
+      "player": "Tyler Shough: 350+ Passing Yards",
       "team": "350",
       "prop_type": "passing_yards",
       "books": {
@@ -534,8 +1155,8 @@
           {
             "line": 349.5,
             "type": "main_line",
-            "odds": 1567.0,
-            "dec": 16.67,
+            "odds": 1150.0,
+            "dec": 12.5,
             "over_under": "over"
           }
         ]
@@ -543,8 +1164,35 @@
       "best_over": {
         "book": "DraftKings",
         "line": 349.5,
-        "odds": 1567.0,
-        "dec": 16.67
+        "odds": 1150.0,
+        "dec": 12.5
+      },
+      "best_under": null,
+      "middle_window": {
+        "spread_points": 0.0,
+        "viable": false
+      }
+    },
+    "Malachi Fields: 90+ Receiving Yards|receiving_yards": {
+      "player": "Malachi Fields: 90+ Receiving Yards",
+      "team": "90",
+      "prop_type": "receiving_yards",
+      "books": {
+        "DraftKings": [
+          {
+            "line": 89.5,
+            "type": "main_line",
+            "odds": 2400.0,
+            "dec": 25.0,
+            "over_under": "over"
+          }
+        ]
+      },
+      "best_over": {
+        "book": "DraftKings",
+        "line": 89.5,
+        "odds": 2400.0,
+        "dec": 25.0
       },
       "best_under": null,
       "middle_window": {
@@ -579,53 +1227,26 @@
         "viable": false
       }
     },
-    "Emeka Egbuka: 130+ Receiving Yards|receiving_yards": {
-      "player": "Emeka Egbuka: 130+ Receiving Yards",
-      "team": "130",
-      "prop_type": "receiving_yards",
-      "books": {
-        "DraftKings": [
-          {
-            "line": 129.5,
-            "type": "main_line",
-            "odds": 2400.0,
-            "dec": 25.0,
-            "over_under": "over"
-          }
-        ]
-      },
-      "best_over": {
-        "book": "DraftKings",
-        "line": 129.5,
-        "odds": 2400.0,
-        "dec": 25.0
-      },
-      "best_under": null,
-      "middle_window": {
-        "spread_points": 0.0,
-        "viable": false
-      }
-    },
-    "Xavier Hutchinson: 8+ Receptions|receptions": {
-      "player": "Xavier Hutchinson: 8+ Receptions",
-      "team": "8",
+    "Jaxon Smith-Njigba: 9+ Receptions|receptions": {
+      "player": "Jaxon Smith-Njigba: 9+ Receptions",
+      "team": "9",
       "prop_type": "receptions",
       "books": {
         "DraftKings": [
           {
-            "line": 7.5,
+            "line": 8.5,
             "type": "main_line",
-            "odds": 1329.0,
-            "dec": 14.29,
+            "odds": 317.0,
+            "dec": 4.17,
             "over_under": "over"
           }
         ]
       },
       "best_over": {
         "book": "DraftKings",
-        "line": 7.5,
-        "odds": 1329.0,
-        "dec": 14.29
+        "line": 8.5,
+        "odds": 317.0,
+        "dec": 4.17
       },
       "best_under": null,
       "middle_window": {

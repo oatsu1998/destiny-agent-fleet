@@ -107,7 +107,7 @@ class OddsSanityFirewall:
             event_id = r.get("canonical_event_id") or r.get("event_id") or "UNKNOWN"
 
             # -----------------------------------------------------------------
-            # Gate A: Outlier & Range Validation
+            # Gate A: Outlier & Range Validation (Multi-League Bounds)
             # -----------------------------------------------------------------
             # 1. Totals check
             if kind == "total":
@@ -119,13 +119,29 @@ class OddsSanityFirewall:
                             range_failures += 1
                             rejected_records.append({**r, "reject_reason": f"NFL total {tv} out of bounds [20, 75]"})
                             continue
+                        elif league == "NCAAF" and (tv < 24.0 or tv > 95.0):
+                            range_failures += 1
+                            rejected_records.append({**r, "reject_reason": f"NCAAF total {tv} out of bounds [24, 95]"})
+                            continue
                         elif league == "NBA" and (tv < 180.0 or tv > 260.0):
                             range_failures += 1
                             rejected_records.append({**r, "reject_reason": f"NBA total {tv} out of bounds [180, 260]"})
                             continue
+                        elif league == "NCAAB" and (tv < 105.0 or tv > 195.0):
+                            range_failures += 1
+                            rejected_records.append({**r, "reject_reason": f"NCAAB total {tv} out of bounds [105, 195]"})
+                            continue
                         elif league == "MLB" and (tv < 5.0 or tv > 16.0):
                             range_failures += 1
                             rejected_records.append({**r, "reject_reason": f"MLB total {tv} out of bounds [5, 16]"})
+                            continue
+                        elif league == "NHL" and (tv < 3.5 or tv > 10.5):
+                            range_failures += 1
+                            rejected_records.append({**r, "reject_reason": f"NHL total {tv} out of bounds [3.5, 10.5]"})
+                            continue
+                        elif league == "WNBA" and (tv < 130.0 or tv > 195.0):
+                            range_failures += 1
+                            rejected_records.append({**r, "reject_reason": f"WNBA total {tv} out of bounds [130, 195]"})
                             continue
                     except (ValueError, TypeError):
                         pass
@@ -136,9 +152,19 @@ class OddsSanityFirewall:
                 if spread_val is not None:
                     try:
                         sv = abs(float(spread_val))
-                        if sv > 45.0:
+                        max_spread = 45.0
+                        if league == "NCAAF":
+                            max_spread = 65.0
+                        elif league == "NCAAB":
+                            max_spread = 55.0
+                        elif league == "NHL":
+                            max_spread = 5.5
+                        elif league == "WNBA":
+                            max_spread = 40.0
+
+                        if sv > max_spread:
                             range_failures += 1
-                            rejected_records.append({**r, "reject_reason": f"Spread {sv} exceeds maximum limit 45.0"})
+                            rejected_records.append({**r, "reject_reason": f"{league} Spread {sv} exceeds maximum limit {max_spread}"})
                             continue
                     except (ValueError, TypeError):
                         pass

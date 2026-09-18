@@ -56,22 +56,32 @@ def _sync_fetch_kalshi_markets() -> List[Dict[str, Any]]:
                 ticker = m.get("ticker", "").upper()
                 title = str(m.get("title") or "")
                 
-                # Tag sports series
+                # Tag sports series & sport metadata
                 league = "GENERAL"
+                sport = "general"
                 kind = "game"
 
-                if "NFL" in ticker or "FOOTBALL" in title.upper() or "LIONS" in title.upper() or "BILLS" in title.upper() or "CHIEFS" in title.upper():
-                    league = "NFL"
-                elif "MLB" in ticker or "BASEBALL" in title.upper() or "MARINERS" in title.upper() or "YANKEES" in title.upper():
-                    league = "MLB"
-                elif "NBA" in ticker or "BASKETBALL" in title.upper() or "CLIPPERS" in title.upper() or "TIMBERWOLVES" in title.upper() or "CELTICS" in title.upper():
-                    league = "NBA"
-                elif "NHL" in ticker or "HOCKEY" in title.upper():
-                    league = "NHL"
-                elif "NCAAF" in ticker:
+                if "KXCFB" in ticker or "NCAAF" in ticker or "COLLEGE FOOTBALL" in title.upper():
                     league = "NCAAF"
-                elif "WNBA" in ticker:
+                    sport = "football"
+                elif "KXCBB" in ticker or "NCAAB" in ticker or "COLLEGE BASKETBALL" in title.upper():
+                    league = "NCAAB"
+                    sport = "basketball"
+                elif "KXNFL" in ticker or "NFL" in ticker or ("FOOTBALL" in title.upper() and "COLLEGE" not in title.upper()) or "LIONS" in title.upper() or "BILLS" in title.upper() or "CHIEFS" in title.upper():
+                    league = "NFL"
+                    sport = "football"
+                elif "KXNHL" in ticker or "NHL" in ticker or "HOCKEY" in title.upper():
+                    league = "NHL"
+                    sport = "hockey"
+                elif "KXWNBA" in ticker or "WNBA" in ticker:
                     league = "WNBA"
+                    sport = "basketball"
+                elif "KXMLB" in ticker or "MLB" in ticker or "BASEBALL" in title.upper() or "MARINERS" in title.upper() or "YANKEES" in title.upper():
+                    league = "MLB"
+                    sport = "baseball"
+                elif "KXNBA" in ticker or "NBA" in ticker or "BASKETBALL" in title.upper() or "CLIPPERS" in title.upper() or "TIMBERWOLVES" in title.upper() or "CELTICS" in title.upper():
+                    league = "NBA"
+                    sport = "basketball"
 
                 if "SPREAD" in ticker or "spread" in title.lower():
                     kind = "spread"
@@ -81,6 +91,7 @@ def _sync_fetch_kalshi_markets() -> List[Dict[str, Any]]:
                     kind = "prop"
 
                 m["_league"] = league
+                m["_sport"] = sport
                 m["_kind"] = kind
                 m["bookmaker"] = "Kalshi"
                 m["provider"] = "Kalshi"

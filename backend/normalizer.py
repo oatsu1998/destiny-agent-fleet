@@ -114,6 +114,12 @@ def normalize_market(raw_market: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     sub_title = raw_market.get('yes_sub_title', '') or title
     event_ticker = raw_market.get('event_ticker', '')
     league = raw_market.get('_league') or 'GENERAL'
+    sport_map = {
+        'NFL': 'football', 'NCAAF': 'football',
+        'NBA': 'basketball', 'NCAAB': 'basketball', 'WNBA': 'basketball',
+        'MLB': 'baseball', 'NHL': 'hockey'
+    }
+    sport = raw_market.get('_sport') or sport_map.get(league, 'general')
     kind = raw_market.get('_kind') or 'game'
     stat = raw_market.get('_stat')
 
@@ -142,6 +148,7 @@ def normalize_market(raw_market: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         'ticker': ticker,
         'event_ticker': event_ticker,
         'league': league,
+        'sport': sport,
         'market_kind': kind,
         'stat_category': stat,
         'title': title,

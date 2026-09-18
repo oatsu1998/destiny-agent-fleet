@@ -233,8 +233,8 @@ def discover_active_sports_tickers() -> List[str]:
             logger.warning(f"Could not read live stream tickers: {err}")
 
     if not tickers:
-        # Default fallback active sports tickers
-        tickers = ["KXNFLGAME", "KXMLBGAME", "KXNBAGAME", "KXNFLSPREAD", "KXMLBTOTAL"]
+        # Default fallback active sports tickers across all 7 leagues
+        tickers = ["KXNFLGAME", "KXCFBGAME", "KXNBAGAME", "KXCBBGAME", "KXMLBGAME", "KXNHLGAME", "KXWNBAGAME", "KXNFLSPREAD", "KXMLBTOTAL"]
 
     logger.info(f"Discovered {len(tickers)} active sports market tickers for WebSocket subscription.")
     return tickers[:50]

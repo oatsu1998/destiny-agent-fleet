@@ -27,11 +27,25 @@ logging.basicConfig(
 )
 logger = logging.getLogger("sports_engine.espn_fetcher")
 
-# ESPN Free CDN Scoreboard Endpoints
+# ESPN Scoreboard Endpoints (Multi-League Support via site.web.api.espn.com)
 ESPN_LEAGUE_ENDPOINTS = {
-    "NFL": "https://cdn.espn.com/core/nfl/scoreboard?xhr=1",
-    "MLB": "https://cdn.espn.com/core/mlb/scoreboard?xhr=1",
-    "NBA": "https://cdn.espn.com/core/nba/scoreboard?xhr=1"
+    "NFL": "https://site.web.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard",
+    "NCAAF": "https://site.web.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?groups=80&limit=250",
+    "NBA": "https://site.web.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard",
+    "NCAAB": "https://site.web.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?groups=50&limit=250",
+    "MLB": "https://site.web.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard",
+    "NHL": "https://site.web.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard",
+    "WNBA": "https://site.web.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard"
+}
+
+LEAGUE_TO_SPORT = {
+    "NFL": "football",
+    "NCAAF": "football",
+    "NBA": "basketball",
+    "NCAAB": "basketball",
+    "WNBA": "basketball",
+    "MLB": "baseball",
+    "NHL": "hockey"
 }
 
 def parse_espn_event(event: Dict[str, Any], league: str) -> List[Dict[str, Any]]:
@@ -39,6 +53,7 @@ def parse_espn_event(event: Dict[str, Any], league: str) -> List[Dict[str, Any]]
     Parses a single ESPN scoreboard event into clean, normalized market records.
     """
     records = []
+    sport = LEAGUE_TO_SPORT.get(league, "general")
     try:
         event_id = event.get("id", "")
         event_name = event.get("name", "")
@@ -77,6 +92,7 @@ def parse_espn_event(event: Dict[str, Any], league: str) -> List[Dict[str, Any]]
                 "canonical_event_id": f"{league}_{event_id}",
                 "event_id": event_id,
                 "league": league,
+                "sport": sport,
                 "market_kind": "game",
                 "title": f"{away_team} @ {home_team}",
                 "home_team": home_team,
@@ -115,6 +131,7 @@ def parse_espn_event(event: Dict[str, Any], league: str) -> List[Dict[str, Any]]
                 "canonical_event_id": f"{league}_{event_id}",
                 "event_id": event_id,
                 "league": league,
+                "sport": sport,
                 "market_kind": "game",
                 "title": f"{away_team} @ {home_team} - Moneyline",
                 "home_team": home_team,
@@ -137,6 +154,7 @@ def parse_espn_event(event: Dict[str, Any], league: str) -> List[Dict[str, Any]]
                 "canonical_event_id": f"{league}_{event_id}",
                 "event_id": event_id,
                 "league": league,
+                "sport": sport,
                 "market_kind": "spread",
                 "title": f"{away_team} @ {home_team} - Spread",
                 "home_team": home_team,
@@ -156,6 +174,7 @@ def parse_espn_event(event: Dict[str, Any], league: str) -> List[Dict[str, Any]]
                     "canonical_event_id": f"{league}_{event_id}",
                     "event_id": event_id,
                     "league": league,
+                    "sport": sport,
                     "market_kind": "total",
                     "title": f"{away_team} @ {home_team} - Over/Under Total",
                     "home_team": home_team,
