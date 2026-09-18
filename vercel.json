@@ -2,6 +2,9 @@
   "framework": null,
   "cleanUrls": true,
   "trailingSlash": false,
+  "functions": {
+    "api/test-alert.py": { "runtime": "python3.12" }
+  },
   "rewrites": [
     { "source": "/agents", "destination": "/agents.html" },
     { "source": "/api/(.*)", "destination": "/api/$1" }
