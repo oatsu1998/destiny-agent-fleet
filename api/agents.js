@@ -130,6 +130,22 @@ const DEFAULT_AGENTS = [
     mcp_endpoint: "mcp://agents.destiny.net/v1/weather-edge",
     mcp_type: "REST API / Open-Meteo",
     description: "Correlates game locations, stadium metadata (open-air, retractable, dome), and real-time weather forecasts to generate quantitative betting impact flags."
+  },
+  {
+    id: "data_quality",
+    name: "Data Quality & Feed Guardian Agent 🛡️",
+    avatar: "🛡️",
+    status: "Live",
+    role: "8-Gate Audit & Feed Health Engine",
+    specialty: "Data Health & Schema Validation",
+    markets_tracked: ["Schema Sanity", "Canonical IDs", "Deduplication", "Book Coverage"],
+    last_run: new Date().toISOString(),
+    records_processed: 8640,
+    latency_ms: 45,
+    uptime_pct: 100.0,
+    mcp_endpoint: "mcp://agents.destiny.net/v1/data-quality",
+    mcp_type: "JSON-RPC 2.0 / Audit Engine",
+    description: "Evaluates raw provider pulls against 8 strict validation gates, canonical team resolution, SHA-256 deduplication, and book coverage auditing."
   }
 ];
 
@@ -138,6 +154,7 @@ export default async function handler(req, res) {
     let telemetryData = {};
     let snapshotData = null;
     let weatherData = null;
+    let qualityData = null;
 
     // Try reading backend/agent_telemetry.json
     try {
@@ -169,6 +186,16 @@ export default async function handler(req, res) {
       console.warn("Could not read weather_snapshot.json:", e.message);
     }
 
+    // Try reading backend/quality_snapshot.json
+    try {
+      const qualityPath = path.join(process.cwd(), 'backend', 'quality_snapshot.json');
+      if (fs.existsSync(qualityPath)) {
+        qualityData = JSON.parse(fs.readFileSync(qualityPath, 'utf8'));
+      }
+    } catch (e) {
+      console.warn("Could not read quality_snapshot.json:", e.message);
+    }
+
     // Merge dynamic telemetry into default agents
     const agents = DEFAULT_AGENTS.map(agent => {
       const liveTel = telemetryData[agent.id];
@@ -197,6 +224,7 @@ export default async function handler(req, res) {
       success: true,
       timestamp: new Date().toISOString(),
       agent_count: agents.length,
+      health_report: qualityData || null,
       snapshot_summary: snapshotData ? {
         snapshot_id: snapshotData.snapshot_id,
         total_records: snapshotData.total_markets_processed,

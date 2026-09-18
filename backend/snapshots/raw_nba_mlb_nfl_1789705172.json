@@ -1,0 +1,40 @@
+[
+  {
+    "league": "NBA",
+    "home_team": "LA Clippers",
+    "away_team": "Minnesota Timberwolves",
+    "market_kind": "spread",
+    "bookmaker": "Kalshi",
+    "line": -4.5,
+    "american_odds": -110,
+    "ingested_at_utc": "2026-09-18T04:19:32.307468+00:00",
+    "canonical_event_id": "NBA_20260917_NBA_MIN@NBA_LAC",
+    "spread_line": -4.5,
+    "row_sha256": "be2bb9a0c6f2989efd1c6a7af49e38817cba721b833c2f500d63562ed63d6bc6"
+  },
+  {
+    "league": "MLB",
+    "home_team": "Seattle Mariners",
+    "away_team": "LA Angels",
+    "market_kind": "total",
+    "bookmaker": "FanDuel",
+    "line": 9.5,
+    "american_odds": 105,
+    "ingested_at_utc": "2026-09-18T04:19:32.307468+00:00",
+    "canonical_event_id": "MLB_20260917_MLB_LAA@MLB_SEA",
+    "total_line": 9.5,
+    "row_sha256": "cb5209923921b437b5cab68571c07e9052bb458b0b2b440047e3e24401ca5612"
+  },
+  {
+    "league": "NFL",
+    "home_team": "Kansas City Chiefs",
+    "away_team": "Unknown Team X",
+    "market_kind": "moneyline",
+    "bookmaker": "DraftKings",
+    "line": 0,
+    "american_odds": -200,
+    "ingested_at_utc": "2026-09-18T04:19:32.307468+00:00",
+    "canonical_event_id": "NFL_20260917_AWAY@NFL_KC",
+    "row_sha256": "ccafe51dde859932d26e946d196cf42f343e9a10a0162afca3eab7c1162a49c7"
+  }
+]

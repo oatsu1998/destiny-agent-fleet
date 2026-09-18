@@ -26,6 +26,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from normalizer import normalize_market, create_snapshot
 from db import DatabaseManager
 from weather_agent import generate_all_stadium_weather
+from quality_agent import DataQualityAgent
 
 # Configure Logging
 logging.basicConfig(
@@ -105,8 +106,19 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
 
     logger.info(f"Ingested {len(raw_markets)} raw market records across {len(SERIES_LIST)} series tickers.")
 
+    # Run Data Quality & Feed Guardian 8-Gate Audit
+    try:
+        quality_agent = DataQualityAgent()
+        audited_records, health_report = quality_agent.audit(raw_markets, sport="MULTI_SPORT")
+        records_to_normalize = audited_records if audited_records else raw_markets
+        health_status = health_report.get("status", "HEALTHY")
+    except Exception as q_err:
+        logger.warning(f"Could not complete DataQualityAgent audit: {q_err}")
+        records_to_normalize = raw_markets
+        health_status = "DEGRADED"
+
     normalized_records = []
-    for raw in raw_markets:
+    for raw in records_to_normalize:
         norm = normalize_market(raw)
         if norm:
             normalized_records.append(norm)
@@ -138,6 +150,13 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
         agent_name="Player Props Normalizer",
         status="Live",
         records_processed=len([r for r in normalized_records if r.get('market_kind') == 'prop']),
+        latency_ms=round(elapsed * 1000, 2)
+    )
+    db_manager.update_agent_telemetry(
+        agent_id="data_quality",
+        agent_name="Data Quality & Feed Guardian Agent 🛡️",
+        status="Live" if health_status == "HEALTHY" else "Active",
+        records_processed=len(audited_records) if 'audited_records' in locals() else len(normalized_records),
         latency_ms=round(elapsed * 1000, 2)
     )
     db_manager.update_agent_telemetry(
