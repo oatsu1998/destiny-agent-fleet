@@ -47,3 +47,4 @@ class handler(BaseHTTPRequestHandler):
         )
         await get_alert_agent().aclose()
         return ok
+        
