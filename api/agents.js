@@ -114,6 +114,22 @@ const DEFAULT_AGENTS = [
     mcp_endpoint: "mcp://agents.destiny.net/v1/zero-risk-bot",
     mcp_type: "SSE / Automated Execution",
     description: "Calculates exact counter-hedge sizing on live lines in real-time to bring total portfolio downside risk down to EXACTLY $0.00."
+  },
+  {
+    id: "weather_agent",
+    name: "Atmospheric & Weather Edge Agent 🌦️",
+    avatar: "🌦️",
+    status: "Live",
+    role: "Venue Microclimate & Betting Impact Engine",
+    specialty: "NFL & NCAA Stadium Microclimates",
+    markets_tracked: ["Wind Vector", "Precipitation Risk", "Temperature Delta", "FG Drag"],
+    last_run: new Date().toISOString(),
+    records_processed: 8,
+    latency_ms: 310,
+    uptime_pct: 99.9,
+    mcp_endpoint: "mcp://agents.destiny.net/v1/weather-edge",
+    mcp_type: "REST API / Open-Meteo",
+    description: "Correlates game locations, stadium metadata (open-air, retractable, dome), and real-time weather forecasts to generate quantitative betting impact flags."
   }
 ];
 
@@ -121,6 +137,7 @@ export default async function handler(req, res) {
   try {
     let telemetryData = {};
     let snapshotData = null;
+    let weatherData = null;
 
     // Try reading backend/agent_telemetry.json
     try {
@@ -140,6 +157,16 @@ export default async function handler(req, res) {
       }
     } catch (e) {
       console.warn("Could not read latest_snapshot.json:", e.message);
+    }
+
+    // Try reading backend/weather_snapshot.json
+    try {
+      const weatherPath = path.join(process.cwd(), 'backend', 'weather_snapshot.json');
+      if (fs.existsSync(weatherPath)) {
+        weatherData = JSON.parse(fs.readFileSync(weatherPath, 'utf8'));
+      }
+    } catch (e) {
+      console.warn("Could not read weather_snapshot.json:", e.message);
     }
 
     // Merge dynamic telemetry into default agents
@@ -174,6 +201,11 @@ export default async function handler(req, res) {
         snapshot_id: snapshotData.snapshot_id,
         total_records: snapshotData.total_markets_processed,
         leagues: snapshotData.leagues_covered
+      } : null,
+      weather_summary: weatherData ? {
+        timestamp: weatherData.timestamp,
+        venues_scanned: weatherData.total_venues_scanned,
+        stadiums: weatherData.reports
       } : null,
       agents: agents
     });

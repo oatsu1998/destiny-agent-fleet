@@ -1,0 +1,134 @@
+{
+  "timestamp": "2026-09-18T04:10:06Z",
+  "total_venues_scanned": 8,
+  "reports": [
+    {
+      "stadium_key": "soldier_field",
+      "stadium_name": "Soldier Field",
+      "city": "Chicago",
+      "team": "Chicago Bears",
+      "roof_type": "open_air",
+      "temperature_f": 66.8,
+      "wind_speed_mph": 9.0,
+      "wind_gusts_mph": 17.0,
+      "precipitation_in": 0.0,
+      "snowfall_in": 0.0,
+      "weather_condition": "Clear / Fair",
+      "advisory_flags": [
+        "\u2600\ufe0f Fair Outdoor Weather \u2014 Standard baseline scoring environment."
+      ]
+    },
+    {
+      "stadium_key": "lambeau_field",
+      "stadium_name": "Lambeau Field",
+      "city": "Green Bay",
+      "team": "Green Bay Packers",
+      "roof_type": "open_air",
+      "temperature_f": 57.0,
+      "wind_speed_mph": 2.2,
+      "wind_gusts_mph": 3.4,
+      "precipitation_in": 0.0,
+      "snowfall_in": 0.0,
+      "weather_condition": "Clear / Fair",
+      "advisory_flags": [
+        "\u2600\ufe0f Fair Outdoor Weather \u2014 Standard baseline scoring environment."
+      ]
+    },
+    {
+      "stadium_key": "arrowhead_stadium",
+      "stadium_name": "GEHA Field at Arrowhead Stadium",
+      "city": "Kansas City",
+      "team": "Kansas City Chiefs",
+      "roof_type": "open_air",
+      "temperature_f": 82.9,
+      "wind_speed_mph": 3.8,
+      "wind_gusts_mph": 7.8,
+      "precipitation_in": 0.0,
+      "snowfall_in": 0.0,
+      "weather_condition": "Clear / Fair",
+      "advisory_flags": [
+        "\u2600\ufe0f Fair Outdoor Weather \u2014 Standard baseline scoring environment."
+      ]
+    },
+    {
+      "stadium_key": "highmark_stadium",
+      "stadium_name": "Highmark Stadium",
+      "city": "Orchard Park",
+      "team": "Buffalo Bills",
+      "roof_type": "open_air",
+      "temperature_f": 67.0,
+      "wind_speed_mph": 1.0,
+      "wind_gusts_mph": 3.1,
+      "precipitation_in": 0.0,
+      "snowfall_in": 0.0,
+      "weather_condition": "Clear / Fair",
+      "advisory_flags": [
+        "\u2600\ufe0f Fair Outdoor Weather \u2014 Standard baseline scoring environment."
+      ]
+    },
+    {
+      "stadium_key": "att_stadium",
+      "stadium_name": "AT&T Stadium",
+      "city": "Arlington",
+      "team": "Dallas Cowboys",
+      "roof_type": "retractable",
+      "temperature_f": 89.0,
+      "wind_speed_mph": 4.8,
+      "wind_gusts_mph": 11.0,
+      "precipitation_in": 0.0,
+      "snowfall_in": 0.0,
+      "weather_condition": "Clear / Fair",
+      "advisory_flags": [
+        "\ud83c\udfdf\ufe0f Retractable Roof Venue \u2014 Weather impact active if roof opened."
+      ]
+    },
+    {
+      "stadium_key": "caesars_superdome",
+      "stadium_name": "Caesars Superdome",
+      "city": "New Orleans",
+      "team": "New Orleans Saints",
+      "roof_type": "dome",
+      "temperature_f": 72.0,
+      "wind_speed_mph": 0.0,
+      "wind_gusts_mph": 0.0,
+      "precipitation_in": 0.0,
+      "snowfall_in": 0.0,
+      "weather_condition": "Indoor Controlled",
+      "advisory_flags": [
+        "\ud83c\udfdf\ufe0f Indoor Climate Controlled (72\u00b0F, 0 mph wind) \u2014 Standard scoring baseline."
+      ]
+    },
+    {
+      "stadium_key": "us_bank_stadium",
+      "stadium_name": "U.S. Bank Stadium",
+      "city": "Minneapolis",
+      "team": "Minnesota Vikings",
+      "roof_type": "dome",
+      "temperature_f": 72.0,
+      "wind_speed_mph": 0.0,
+      "wind_gusts_mph": 0.0,
+      "precipitation_in": 0.0,
+      "snowfall_in": 0.0,
+      "weather_condition": "Indoor Controlled",
+      "advisory_flags": [
+        "\ud83c\udfdf\ufe0f Indoor Climate Controlled (72\u00b0F, 0 mph wind) \u2014 Standard scoring baseline."
+      ]
+    },
+    {
+      "stadium_key": "empower_field",
+      "stadium_name": "Empower Field at Mile High",
+      "city": "Denver",
+      "team": "Denver Broncos",
+      "roof_type": "open_air",
+      "temperature_f": 70.0,
+      "wind_speed_mph": 5.4,
+      "wind_gusts_mph": 13.2,
+      "precipitation_in": 0.0,
+      "snowfall_in": 0.0,
+      "weather_condition": "Clear / Fair",
+      "advisory_flags": [
+        "\u2600\ufe0f Fair Outdoor Weather \u2014 Standard baseline scoring environment."
+      ]
+    }
+  ]
+}

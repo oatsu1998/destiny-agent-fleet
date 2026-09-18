@@ -3,27 +3,36 @@
     "agent_id": "kalshi_scraper",
     "agent_name": "Kalshi Market Scraper",
     "status": "Live",
-    "last_run": "2026-09-17T04:12:00.216834+00:00",
-    "records_processed": 1832,
-    "latency_ms": 290.13,
+    "last_run": "2026-09-18T04:10:06.246855+00:00",
+    "records_processed": 2203,
+    "latency_ms": 317.68,
     "uptime_pct": 99.9
   },
   "prop_normalizer": {
     "agent_id": "prop_normalizer",
     "agent_name": "Player Props Normalizer",
     "status": "Live",
-    "last_run": "2026-09-17T04:12:00.218185+00:00",
-    "records_processed": 1235,
-    "latency_ms": 290.13,
+    "last_run": "2026-09-18T04:10:06.248747+00:00",
+    "records_processed": 1000,
+    "latency_ms": 317.68,
     "uptime_pct": 99.9
   },
   "supabase_ingestor": {
     "agent_id": "supabase_ingestor",
     "agent_name": "Supabase DB Ingestor",
     "status": "Live",
-    "last_run": "2026-09-17T04:12:00.218865+00:00",
-    "records_processed": 1832,
-    "latency_ms": 290.13,
+    "last_run": "2026-09-18T04:10:06.250978+00:00",
+    "records_processed": 2203,
+    "latency_ms": 317.68,
+    "uptime_pct": 99.9
+  },
+  "weather_agent": {
+    "agent_id": "weather_agent",
+    "agent_name": "Atmospheric & Weather Edge Agent \ud83c\udf26\ufe0f",
+    "status": "Live",
+    "last_run": "2026-09-18T04:10:06.249849+00:00",
+    "records_processed": 8,
+    "latency_ms": 317.68,
     "uptime_pct": 99.9
   }
 }

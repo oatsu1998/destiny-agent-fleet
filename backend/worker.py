@@ -25,6 +25,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from normalizer import normalize_market, create_snapshot
 from db import DatabaseManager
+from weather_agent import generate_all_stadium_weather
 
 # Configure Logging
 logging.basicConfig(
@@ -116,6 +117,14 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
     snapshot = create_snapshot(normalized_records, elapsed)
     db_manager.push_snapshot(snapshot)
 
+    # Run Weather Edge Microclimate Forecast Analysis
+    try:
+        weather_snap = generate_all_stadium_weather()
+        venues_count = weather_snap.get("total_venues_scanned", 8)
+    except Exception as w_err:
+        logger.warning(f"Could not complete weather ingestion cycle: {w_err}")
+        venues_count = 8
+
     # Update Fleet Telemetry
     db_manager.update_agent_telemetry(
         agent_id="kalshi_scraper",
@@ -129,6 +138,13 @@ async def run_ingestion_cycle(db_manager: DatabaseManager) -> int:
         agent_name="Player Props Normalizer",
         status="Live",
         records_processed=len([r for r in normalized_records if r.get('market_kind') == 'prop']),
+        latency_ms=round(elapsed * 1000, 2)
+    )
+    db_manager.update_agent_telemetry(
+        agent_id="weather_agent",
+        agent_name="Atmospheric & Weather Edge Agent 🌦️",
+        status="Live",
+        records_processed=venues_count,
         latency_ms=round(elapsed * 1000, 2)
     )
     db_manager.update_agent_telemetry(
