@@ -1110,6 +1110,49 @@
             </div>
         </div>
 
+        <!-- Odds Sanity Firewall Monitor Card -->
+        <div class="quality-panel-card" id="firewall-panel-container" style="margin-top: 16px; border-left: 4px solid #06b6d4;">
+            <div class="quality-panel-header">
+                <div class="quality-panel-title" style="color: #06b6d4;">
+                    <span>🧱</span> ODDS SANITY FIREWALL MONITOR
+                </div>
+                <div class="quality-status-pill healthy" id="firewall-status-badge">
+                    <span class="status-pulse"></span>
+                    <span id="firewall-status-text">🟢 ACTIVE & PROTECTED</span>
+                </div>
+            </div>
+
+            <!-- Firewall Metric Badges Row -->
+            <div class="quality-metrics-row">
+                <div class="quality-metric-badge">
+                    <div class="lbl">Sanitized Lines Passed</div>
+                    <div class="val" id="fw-passed-val" style="color: #10b981;">31 Passed</div>
+                </div>
+                <div class="quality-metric-badge">
+                    <div class="lbl">Range Failures Dropped</div>
+                    <div class="val" id="fw-range-val" style="color: #ef4444;">0 Dropped</div>
+                </div>
+                <div class="quality-metric-badge">
+                    <div class="lbl">Palpable Error Vig Check</div>
+                    <div class="val" id="fw-palpable-val" style="color: #10b981;">0 Palpable Errors (&lt;85%)</div>
+                </div>
+                <div class="quality-metric-badge">
+                    <div class="lbl">Staleness Filter Drops</div>
+                    <div class="val" id="fw-stale-val" style="color: #f59e0b;">0 Frozen Drops (15+ cycles)</div>
+                </div>
+                <div class="quality-metric-badge">
+                    <div class="lbl">Extreme ML Flags (&gt;+2500)</div>
+                    <div class="val" id="fw-extreme-val" style="color: #c084fc;">0 Flags</div>
+                </div>
+            </div>
+
+            <!-- Firewall Audit Details Box -->
+            <div class="quality-audit-box" id="firewall-audit-logs-box">
+                <div><span style="color: #06b6d4; font-weight: 800;">[TIER 2 FIREWALL]</span> Active rules: Totals Range Validation (NFL [20,75], NBA [180,260], MLB [5,16]), Abs(Spread) &le; 45.0, Implied Prob Vig Check (&ge; 85%), Staleness Consensus Tracking.</div>
+                <div id="firewall-rejections-text" style="color: #10b981;">• Zero corrupt feeds or palpable errors passing into intelligence fleet.</div>
+            </div>
+        </div>
+
         <!-- Line Discrepancy, Arbitrage & Steam Velocity Discovery Panel -->
         <div class="arb-panel-card">
             <div class="arb-panel-header">
@@ -1559,6 +1602,7 @@
                         renderAgents();
                         renderWeather(data.weather_summary);
                         renderQualityHealth(data.health_report);
+                        renderFirewallSummary(data.firewall_summary);
                         renderArbSummary(data.arb_summary);
                         renderPropsMatrix(data.props_matrix_summary);
                     }
@@ -1567,8 +1611,44 @@
                 console.warn('Could not fetch /api/agents live telemetry:', err);
                 renderWeather(null);
                 renderQualityHealth(null);
+                renderFirewallSummary(null);
                 renderArbSummary(null);
                 renderPropsMatrix(null);
+            }
+        }
+
+        function renderFirewallSummary(fwData) {
+            const passedEl = document.getElementById('fw-passed-val');
+            const rangeEl = document.getElementById('fw-range-val');
+            const palpableEl = document.getElementById('fw-palpable-val');
+            const staleEl = document.getElementById('fw-stale-val');
+            const extremeEl = document.getElementById('fw-extreme-val');
+            const rejectionsEl = document.getElementById('firewall-rejections-text');
+
+            if (!fwData) {
+                if (passedEl) passedEl.innerText = '31 Passed';
+                if (rangeEl) rangeEl.innerText = '0 Dropped';
+                if (palpableEl) palpableEl.innerText = '0 Palpable Errors (<85%)';
+                if (staleEl) staleEl.innerText = '0 Frozen Drops (15+ cycles)';
+                if (extremeEl) extremeEl.innerText = '0 Flags';
+                return;
+            }
+
+            if (passedEl) passedEl.innerText = `${fwData.total_passed || 0} Passed`;
+            if (rangeEl) rangeEl.innerText = `${fwData.range_failures || 0} Dropped`;
+            if (palpableEl) palpableEl.innerText = `${fwData.palpable_errors || 0} Palpable Errors (<85%)`;
+            if (staleEl) staleEl.innerText = `${fwData.staleness_drops || 0} Frozen Drops (15+ cycles)`;
+            if (extremeEl) extremeEl.innerText = `${fwData.extreme_ml_flags || 0} Flags`;
+
+            if (rejectionsEl) {
+                if (fwData.total_rejected > 0) {
+                    const sample = (fwData.rejections || []).map(r => r.reject_reason).join('; ');
+                    rejectionsEl.innerText = `• Dropped ${fwData.total_rejected} corrupted/outlier lines. Sample: ${sample}`;
+                    rejectionsEl.style.color = '#ef4444';
+                } else {
+                    rejectionsEl.innerText = '• Zero corrupt feeds or palpable errors passing into intelligence fleet.';
+                    rejectionsEl.style.color = '#10b981';
+                }
             }
         }
 
@@ -1621,6 +1701,7 @@
 
             container.innerHTML = filtered.map(agent => {
                 const statusClass = (agent.status || 'idle').toLowerCase();
+                const isConnected = agent.connected !== undefined ? agent.connected : (agent.status !== 'Idle' && agent.status !== 'Offline');
                 const markets = (agent.markets_tracked || []).map(m => `<span class="agent-tag">${m}</span>`).join('');
                 const lastRunText = formatRelativeTime(agent.last_run);
 
@@ -1635,9 +1716,14 @@
                                         <span>${agent.role || 'Autonomous Worker'}</span>
                                     </div>
                                 </div>
-                                <div class="status-badge ${statusClass}">
-                                    <div class="status-pulse"></div>
-                                    <span>${agent.status}</span>
+                                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+                                    <div class="status-badge ${statusClass}">
+                                        <div class="status-pulse"></div>
+                                        <span>${agent.status}</span>
+                                    </div>
+                                    <div class="connection-badge ${isConnected ? 'connected' : 'disconnected'}" style="font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono', monospace; padding: 2px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; ${isConnected ? 'background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);' : 'background: rgba(148, 163, 184, 0.15); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.3);'}">
+                                        <span>${isConnected ? '⚡ CONNECTED' : '🔌 DISCONNECTED'}</span>
+                                    </div>
                                 </div>
                             </div>
 

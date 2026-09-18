@@ -1,8 +1,8 @@
 {
-  "timestamp": "2026-09-18T05:48:17.330353+00:00",
+  "timestamp": "2026-09-18T06:00:18.208345+00:00",
   "status": "ROUTED",
-  "total_records": 15,
-  "pregame_count": 15,
+  "total_records": 26,
+  "pregame_count": 26,
   "live_count": 0,
   "final_count": 0,
   "routing_targets": {
